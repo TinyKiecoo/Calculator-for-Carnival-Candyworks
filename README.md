@@ -1,4 +1,4 @@
-# Dota 2 Candyworks Calculator
+# Calculator for Carnival Candyworks in Dota 2
 
 Unofficial, non-commercial fan-made calculator for the Dota 2 Candyworks event.
 

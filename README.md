@@ -1,5 +1,7 @@
 # Calculator for Carnival Candyworks in Dota 2
 
+[https://tinykiecoo.github.io/Calculator-for-Carnival-Candyworks](https://tinykiecoo.github.io/Calculator-for-Carnival-Candyworks/)
+
 Unofficial, non-commercial fan-made calculator for the Dota 2 Candyworks event.
 
 This repository is prepared as a static GitHub Pages site. Open `index.html` directly, or publish the repository with GitHub Pages.

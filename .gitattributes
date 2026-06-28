@@ -1,0 +1,8 @@
+* text=auto
+
+*.html text eol=lf
+*.md text eol=lf
+LICENSE text eol=lf
+
+*.png binary
+*.ttf binary

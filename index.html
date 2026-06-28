@@ -1,0 +1,1907 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dota 2 Carnival Candyworks Calculator</title>
+  <style>
+    @font-face {
+      font-family: "Reaver";
+      src: url("candywork-assets/Reaver-Bold.ttf") format("truetype");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Radiance";
+      src: url("candywork-assets/radiance.ttf") format("truetype");
+      font-weight: 400 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      color-scheme: dark;
+      --font-display: "Reaver", "Radiance", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
+      --font-body: "Radiance", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
+      --gold: #f0d59a;
+      --ink: #f6ead2;
+      --muted: #b8a995;
+      --line: rgba(225, 193, 128, .22);
+      --shadow: 0 28px 60px rgba(0, 0, 0, .5);
+      --asset-bg: url("candywork-assets/sky_background_png.png");
+      --asset-wood: url("candywork-assets/dark_carnival_woodgrain_04_png.png");
+      --asset-widget: url("candywork-assets/widget_background_png.png");
+      --asset-button: url("candywork-assets/button_border_png.png");
+      --asset-button-fill: url("candywork-assets/dashboard_ui_wood_background_png.png");
+    }
+
+    html[lang="zh-CN"] {
+      --font-display: "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
+      --font-body: "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
+    }
+
+    html[lang="zh-CN"] #totalCandy {
+      font-family: "Reaver", "Radiance", "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--font-body);
+      zoom: .86;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(77, 111, 151, .45), transparent 34%),
+        linear-gradient(180deg, rgba(7, 11, 25, .18), rgba(2, 7, 18, .95)),
+        var(--asset-bg) center / cover fixed;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 28% 32%, rgba(60, 190, 202, .18), transparent 15%),
+        radial-gradient(circle at 86% 8%, rgba(255, 255, 255, .12), transparent 9%),
+        linear-gradient(180deg, rgba(7, 9, 24, .08), rgba(1, 5, 14, .75));
+      z-index: -1;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .language-toggle {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 30;
+      min-width: 62px;
+      height: 34px;
+      padding: 0 14px;
+      border: 1px solid rgba(225, 193, 128, .42);
+      background:
+        radial-gradient(ellipse at 50% 10%, rgba(255, 232, 164, .2), transparent 56%),
+        linear-gradient(180deg, rgba(87, 54, 55, .9), rgba(18, 14, 27, .96)),
+        var(--asset-button-fill) center top / cover no-repeat;
+      color: #f2d89d;
+      cursor: pointer;
+      font-family: var(--font-display), "Microsoft YaHei", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-shadow: 0 2px 3px #000;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .36), inset 0 0 0 1px rgba(255,255,255,.06);
+      transition: filter .12s ease, transform .12s ease;
+    }
+
+    .language-toggle:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .page {
+      width: min(1530px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 30px 42px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 42px;
+    }
+
+    .titlebar {
+      text-align: center;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .titlebar h1 {
+      margin: 0;
+      color: #E5CF9C;
+      background: none;
+      -webkit-background-clip: text;
+      background-clip: text;
+      font-family: var(--font-display);
+      font-size: clamp(34px, 4vw, 58px);
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-shadow: 0 4px 0 rgba(27, 36, 71, .95), 0 0 20px rgba(255, 237, 189, .25);
+    }
+
+    .titlebar .subtitle {
+      margin-top: 7px;
+      color: #efd6a2;
+      font: 700 18px/1 var(--font-body);
+      text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(620px, 1fr) minmax(430px, 510px);
+      gap: 56px;
+      align-items: start;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .offers {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 690px;
+      gap: 18px;
+    }
+
+    .offer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 38px;
+      align-items: stretch;
+    }
+
+    .offer-card {
+      min-width: 0;
+      min-height: 545px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 22px 26px 74px;
+      background:
+        linear-gradient(180deg, rgba(0, 7, 18, .72), rgba(18, 15, 32, .92) 50%, rgba(45, 31, 50, .96)),
+        var(--asset-widget) center / cover;
+      border-bottom: 2px solid #d0a85e;
+      box-shadow: 0 22px 46px rgba(0, 0, 0, .45);
+      overflow: hidden;
+    }
+
+    .offer-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 34%, rgba(43, 215, 225, .27), transparent 28%);
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    .offer-card:nth-child(2)::before {
+      background: radial-gradient(circle at 50% 35%, rgba(255, 234, 150, .2), transparent 27%);
+    }
+
+    .offer-card:nth-child(3)::before {
+      background: radial-gradient(circle at 50% 38%, rgba(110, 180, 255, .17), transparent 30%);
+    }
+
+    .offer-art {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      width: min(76%, 260px);
+      height: 245px;
+      transform: translateX(-50%);
+      object-fit: contain;
+      filter: drop-shadow(0 18px 26px rgba(0, 0, 0, .6));
+      pointer-events: none;
+    }
+
+    .offer-art.small {
+      top: 54px;
+      width: min(70%, 220px);
+      height: 210px;
+    }
+
+    .offer-art.frame {
+      top: 100px;
+      width: min(72%, 230px);
+      height: 155px;
+      padding: 14px;
+      border: 2px solid rgba(204, 186, 153, .22);
+      background: rgba(20, 19, 27, .76);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 8px 16px rgba(0,0,0,.5);
+    }
+
+    .offer-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 13px;
+      justify-items: center;
+    }
+
+    .offer-title,
+    .board-title,
+    .exchange-title,
+    .ornate-button,
+    .metal-button,
+    .reroll-button,
+    .custom-label,
+    .candy-count span,
+    .picker-title,
+    .picker-clear {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .offer-title {
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff5dd;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, .95);
+    }
+
+    .demand-slots {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 7px;
+      align-items: center;
+    }
+
+    .candy-icon {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 4px rgba(0, 0, 0, .6));
+      flex: 0 0 auto;
+    }
+
+    .summary-pills {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      gap: 4px;
+      padding: 3px 8px 3px 4px;
+      border: 1px solid rgba(213, 174, 100, .18);
+      background: rgba(18, 12, 22, .58);
+      color: #f8e4b6;
+      font: 800 13px/1 var(--font-body);
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, .42);
+    }
+
+    .pill img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .status-box {
+      width: 100%;
+      min-height: 74px;
+      padding: 12px;
+      border: 1px solid rgba(216, 179, 106, .2);
+      background: rgba(8, 9, 16, .64);
+      color: #d9c8ad;
+      font: 600 14px/1.45 var(--font-body);
+      text-align: left;
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, .55);
+    }
+
+    .status-box.ok {
+      color: #b9f0c7;
+      border-color: rgba(111, 206, 135, .28);
+    }
+
+    .status-box.bad {
+      color: #ffc1b8;
+      border-color: rgba(238, 91, 73, .32);
+    }
+
+    .status-box.hidden {
+      display: none;
+    }
+
+    .steps {
+      width: 100%;
+      max-height: 160px;
+      overflow: auto;
+      display: grid;
+      gap: 7px;
+      padding-right: 4px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      padding: 7px;
+      border: 1px solid rgba(221, 185, 116, .14);
+      background: rgba(10, 8, 15, .55);
+      font: 600 12px/1.35 var(--font-body);
+      color: #d9cbb4;
+    }
+
+    .step-no {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #2d1c12;
+      background: #d6ae70;
+      font-weight: 900;
+    }
+
+    .step-title {
+      color: #fff0c9;
+      font-weight: 800;
+    }
+
+    .state-line {
+      margin-top: 2px;
+      color: #a99a88;
+    }
+
+    .path-recipe {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr);
+      gap: 5px;
+      align-items: center;
+      min-height: 30px;
+      padding: 3px 5px;
+      border: 1px solid rgba(221, 185, 116, .14);
+      background: rgba(116, 99, 82, .38);
+      box-shadow: inset 0 0 14px rgba(0, 0, 0, .28);
+    }
+
+    .path-side {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-wrap: nowrap;
+      overflow: hidden;
+    }
+
+    .path-side.out {
+      justify-content: flex-start;
+    }
+
+    .path-side img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 3px rgba(0,0,0,.72));
+      flex: 0 0 auto;
+    }
+
+    .path-arrow {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffe7b3;
+      background: radial-gradient(circle at 35% 30%, #d8b481, #8d6444 62%, #4f3326);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.12), 0 4px 8px rgba(0,0,0,.45);
+      font-family: var(--font-display);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .path-label {
+      color: #f6dfac;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .path-recipe.trade-item {
+      grid-template-columns: 1fr;
+      min-height: 32px;
+      place-items: center;
+    }
+
+    .path-recipe.trade-item .path-label {
+      color: #fff1c7;
+      font-size: 12px;
+      text-shadow: 0 2px 3px #000;
+    }
+
+    .offer-card.result-mode {
+      justify-content: flex-start;
+      padding-top: 24px;
+    }
+
+    .offer-card.result-mode .offer-art,
+    .offer-card.result-mode .offer-title {
+      display: none;
+    }
+
+    .offer-card.result-mode .offer-content {
+      width: 100%;
+      align-self: stretch;
+      justify-items: stretch;
+    }
+
+    .offer-card.result-mode .steps {
+      max-height: 430px;
+      gap: 5px;
+    }
+
+    .ornate-button {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      width: min(82%, 226px);
+      height: 40px;
+      transform: translateX(-50%);
+      border: 0;
+      background: transparent;
+      color: #f2d89d;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      text-shadow: 0 2px 3px #000;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, .4);
+      isolation: isolate;
+      overflow: visible;
+    }
+
+    .ornate-button::before {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(255, 232, 164, .22), transparent 50%),
+        linear-gradient(90deg, rgba(12, 9, 17, .74), rgba(65, 45, 69, .2) 48%, rgba(12, 9, 17, .74)),
+        linear-gradient(180deg, rgba(85, 62, 83, .52), rgba(18, 14, 27, .96) 76%),
+        var(--asset-button-fill) center top / cover no-repeat;
+      clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0 50%);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .ornate-button::after {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background: var(--asset-button) center / 100% 100% no-repeat;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .ornate-button:hover,
+    .reroll-button:hover,
+    .metal-button:hover {
+      color: #ffe9b0;
+      filter: brightness(1.08);
+    }
+
+    .bottom-row {
+      position: relative;
+      min-height: 54px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .bottom-row::before,
+    .bottom-row::after {
+      content: "";
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(223, 184, 101, .46));
+    }
+
+    .bottom-row::after {
+      background: linear-gradient(90deg, rgba(223, 184, 101, .46), transparent);
+    }
+
+    .reroll-track {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      opacity: .9;
+    }
+
+    .reroll-track img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,.75));
+    }
+
+    .reroll-track img.dim {
+      filter: grayscale(1) brightness(.4);
+      opacity: .8;
+    }
+
+    .reroll-button {
+      position: relative;
+      width: 246px;
+      height: 40px;
+      border: 0;
+      background: transparent;
+      color: #f5d99b;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      text-shadow: 0 2px 3px #000;
+      isolation: isolate;
+      overflow: visible;
+    }
+
+    .reroll-button::before {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(255, 232, 164, .22), transparent 50%),
+        linear-gradient(90deg, rgba(12, 9, 17, .74), rgba(65, 45, 69, .2) 48%, rgba(12, 9, 17, .74)),
+        linear-gradient(180deg, rgba(85, 62, 83, .52), rgba(18, 14, 27, .96) 76%),
+        var(--asset-button-fill) center top / cover no-repeat;
+      clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0 50%);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .reroll-button::after {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background: var(--asset-button) center / 100% 100% no-repeat;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .widget {
+      position: relative;
+      min-height: 640px;
+      padding: 0 24px 24px;
+      background:
+        linear-gradient(180deg, rgba(46, 32, 48, .65), rgba(22, 17, 28, .75)),
+        var(--asset-wood) center / cover;
+      border: 2px solid rgba(160, 124, 79, .78);
+      box-shadow: var(--shadow), inset 0 0 0 1px rgba(255, 236, 171, .08);
+    }
+
+    .widget::before,
+    .widget::after,
+    .corner-bl,
+    .corner-br {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #b28b5b 0 18%, #5a3d31 19% 46%, #201923 47% 100%);
+      box-shadow: 0 0 0 2px rgba(213, 171, 104, .35);
+      z-index: 3;
+    }
+
+    .widget::before {
+      top: -9px;
+      left: -9px;
+    }
+
+    .widget::after {
+      top: -9px;
+      right: -9px;
+    }
+
+    .corner-bl {
+      left: -9px;
+      bottom: -9px;
+    }
+
+    .corner-br {
+      right: -9px;
+      bottom: -9px;
+    }
+
+    .widget-head {
+      position: relative;
+      min-height: 100px;
+      margin: -1px -24px 22px;
+      display: grid;
+      grid-template-columns: 150px 1fr 178px;
+      align-items: stretch;
+      background:
+        linear-gradient(90deg, rgba(48, 14, 18, .76), rgba(124, 39, 31, .9), rgba(83, 26, 25, .94)),
+        var(--asset-wood) center / cover;
+      border-bottom: 1px solid rgba(243, 187, 94, .2);
+      box-shadow: inset 0 -20px 28px rgba(0, 0, 0, .22);
+    }
+
+    .cauldron {
+      position: absolute;
+      left: 20px;
+      top: -54px;
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      filter: drop-shadow(0 16px 18px rgba(0,0,0,.7));
+      z-index: 2;
+    }
+
+    .candy-count {
+      grid-column: 2;
+      align-self: center;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      color: #f7e2b0;
+      text-shadow: 0 2px 3px rgba(0,0,0,.8);
+    }
+
+    .candy-count strong {
+      font: 700 52px/1 var(--font-display);
+      color: #f2d6aa;
+    }
+
+    .candy-count span {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .slot-action {
+      grid-column: 3;
+      align-self: center;
+      justify-self: center;
+      width: 150px;
+      display: grid;
+      gap: 7px;
+      justify-items: center;
+      color: #e0b5a6;
+      font: 900 14px/1 var(--font-body);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .metal-button {
+      position: relative;
+      width: 154px;
+      height: 40px;
+      border: 0;
+      color: #f2d89d;
+      background: transparent;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, .4);
+      font-size: 13px;
+      font-weight: 700;
+      text-shadow: 0 2px 3px #000;
+      isolation: isolate;
+      overflow: visible;
+    }
+
+    .metal-button::before {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(255, 232, 164, .22), transparent 50%),
+        linear-gradient(90deg, rgba(12, 9, 17, .74), rgba(65, 45, 69, .2) 48%, rgba(12, 9, 17, .74)),
+        linear-gradient(180deg, rgba(85, 62, 83, .52), rgba(18, 14, 27, .96) 76%),
+        var(--asset-button-fill) center top / cover no-repeat;
+      clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0 50%);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .metal-button::after {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background: var(--asset-button) center / 100% 100% no-repeat;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .board-title {
+      position: relative;
+      margin: 18px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      justify-content: center;
+      color: #fff7df;
+      font-size: 24px;
+      font-weight: 700;
+      text-shadow: 0 2px 3px #000;
+    }
+
+    .board-title::before,
+    .board-title::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, transparent, rgba(222, 190, 132, .3));
+    }
+
+    .board-title::after {
+      background: linear-gradient(90deg, rgba(222, 190, 132, .3), transparent);
+    }
+
+    .empty-dot {
+      width: 74%;
+      height: 74%;
+      border-radius: 2px;
+      border: 1px solid rgba(238, 205, 145, .18);
+      background: rgba(17, 12, 22, .34);
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, .5);
+    }
+
+    .slots {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px 7px;
+      min-height: 126px;
+      align-items: center;
+    }
+
+    .candy-slot {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 1px solid rgba(219, 178, 105, .08);
+      background: rgba(17, 12, 22, .18);
+      cursor: pointer;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 3px;
+      transition: background .12s ease, border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+    }
+
+    .candy-slot:hover {
+      background: rgba(255, 222, 153, .08);
+      border-color: rgba(241, 200, 121, .18);
+      box-shadow: 0 0 12px rgba(241, 200, 121, .12);
+      transform: translateY(-1px);
+    }
+
+    .candy-slot img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 4px rgba(0,0,0,.75));
+      pointer-events: none;
+    }
+
+    .demand-slot img {
+      width: 34px;
+      height: 34px;
+    }
+
+    .candy-slot .empty-dot {
+      opacity: .78;
+    }
+
+    .exchange-title {
+      margin-top: 20px;
+      text-align: center;
+      color: #fff5db;
+      font-size: 18px;
+      font-weight: 700;
+      text-shadow: 0 2px 3px #000;
+    }
+
+    .recipe-grid {
+      display: grid;
+      gap: 5px;
+      margin-top: 11px;
+    }
+
+    .recipe {
+      min-height: 48px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      padding: 6px 8px;
+      background: rgba(116, 99, 82, .48);
+      border: 1px solid rgba(223, 191, 135, .12);
+      box-shadow: inset 0 0 14px rgba(0,0,0,.28);
+    }
+
+    .recipe.invalid {
+      border-color: rgba(245, 105, 90, .42);
+      background: rgba(104, 44, 42, .52);
+    }
+
+    .recipe-side {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .recipe-slot {
+      height: 36px;
+      aspect-ratio: auto;
+      background: rgba(17, 12, 22, .36);
+      border-color: rgba(219, 178, 105, .1);
+    }
+
+    .recipe-slot img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .exchange-button {
+      width: 36px;
+      height: 36px;
+      justify-self: center;
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
+      color: #ffe7b3;
+      background: radial-gradient(circle at 35% 30%, #d8b481, #8d6444 62%, #4f3326);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.12), 0 4px 8px rgba(0,0,0,.45);
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .custom-row {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 116px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .custom-label {
+      color: #c8b7a6;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .picker-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(1, 4, 12, .58);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .18s ease, visibility .18s ease;
+    }
+
+    .picker-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .picker-dialog {
+      width: min(420px, 100%);
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(48, 34, 54, .95), rgba(16, 13, 24, .98)),
+        var(--asset-wood) center / cover;
+      border: 1px solid rgba(235, 195, 116, .5);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .65), inset 0 0 0 1px rgba(255,255,255,.05);
+      transform: translateY(14px) scale(.94);
+      transition: transform .18s ease;
+    }
+
+    .picker-backdrop.open .picker-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .picker-title {
+      margin-bottom: 14px;
+      color: #fff3cf;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      text-shadow: 0 2px 3px #000;
+    }
+
+    .picker-options {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .picker-option {
+      min-height: 62px;
+      border: 1px solid rgba(231, 190, 116, .25);
+      background: rgba(10, 8, 14, .62);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: inset 0 0 10px rgba(0,0,0,.45);
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+
+    .picker-option:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 221, 157, .72);
+      background: rgba(72, 52, 42, .72);
+    }
+
+    .picker-option img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 5px rgba(0,0,0,.7));
+    }
+
+    .picker-clear {
+      width: 100%;
+      height: 38px;
+      margin-top: 12px;
+      border: 1px solid rgba(231, 190, 116, .22);
+      background: rgba(10, 8, 14, .5);
+      color: #d9c8ad;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1180px) {
+      .page {
+        padding: 24px 18px 28px;
+      }
+
+      .stage {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .offers {
+        min-height: auto;
+      }
+
+      .widget {
+        max-width: 560px;
+        margin: 0 auto;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .offer-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .offer-card {
+        min-height: 430px;
+      }
+
+      .offer-art {
+        height: 170px;
+      }
+
+      .offer-art.frame {
+        top: 55px;
+      }
+
+      .bottom-row {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .bottom-row::before,
+      .bottom-row::after {
+        display: none;
+      }
+
+      .widget-head {
+        grid-template-columns: 118px 1fr;
+        min-height: 112px;
+      }
+
+      .cauldron {
+        width: 118px;
+        height: 118px;
+        top: -34px;
+      }
+
+      .candy-count {
+        grid-column: 2;
+      }
+
+      .slot-action {
+        grid-column: 1 / -1;
+        justify-self: end;
+        margin-right: 12px;
+      }
+
+      .slots {
+        grid-template-columns: repeat(6, 1fr);
+      }
+
+      .recipe {
+        grid-template-columns: 1fr 40px 1fr;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Simplified Chinese">中文</button>
+
+  <main class="page">
+    <header class="titlebar">
+      <h1 data-i18n="title">CARNIVAL CANDYWORKS</h1>
+      <div class="subtitle" data-i18n="subtitle">Trade candy for items.</div>
+    </header>
+
+    <section class="stage">
+      <section class="offers">
+        <div class="offer-grid">
+          <article class="offer-card">
+            <img class="offer-art" src="candywork-assets/reward_candy_huge_png.png" alt="">
+            <div class="offer-content">
+              <div class="offer-title" data-i18n="targetTitle">Target Item Candy</div>
+              <div class="demand-slots" id="demandRows"></div>
+            </div>
+            <button class="ornate-button" id="searchBtn" type="button" data-i18n="trade">Trade</button>
+          </article>
+
+          <article class="offer-card">
+            <img class="offer-art small" src="candywork-assets/node_candy_store_psd.png" alt="">
+            <div class="offer-content">
+              <div class="offer-title" data-i18n="yourCandy">Your Candy</div>
+              <div class="summary-pills" id="inventoryPills"></div>
+            </div>
+            <button class="ornate-button" id="clearAll" type="button" data-i18n="clear">Clear</button>
+          </article>
+
+          <article class="offer-card" id="tradePathCard">
+            <img class="offer-art frame" src="candywork-assets/reward_candy_reroll_psd.png" alt="">
+            <div class="offer-content">
+              <div class="offer-title" data-i18n="tradePath">Trade Path</div>
+              <div id="status" class="status-box">Enter target candy, current candy, and recipes, then search.</div>
+              <div class="steps" id="steps"></div>
+            </div>
+            <button class="ornate-button" id="loadExample" type="button" data-i18n="example">Example</button>
+          </article>
+        </div>
+
+        <div class="bottom-row">
+          <div class="reroll-track" id="rerollTrack"></div>
+          <button class="reroll-button" id="rerollBtn" type="button" data-i18n="rerollItems">Re-Roll Items</button>
+          <div></div>
+        </div>
+      </section>
+
+      <aside class="widget">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+
+        <div class="widget-head">
+          <img class="cauldron" src="candywork-assets/node_candy_store_psd.png" alt="">
+          <div class="candy-count">
+            <strong id="totalCandy">0</strong>
+            <span data-i18n="candies">Candies</span>
+          </div>
+          <div class="slot-action">
+            <button class="metal-button" id="clearSlots" type="button" data-i18n="clearSlots">Clear Slots</button>
+            <span id="slotTotal">0 / 30</span>
+          </div>
+        </div>
+
+        <div class="board-title" data-i18n="yourCandy">Your Candy</div>
+        <div class="slots" id="slots"></div>
+
+        <div class="exchange-title" data-i18n="exchange">Exchange</div>
+        <div class="recipe-grid" id="recipeGrid"></div>
+
+        <div class="custom-row">
+          <div class="custom-label" id="searchMeta">Click to calculate -></div>
+          <button class="exchange-button" id="searchBtnSmall" type="button" title="Search" data-i18n-title="search">&gt;</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div class="picker-backdrop" id="pickerBackdrop" aria-hidden="true">
+    <div class="picker-dialog" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+      <div class="picker-title" id="pickerTitle" data-i18n="chooseCandy">Choose Candy</div>
+      <div class="picker-options" id="pickerOptions"></div>
+      <button class="picker-clear" id="pickerClear" type="button" data-i18n="clearSlot">Clear Slot</button>
+    </div>
+  </div>
+
+  <script>
+    const MAX_SLOTS = 30;
+    const DEMAND_SLOTS = 18;
+    const RECIPE_SIDE_SLOTS = 4;
+    const ASSET = "candywork-assets/";
+    const I18N = {
+      en: {
+        pageTitle: "Dota 2 Carnival Candyworks Calculator",
+        title: "CARNIVAL CANDYWORKS",
+        subtitle: "Trade candy for items.",
+        targetTitle: "Target Item Candy",
+        yourCandy: "Your Candy",
+        tradePath: "Trade Path",
+        trade: "Trade",
+        clear: "Clear",
+        example: "Example",
+        rerollItems: "Re-Roll Items",
+        candies: "Candies",
+        clearSlots: "Clear Slots",
+        exchange: "Exchange",
+        search: "Search",
+        chooseCandy: "Choose Candy",
+        clearSlot: "Clear Slot",
+        searchIdle: "Click to calculate ->",
+        searching: "Searching",
+        visitedStates: "Visited {count} states, {ms} ms",
+        statusIntro: "Enter target candy, current candy, and recipes, then search.",
+        statusSearching: "Searching trade path...",
+        statusNoRequirement: "The target item has no candy requirement.",
+        statusTooMany: "The target item requires more than 30 candy slots.",
+        statusInvalidRecipe: "Recipe {recipes} is missing input or output candy.",
+        statusCannotTrade: "This item cannot be traded with the current candy and recipes.",
+        statusLoadedExample: "Loaded the example.",
+        targetSlot: "Target slot {n}",
+        candySlot: "Candy slot {n}",
+        recipeName: "Recipe {n}",
+        recipeInputSlot: "Recipe {recipe} input slot {slot}",
+        recipeOutputSlot: "Recipe {recipe} output slot {slot}",
+        fixedRecipe: "Fixed recipe",
+        none: "None",
+        tradeItem: "Trade Item",
+        candyGreenName: "Green Ring",
+        candyGreenShort: "Green",
+        candyMintName: "Peppermint",
+        candyMintShort: "Mint",
+        candyPurpleName: "Purple Crystal",
+        candyPurpleShort: "Purple",
+        candyBlueName: "Blue Screw",
+        candyBlueShort: "Blue",
+        candyBlackName: "Black Coil",
+        candyBlackShort: "Black",
+        switchToEnglish: "Switch to English",
+        switchToChinese: "Switch to Simplified Chinese"
+      },
+      zh: {
+        pageTitle: "Dota 2 嘉年华糖果厂计算器",
+        title: "嘉年华糖果厂",
+        subtitle: "用糖果兑换物品。",
+        targetTitle: "目标物品糖果",
+        yourCandy: "你的糖果",
+        tradePath: "兑换路线",
+        trade: "兑换",
+        clear: "清空",
+        example: "示例",
+        rerollItems: "重新随机物品",
+        candies: "糖果",
+        clearSlots: "清空槽位",
+        exchange: "交换",
+        search: "搜索",
+        chooseCandy: "选择糖果",
+        clearSlot: "清空槽位",
+        searchIdle: "点击计算 ->",
+        searching: "搜索中",
+        visitedStates: "已访问 {count} 个状态，{ms} 毫秒",
+        statusIntro: "输入目标糖果、已有糖果和配方后开始搜索。",
+        statusSearching: "正在搜索兑换路线...",
+        statusNoRequirement: "目标物品还没有糖果需求。",
+        statusTooMany: "目标物品需求超过 30 个糖果槽位。",
+        statusInvalidRecipe: "配方 {recipes} 缺少输入或输出糖果。",
+        statusCannotTrade: "当前糖果和配方无法兑换该物品。",
+        statusLoadedExample: "已载入示例。",
+        targetSlot: "目标槽位 {n}",
+        candySlot: "糖果槽位 {n}",
+        recipeName: "配方 {n}",
+        recipeInputSlot: "配方 {recipe} 输入槽位 {slot}",
+        recipeOutputSlot: "配方 {recipe} 输出槽位 {slot}",
+        fixedRecipe: "固定配方",
+        none: "无",
+        tradeItem: "兑换物品",
+        candyGreenName: "绿环糖",
+        candyGreenShort: "绿环",
+        candyMintName: "薄荷糖",
+        candyMintShort: "薄荷",
+        candyPurpleName: "紫晶糖",
+        candyPurpleShort: "紫晶",
+        candyBlueName: "蓝螺糖",
+        candyBlueShort: "蓝螺",
+        candyBlackName: "黑卷糖",
+        candyBlackShort: "黑卷",
+        switchToEnglish: "切换到英文",
+        switchToChinese: "切换到简体中文"
+      }
+    };
+    function getStoredLanguage() {
+      try {
+        return window.localStorage.getItem("candyworks-language");
+      } catch {
+        return null;
+      }
+    }
+
+    function storeLanguage(language) {
+      try {
+        window.localStorage.setItem("candyworks-language", language);
+      } catch {
+      }
+    }
+
+    const storedLanguage = getStoredLanguage();
+    let currentLang = storedLanguage === "zh" ? "zh" : "en";
+    const CANDIES = [
+      { nameKey: "candyGreenName", shortKey: "candyGreenShort", img: ASSET + "candy_image_1_psd.png" },
+      { nameKey: "candyMintName", shortKey: "candyMintShort", img: ASSET + "candy_image_2_psd.png" },
+      { nameKey: "candyPurpleName", shortKey: "candyPurpleShort", img: ASSET + "candy_image_3_psd.png" },
+      { nameKey: "candyBlueName", shortKey: "candyBlueShort", img: ASSET + "candy_image_4_psd.png" },
+      { nameKey: "candyBlackName", shortKey: "candyBlackShort", img: ASSET + "candy_image_5_psd.png" }
+    ];
+
+    const els = {
+      languageToggle: document.querySelector("#languageToggle"),
+      demandRows: document.querySelector("#demandRows"),
+      inventoryPills: document.querySelector("#inventoryPills"),
+      totalCandy: document.querySelector("#totalCandy"),
+      slotTotal: document.querySelector("#slotTotal"),
+      slots: document.querySelector("#slots"),
+      recipeGrid: document.querySelector("#recipeGrid"),
+      rerollTrack: document.querySelector("#rerollTrack"),
+      searchBtn: document.querySelector("#searchBtn"),
+      searchBtnSmall: document.querySelector("#searchBtnSmall"),
+      clearAll: document.querySelector("#clearAll"),
+      clearSlots: document.querySelector("#clearSlots"),
+      loadExample: document.querySelector("#loadExample"),
+      rerollBtn: document.querySelector("#rerollBtn"),
+      tradePathCard: document.querySelector("#tradePathCard"),
+      status: document.querySelector("#status"),
+      steps: document.querySelector("#steps"),
+      searchMeta: document.querySelector("#searchMeta"),
+      pickerBackdrop: document.querySelector("#pickerBackdrop"),
+      pickerOptions: document.querySelector("#pickerOptions"),
+      pickerClear: document.querySelector("#pickerClear")
+    };
+
+    let pickerTarget = null;
+    let lastStatus = null;
+    let lastSearchMeta = { key: "searchIdle", vars: {} };
+    let lastSearchResult = null;
+    let demandSlots = Array(DEMAND_SLOTS).fill(-1);
+    let slotKinds = Array(MAX_SLOTS).fill(-1);
+    let recipeSlots = Array.from({ length: 4 }, () => ({
+      in: Array(RECIPE_SIDE_SLOTS).fill(-1),
+      out: Array(RECIPE_SIDE_SLOTS).fill(-1)
+    }));
+
+    function locale() {
+      return currentLang === "zh" ? "zh-CN" : "en-US";
+    }
+
+    function formatValue(value) {
+      if (Array.isArray(value)) return value.join(currentLang === "zh" ? "、" : ", ");
+      if (typeof value === "number") return value.toLocaleString(locale());
+      return value;
+    }
+
+    function t(key, vars = {}) {
+      const source = I18N[currentLang][key] ?? I18N.en[key] ?? key;
+      return source.replace(/\{(\w+)\}/g, (_, name) => formatValue(vars[name] ?? ""));
+    }
+
+    function candyName(kind) {
+      return t(CANDIES[kind].nameKey);
+    }
+
+    function candyShort(kind) {
+      return t(CANDIES[kind].shortKey);
+    }
+
+    function renderStaticLanguage() {
+      document.documentElement.lang = currentLang === "zh" ? "zh-CN" : "en";
+      document.title = t("pageTitle");
+      document.querySelectorAll("[data-i18n]").forEach(node => {
+        node.textContent = t(node.dataset.i18n);
+      });
+      document.querySelectorAll("[data-i18n-title]").forEach(node => {
+        node.title = t(node.dataset.i18nTitle);
+      });
+      els.languageToggle.textContent = currentLang === "zh" ? "EN" : "中文";
+      els.languageToggle.setAttribute("aria-label", currentLang === "zh" ? t("switchToEnglish") : t("switchToChinese"));
+    }
+
+    function renderSearchMeta() {
+      els.searchMeta.textContent = t(lastSearchMeta.key, lastSearchMeta.vars);
+    }
+
+    function setSearchMeta(key, vars = {}) {
+      lastSearchMeta = { key, vars };
+      renderSearchMeta();
+    }
+
+    function applyLanguage() {
+      renderStaticLanguage();
+      renderDemandRows();
+      renderSlots();
+      renderRecipes();
+      renderPickerOptions();
+      updateSummary();
+
+      if (lastSearchResult) {
+        renderResult(lastSearchResult.result, lastSearchResult.demand);
+        return;
+      }
+
+      renderSearchMeta();
+      if (lastStatus) {
+        renderStatus();
+      }
+    }
+
+    function sum(list) {
+      return list.reduce((acc, n) => acc + n, 0);
+    }
+
+    function keyOf(state) {
+      return state.join(",");
+    }
+
+    function countKinds(slots) {
+      const counts = Array(CANDIES.length).fill(0);
+      slots.forEach(kind => {
+        if (kind >= 0) counts[kind]++;
+      });
+      return counts;
+    }
+
+    function expandCounts(counts, length) {
+      const next = [];
+      counts.forEach((count, kind) => {
+        for (let i = 0; i < count && next.length < length; i++) next.push(kind);
+      });
+      while (next.length < length) next.push(-1);
+      return next;
+    }
+
+    function candyText(counts) {
+      return counts
+        .map((n, i) => n ? `${candyShort(i)} x${n}` : "")
+        .filter(Boolean)
+        .join(", ") || t("none");
+    }
+
+    function icon(kind, className = "candy-icon") {
+      const img = document.createElement("img");
+      img.className = className;
+      img.src = CANDIES[kind].img;
+      img.alt = candyName(kind);
+      return img;
+    }
+
+    function emptyDot() {
+      const span = document.createElement("span");
+      span.className = "empty-dot";
+      return span;
+    }
+
+    function renderCandySlot(kind, className, title, target) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `candy-slot ${className}`;
+      button.dataset.kind = kind;
+      button.title = title;
+      button.setAttribute("aria-label", title);
+      if (kind === -1) button.append(emptyDot());
+      else button.append(icon(kind, ""));
+      button.addEventListener("click", () => openPicker(target));
+      return button;
+    }
+
+    function renderDemandRows() {
+      els.demandRows.innerHTML = "";
+      demandSlots.forEach((kind, index) => {
+        els.demandRows.append(renderCandySlot(kind, "demand-slot", t("targetSlot", { n: index + 1 }), {
+          type: "demand",
+          index
+        }));
+      });
+    }
+
+    function renderSlots() {
+      els.slots.innerHTML = "";
+      slotKinds.forEach((kind, index) => {
+        els.slots.append(renderCandySlot(kind, "inventory-slot", t("candySlot", { n: index + 1 }), {
+          type: "inventory",
+          index
+        }));
+      });
+    }
+
+    function renderRecipes() {
+      els.recipeGrid.innerHTML = "";
+      for (let r = 0; r < 4; r++) {
+        const recipe = document.createElement("article");
+        recipe.className = "recipe";
+        recipe.dataset.recipe = r;
+
+        const left = document.createElement("div");
+        left.className = "recipe-side";
+        recipeSlots[r].in.forEach((kind, index) => {
+          left.append(renderCandySlot(kind, "recipe-slot", t("recipeInputSlot", { recipe: r + 1, slot: index + 1 }), {
+            type: "recipe",
+            recipe: r,
+            side: "in",
+            index
+          }));
+        });
+
+        const arrow = document.createElement("button");
+        arrow.type = "button";
+        arrow.className = "exchange-button";
+        arrow.title = t("recipeName", { n: r + 1 });
+        arrow.textContent = ">";
+
+        const right = document.createElement("div");
+        right.className = "recipe-side";
+        recipeSlots[r].out.forEach((kind, index) => {
+          right.append(renderCandySlot(kind, "recipe-slot", t("recipeOutputSlot", { recipe: r + 1, slot: index + 1 }), {
+            type: "recipe",
+            recipe: r,
+            side: "out",
+            index
+          }));
+        });
+
+        recipe.append(left, arrow, right);
+        els.recipeGrid.append(recipe);
+      }
+      updateRecipeTotals();
+    }
+
+    function renderRerolls() {
+      els.rerollTrack.innerHTML = "";
+      for (let i = 0; i < 10; i++) {
+        const img = document.createElement("img");
+        img.src = ASSET + "reward_candy_reroll_psd.png";
+        img.alt = "";
+        if (i > 3) img.className = "dim";
+        els.rerollTrack.append(img);
+      }
+    }
+
+    function renderPickerOptions() {
+      els.pickerOptions.innerHTML = "";
+      CANDIES.forEach((candy, kind) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "picker-option";
+        button.title = candyName(kind);
+        button.setAttribute("aria-label", candyName(kind));
+        button.append(icon(kind, ""));
+        button.addEventListener("click", () => chooseCandy(kind));
+        els.pickerOptions.append(button);
+      });
+    }
+
+    function openPicker(target) {
+      pickerTarget = target;
+      els.pickerBackdrop.classList.add("open");
+      els.pickerBackdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function closePicker() {
+      els.pickerBackdrop.classList.remove("open");
+      els.pickerBackdrop.setAttribute("aria-hidden", "true");
+      pickerTarget = null;
+    }
+
+    function chooseCandy(kind) {
+      if (!pickerTarget) return;
+
+      if (pickerTarget.type === "demand") {
+        demandSlots[pickerTarget.index] = kind;
+        renderDemandRows();
+      } else if (pickerTarget.type === "inventory") {
+        slotKinds[pickerTarget.index] = kind;
+        renderSlots();
+      } else if (pickerTarget.type === "recipe") {
+        recipeSlots[pickerTarget.recipe][pickerTarget.side][pickerTarget.index] = kind;
+        renderRecipes();
+      }
+
+      updateSummary();
+      closePicker();
+    }
+
+    function getDemand() {
+      return countKinds(demandSlots);
+    }
+
+    function getInventory() {
+      return countKinds(slotKinds);
+    }
+
+    function setDemand(counts) {
+      demandSlots = expandCounts(counts, DEMAND_SLOTS);
+      renderDemandRows();
+    }
+
+    function setSlotsFromCounts(counts) {
+      slotKinds = expandCounts(counts, MAX_SLOTS);
+      renderSlots();
+    }
+
+    function setRecipe(index, consume, produce) {
+      recipeSlots[index].in = expandCounts(consume, RECIPE_SIDE_SLOTS);
+      recipeSlots[index].out = expandCounts(produce, RECIPE_SIDE_SLOTS);
+      renderRecipes();
+    }
+
+    function readRecipes() {
+      const recipes = [];
+      const invalid = [];
+      for (let r = 0; r < 4; r++) {
+        const consume = countKinds(recipeSlots[r].in);
+        const produce = countKinds(recipeSlots[r].out);
+        const inTotal = sum(consume);
+        const outTotal = sum(produce);
+        const empty = inTotal === 0 && outTotal === 0;
+        const bad = !empty && (inTotal === 0 || outTotal === 0);
+        if (bad) invalid.push(r + 1);
+        if (!empty && !bad) {
+          recipes.push({
+            name: t("recipeName", { n: r + 1 }),
+            consume,
+            produce,
+            kind: "random"
+          });
+        }
+      }
+      return { recipes, invalid };
+    }
+
+    function updateRecipeTotals() {
+      for (let r = 0; r < 4; r++) {
+        const consume = countKinds(recipeSlots[r].in);
+        const produce = countKinds(recipeSlots[r].out);
+        const inTotal = sum(consume);
+        const outTotal = sum(produce);
+        const card = document.querySelector(`.recipe[data-recipe="${r}"]`);
+        if (card) card.classList.toggle("invalid", (inTotal || outTotal) && (inTotal === 0 || outTotal === 0));
+      }
+    }
+
+    function updateSummary() {
+      const demand = getDemand();
+      const inventory = getInventory();
+      const total = sum(inventory);
+      els.totalCandy.textContent = total;
+      els.slotTotal.textContent = `${total} / ${MAX_SLOTS}`;
+
+      els.inventoryPills.innerHTML = "";
+      CANDIES.forEach((candy, i) => {
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        pill.append(icon(i, ""));
+        pill.append(document.createTextNode(`x ${inventory[i]}`));
+        els.inventoryPills.append(pill);
+      });
+
+    }
+
+    function hasDemand(state, demand) {
+      return demand.every((need, i) => state[i] >= need);
+    }
+
+    function canApply(state, recipe) {
+      for (let i = 0; i < CANDIES.length; i++) {
+        if (state[i] < recipe.consume[i]) return false;
+      }
+      const nextTotal = sum(state) - sum(recipe.consume) + sum(recipe.produce);
+      return nextTotal <= MAX_SLOTS;
+    }
+
+    function applyRecipe(state, recipe) {
+      return state.map((n, i) => n - recipe.consume[i] + recipe.produce[i]);
+    }
+
+    function describeMove(recipe) {
+      if (recipe.kind === "fixed") {
+        return `${t("fixedRecipe")}: 3 ${candyShort(recipe.from)} -> 1 ${candyShort(recipe.to)}`;
+      }
+      return `${recipe.name}: ${candyText(recipe.consume)} -> ${candyText(recipe.produce)}`;
+    }
+
+    function buildTransitions(state, randomRecipes) {
+      const transitions = [];
+      randomRecipes.forEach(recipe => {
+        if (canApply(state, recipe)) {
+          const next = applyRecipe(state, recipe);
+          if (keyOf(next) !== keyOf(state)) transitions.push({ next, recipe });
+        }
+      });
+      for (let from = 0; from < CANDIES.length; from++) {
+        if (state[from] < 3) continue;
+        for (let to = 0; to < CANDIES.length; to++) {
+          if (to === from) continue;
+          const consume = Array(CANDIES.length).fill(0);
+          const produce = Array(CANDIES.length).fill(0);
+          consume[from] = 3;
+          produce[to] = 1;
+          const recipe = { kind: "fixed", name: t("fixedRecipe"), consume, produce, from, to };
+          transitions.push({ next: applyRecipe(state, recipe), recipe });
+        }
+      }
+      return transitions;
+    }
+
+    function searchPath(start, demand, randomRecipes) {
+      const startedAt = performance.now();
+      const startKey = keyOf(start);
+      const queue = [start];
+      let head = 0;
+      const seen = new Set([startKey]);
+      const parent = new Map();
+
+      if (hasDemand(start, demand)) {
+        return { found: true, path: [], finalState: start, explored: 1, ms: performance.now() - startedAt };
+      }
+
+      while (head < queue.length) {
+        const state = queue[head++];
+        const moves = buildTransitions(state, randomRecipes);
+        for (const move of moves) {
+          const nextKey = keyOf(move.next);
+          if (seen.has(nextKey)) continue;
+          seen.add(nextKey);
+          parent.set(nextKey, {
+            prev: keyOf(state),
+            recipe: move.recipe,
+            state: move.next
+          });
+          if (hasDemand(move.next, demand)) {
+            const path = [];
+            let cursor = nextKey;
+            while (cursor !== startKey) {
+              const entry = parent.get(cursor);
+              path.push(entry);
+              cursor = entry.prev;
+            }
+            path.reverse();
+            return { found: true, path, finalState: move.next, explored: seen.size, ms: performance.now() - startedAt };
+          }
+          queue.push(move.next);
+        }
+      }
+
+      return { found: false, path: [], finalState: start, explored: seen.size, ms: performance.now() - startedAt };
+    }
+
+    function renderStatus() {
+      if (!lastStatus) return;
+      els.tradePathCard.classList.remove("result-mode");
+      els.status.textContent = t(lastStatus.key, lastStatus.vars);
+      els.status.className = `status-box ${lastStatus.mode}`.trim();
+    }
+
+    function setStatusKey(key, mode = "", vars = {}) {
+      lastStatus = { key, mode, vars };
+      renderStatus();
+    }
+
+    function hideStatus() {
+      lastStatus = null;
+      els.tradePathCard.classList.add("result-mode");
+      els.status.textContent = "";
+      els.status.className = "status-box hidden";
+    }
+
+    function appendCandyIcons(parent, counts) {
+      counts.forEach((count, kind) => {
+        for (let i = 0; i < count; i++) parent.append(icon(kind, ""));
+      });
+    }
+
+    function appendRecipeRow(consume, produce, label = "") {
+      const row = document.createElement("article");
+      row.className = "path-recipe";
+
+      const left = document.createElement("div");
+      left.className = "path-side in";
+      appendCandyIcons(left, consume);
+      if (!left.childNodes.length) {
+        const empty = document.createElement("span");
+        empty.className = "path-label";
+        empty.textContent = t("none");
+        left.append(empty);
+      }
+
+      const arrow = document.createElement("div");
+      arrow.className = "path-arrow";
+      arrow.textContent = ">";
+
+      const right = document.createElement("div");
+      right.className = "path-side out";
+      appendCandyIcons(right, produce);
+      if (label) {
+        const text = document.createElement("span");
+        text.className = "path-label";
+        text.textContent = label;
+        right.append(text);
+      } else if (!right.childNodes.length) {
+        const empty = document.createElement("span");
+        empty.className = "path-label";
+        empty.textContent = t("none");
+        right.append(empty);
+      }
+
+      row.append(left, arrow, right);
+      els.steps.append(row);
+    }
+
+    function appendTradeItemRow() {
+      const row = document.createElement("article");
+      row.className = "path-recipe trade-item";
+      const text = document.createElement("span");
+      text.className = "path-label";
+      text.textContent = t("tradeItem");
+      row.append(text);
+      els.steps.append(row);
+    }
+
+    function renderResult(result, demand) {
+      lastSearchResult = { result, demand };
+      els.steps.innerHTML = "";
+      setSearchMeta("visitedStates", { count: result.explored, ms: Math.round(result.ms) });
+
+      if (!result.found) {
+        setStatusKey("statusCannotTrade", "bad");
+        return;
+      }
+
+      hideStatus();
+
+      result.path.forEach(entry => {
+        appendRecipeRow(entry.recipe.consume, entry.recipe.produce);
+      });
+
+      appendTradeItemRow();
+    }
+
+    function runSearch() {
+      updateRecipeTotals();
+      updateSummary();
+      const demand = getDemand();
+      const start = getInventory();
+      const totalNeed = sum(demand);
+      const { recipes, invalid } = readRecipes();
+
+      lastSearchResult = null;
+      els.steps.innerHTML = "";
+      setSearchMeta("searching");
+      setStatusKey("statusSearching");
+
+      if (totalNeed === 0) {
+        setStatusKey("statusNoRequirement", "bad");
+        setSearchMeta("searchIdle");
+        return;
+      }
+      if (totalNeed > MAX_SLOTS) {
+        setStatusKey("statusTooMany", "bad");
+        setSearchMeta("searchIdle");
+        return;
+      }
+      if (invalid.length) {
+        setStatusKey("statusInvalidRecipe", "bad", { recipes: invalid });
+        setSearchMeta("searchIdle");
+        return;
+      }
+
+      window.setTimeout(() => {
+        const result = searchPath(start, demand, recipes);
+        renderResult(result, demand);
+      }, 20);
+    }
+
+    function clearAll() {
+      setDemand([0, 0, 0, 0, 0]);
+      setSlotsFromCounts([0, 0, 0, 0, 0]);
+      recipeSlots = Array.from({ length: 4 }, () => ({
+        in: Array(RECIPE_SIDE_SLOTS).fill(-1),
+        out: Array(RECIPE_SIDE_SLOTS).fill(-1)
+      }));
+      renderRecipes();
+      updateSummary();
+      els.steps.innerHTML = "";
+      lastSearchResult = null;
+      setSearchMeta("searchIdle");
+      setStatusKey("statusIntro");
+    }
+
+    function loadExample() {
+      setDemand([1, 2, 5, 3, 3]);
+      setSlotsFromCounts([4, 1, 3, 5, 8]);
+      setRecipe(0, [2, 0, 0, 0, 1], [0, 0, 0, 3, 0]);
+      setRecipe(1, [0, 2, 0, 0, 0], [1, 0, 0, 1, 2]);
+      setRecipe(2, [0, 1, 1, 0, 0], [1, 0, 0, 1, 1]);
+      setRecipe(3, [1, 0, 0, 2, 0], [0, 0, 0, 0, 3]);
+      updateSummary();
+      els.steps.innerHTML = "";
+      lastSearchResult = null;
+      setSearchMeta("searchIdle");
+      setStatusKey("statusLoadedExample");
+    }
+
+    renderDemandRows();
+    renderSlots();
+    renderRecipes();
+    renderRerolls();
+    renderPickerOptions();
+    updateSummary();
+    setSearchMeta("searchIdle");
+    setStatusKey("statusIntro");
+    applyLanguage();
+
+    els.searchBtn.addEventListener("click", runSearch);
+    els.searchBtnSmall.addEventListener("click", runSearch);
+    els.languageToggle.addEventListener("click", () => {
+      currentLang = currentLang === "zh" ? "en" : "zh";
+      storeLanguage(currentLang);
+      applyLanguage();
+    });
+    els.clearAll.addEventListener("click", clearAll);
+    els.clearSlots.addEventListener("click", () => {
+      setSlotsFromCounts([0, 0, 0, 0, 0]);
+      updateSummary();
+    });
+    els.loadExample.addEventListener("click", loadExample);
+    els.rerollBtn.addEventListener("click", loadExample);
+    els.pickerClear.addEventListener("click", () => chooseCandy(-1));
+    els.pickerBackdrop.addEventListener("click", event => {
+      if (event.target === els.pickerBackdrop) closePicker();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && els.pickerBackdrop.classList.contains("open")) closePicker();
+    });
+  </script>
+</body>
+</html>

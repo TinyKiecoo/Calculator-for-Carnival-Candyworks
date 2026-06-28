@@ -141,9 +141,33 @@
 
     .titlebar .subtitle {
       margin-top: 7px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
       color: #efd6a2;
       font: 700 18px/1 var(--font-body);
       text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
+    }
+
+    .titlebar .subtitle a {
+      color: #f7e3af;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(247, 227, 175, .5);
+      transition: color .12s ease, border-color .12s ease, text-shadow .12s ease;
+    }
+
+    .titlebar .subtitle a::before {
+      content: "·";
+      margin-right: 12px;
+      color: rgba(239, 214, 162, .72);
+    }
+
+    .titlebar .subtitle a:hover {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, .86);
+      text-shadow: 0 0 12px rgba(247, 227, 175, .42), 0 2px 2px rgba(0, 0, 0, .7);
     }
 
     .stage {
@@ -1070,7 +1094,10 @@
   <main class="page">
     <header class="titlebar">
       <h1 data-i18n="title">CARNIVAL CANDYWORKS</h1>
-      <div class="subtitle" data-i18n="subtitle">Trade candy for items.</div>
+      <div class="subtitle">
+        <span data-i18n="subtitle">Trade candy for items.</span>
+        <a href="https://github.com/TinyKiecoo/Calculator-for-Carnival-Candyworks" target="_blank" rel="noopener noreferrer" data-i18n="starLink">Give me a Star</a>
+      </div>
     </header>
 
     <section class="stage">
@@ -1160,6 +1187,7 @@
         pageTitle: "Calculator for Carnival Candyworks in Dota 2",
         title: "CARNIVAL CANDYWORKS",
         subtitle: "Trade candy for items.",
+        starLink: "Give me a Star",
         targetTitle: "Target Item Candy",
         yourCandy: "Your Candy",
         tradePath: "Trade Path",
@@ -1208,6 +1236,7 @@
         pageTitle: "Dota 2 狂欢糖果车计算器",
         title: "狂欢糖果车",
         subtitle: "使用糖果交换物品。",
+        starLink: "给我一颗 Star",
         targetTitle: "目标物品糖果",
         yourCandy: "你的糖果",
         tradePath: "兑换路线",

@@ -7,20 +7,10 @@ This repository is prepared as a static GitHub Pages site. Open `index.html` dir
 ## Files
 
 - `index.html` - GitHub Pages entry file.
-- `candyworks-prototype.html` - working copy of the same page, kept for editing history/convenience.
 - `candywork-assets/` - local UI images and fonts used by the prototype.
 - `LICENSE` - license for original source code and documentation only.
 - `DISCLAIMER.md` - unofficial fan project disclaimer.
 - `THIRD_PARTY_NOTICES.md` - third-party asset and trademark notices.
-
-## Publish With GitHub Pages
-
-1. Create a new GitHub repository.
-2. Upload all files and folders in this directory.
-3. Go to `Settings -> Pages`.
-4. Choose `Deploy from a branch`.
-5. Select the `main` branch and the repository root.
-6. Open the generated `https://<username>.github.io/<repo>/` URL.
 
 ## Important Asset Notice
 

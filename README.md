@@ -4,7 +4,7 @@
 
 Unofficial, non-commercial fan-made calculator for the Dota 2 Candyworks event.
 
-This repository is prepared as a static GitHub Pages site. Open `index.html` directly, or publish the repository with GitHub Pages.
+This repository is prepared as a static GitHub Pages site.
 
 ## Files
 
@@ -14,11 +14,11 @@ This repository is prepared as a static GitHub Pages site. Open `index.html` dir
 - `DISCLAIMER.md` - unofficial fan project disclaimer.
 - `THIRD_PARTY_NOTICES.md` - third-party asset and trademark notices.
 
-## Important Asset Notice
+## Disclaimer
 
-This project may include Dota 2 / Valve-derived images, fonts, or UI materials inside `candywork-assets/`.
+This project include Dota 2 / Valve-derived images, fonts, and UI materials inside `candywork-assets/`.
 
-The project license does not grant any rights to those third-party materials. If you publish this repository publicly, you are responsible for making sure your use of those files is allowed. For the lowest-risk public release, replace game-extracted assets with your own artwork or assets that you have permission to redistribute.
+The project is not affiliated with Valve or Dota 2. The license does not grant any rights to those third-party materials.
 
 ## License
 

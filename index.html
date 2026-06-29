@@ -1940,12 +1940,12 @@
     }
 
     function loadExample() {
-      setDemand([1, 2, 5, 3, 3]);
-      setSlotsFromCounts([4, 1, 3, 5, 8]);
-      setRecipe(0, [2, 0, 0, 0, 1], [0, 0, 0, 3, 0]);
-      setRecipe(1, [0, 2, 0, 0, 0], [1, 0, 0, 1, 2]);
-      setRecipe(2, [0, 1, 1, 0, 0], [1, 0, 0, 1, 1]);
-      setRecipe(3, [1, 0, 0, 2, 0], [0, 0, 0, 0, 3]);
+      setDemand([2, 8, 4, 0, 1]);
+      setSlotsFromCounts([6, 3, 3, 4, 3]);
+      setRecipe(0, [0, 0, 1, 2, 0], [0, 0, 0, 0, 3]);
+      setRecipe(1, [0, 2, 2, 0, 0], [1, 0, 0, 1, 2]);
+      setRecipe(2, [2, 0, 0, 0, 0], [0, 0, 2, 1, 0]);
+      setRecipe(3, [2, 0, 0, 0, 1], [0, 1, 1, 2, 0]);
       updateSummary();
       els.steps.innerHTML = "";
       lastSearchResult = null;

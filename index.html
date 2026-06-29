@@ -270,6 +270,7 @@
     .ornate-button,
     .metal-button,
     .reroll-button,
+    .widget-search-button,
     .custom-label,
     .candy-count span,
     .picker-title,
@@ -536,7 +537,8 @@
 
     .ornate-button:hover,
     .reroll-button:hover,
-    .metal-button:hover {
+    .metal-button:hover,
+    .widget-search-button:hover {
       color: #ffe9b0;
       filter: brightness(1.08);
     }
@@ -906,18 +908,58 @@
     }
 
     .custom-row {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 116px;
-      gap: 10px;
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
       align-items: center;
     }
 
-    .custom-label {
-      color: #c8b7a6;
-      text-align: center;
+    .widget-search-button {
+      position: relative;
+      width: min(100%, 310px);
+      min-height: 42px;
+      border: 0;
+      background: transparent;
+      color: #f2d89d;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 5px 28px;
       font-size: 13px;
       font-weight: 700;
+      line-height: 1.15;
+      text-shadow: 0 2px 3px #000;
+      isolation: isolate;
+      overflow: visible;
+    }
+
+    .widget-search-button::before {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(255, 232, 164, .22), transparent 50%),
+        linear-gradient(90deg, rgba(12, 9, 17, .74), rgba(65, 45, 69, .2) 48%, rgba(12, 9, 17, .74)),
+        linear-gradient(180deg, rgba(85, 62, 83, .52), rgba(18, 14, 27, .96) 76%),
+        var(--asset-button-fill) center top / cover no-repeat;
+      clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0 50%);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .widget-search-button::after {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background: var(--asset-button) center / 100% 100% no-repeat;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .custom-label {
+      color: inherit;
+      text-align: center;
+      pointer-events: none;
     }
 
     .picker-backdrop {
@@ -1162,8 +1204,9 @@
         <div class="recipe-grid" id="recipeGrid"></div>
 
         <div class="custom-row">
-          <div class="custom-label" id="searchMeta">Click to calculate -></div>
-          <button class="exchange-button" id="searchBtnSmall" type="button" title="Search" data-i18n-title="search">&gt;</button>
+          <button class="widget-search-button" id="searchBtnSmall" type="button" title="Search" data-i18n-title="search">
+            <span class="custom-label" id="searchMeta">Calculate Trade Path</span>
+          </button>
         </div>
       </aside>
     </section>
@@ -1201,7 +1244,7 @@
         search: "Search",
         chooseCandy: "Choose Candy",
         clearSlot: "Clear Slot",
-        searchIdle: "Click to calculate ->",
+        searchIdle: "Calculate Trade Path",
         searching: "Searching",
         visitedStates: "Visited {count} states, {ms} ms",
         statusIntro: "Enter target candy, current candy, and recipes, then search.",
@@ -1250,7 +1293,7 @@
         search: "搜索",
         chooseCandy: "选择糖果",
         clearSlot: "清空槽位",
-        searchIdle: "点击计算 ->",
+        searchIdle: "计算兑换路线",
         searching: "搜索中",
         visitedStates: "已访问 {count} 个状态，{ms} 毫秒",
         statusIntro: "输入目标糖果、已有糖果和配方后开始搜索。",
@@ -1379,7 +1422,9 @@
     }
 
     function renderSearchMeta() {
-      els.searchMeta.textContent = t(lastSearchMeta.key, lastSearchMeta.vars);
+      const text = t(lastSearchMeta.key, lastSearchMeta.vars);
+      els.searchMeta.textContent = text;
+      els.searchBtnSmall.title = text;
     }
 
     function setSearchMeta(key, vars = {}) {

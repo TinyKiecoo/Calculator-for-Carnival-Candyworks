@@ -91,6 +91,7 @@
     }
 
     .language-toggle,
+    .about-toggle,
     .help-toggle {
       position: fixed;
       top: 18px;
@@ -123,7 +124,13 @@
       min-width: 112px;
     }
 
+    .about-toggle {
+      right: 220px;
+      min-width: 124px;
+    }
+
     .language-toggle:hover,
+    .about-toggle:hover,
     .help-toggle:hover {
       filter: brightness(1.1);
       transform: translateY(-1px);
@@ -1178,14 +1185,123 @@
       filter: brightness(1.08);
     }
 
+    .about-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(1, 4, 12, .68);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .18s ease, visibility .18s ease;
+    }
+
+    .about-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .about-dialog {
+      width: min(520px, 100%);
+      padding: 22px 24px 24px;
+      background:
+        linear-gradient(180deg, rgba(51, 36, 58, .96), rgba(16, 13, 24, .99)),
+        var(--asset-wood) center / cover;
+      border: 1px solid rgba(235, 195, 116, .56);
+      color: #f8e8c5;
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .68), inset 0 0 0 1px rgba(255,255,255,.05);
+      transform: translateY(12px) scale(.95);
+      transition: transform .18s ease;
+    }
+
+    .about-backdrop.open .about-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .about-title {
+      margin-bottom: 14px;
+      color: #fff3cf;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 3px #000;
+    }
+
+    .about-copy {
+      display: grid;
+      gap: 10px;
+      color: #fff2cf;
+      font: 600 17px/1.52 var(--font-body);
+      text-shadow: 0 2px 3px #000;
+    }
+
+    .about-copy p {
+      margin: 0;
+    }
+
+    .about-close {
+      position: relative;
+      width: 148px;
+      height: 38px;
+      margin-top: 20px;
+      border: 0;
+      background: transparent;
+      color: #f2d89d;
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 3px #000;
+      isolation: isolate;
+      overflow: visible;
+    }
+
+    .about-close::before {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(255, 232, 164, .22), transparent 50%),
+        linear-gradient(90deg, rgba(12, 9, 17, .74), rgba(65, 45, 69, .2) 48%, rgba(12, 9, 17, .74)),
+        linear-gradient(180deg, rgba(85, 62, 83, .52), rgba(18, 14, 27, .96) 76%),
+        var(--asset-button-fill) center top / cover no-repeat;
+      clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0 50%);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .about-close::after {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background: var(--asset-button) center / 100% 100% no-repeat;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .about-close:hover {
+      color: #ffe9b0;
+      filter: brightness(1.08);
+    }
+
     html[lang="zh-CN"] .language-toggle,
+    html[lang="zh-CN"] .about-toggle,
     html[lang="zh-CN"] .help-toggle,
     html[lang="zh-CN"] .ornate-button,
     html[lang="zh-CN"] .metal-button,
     html[lang="zh-CN"] .reroll-button,
     html[lang="zh-CN"] .widget-search-button,
     html[lang="zh-CN"] .picker-clear,
-    html[lang="zh-CN"] .tour-next {
+    html[lang="zh-CN"] .tour-next,
+    html[lang="zh-CN"] .about-close {
       font-size: 20px;
       letter-spacing: 0;
     }
@@ -1219,6 +1335,11 @@
 
       .help-toggle {
         top: 52px;
+        right: 12px;
+      }
+
+      .about-toggle {
+        top: 92px;
         right: 12px;
       }
 
@@ -1282,6 +1403,7 @@
   </style>
 </head>
 <body>
+  <button class="about-toggle" id="aboutBtn" type="button" data-i18n="whatsThis">What's this</button>
   <button class="help-toggle" id="helpBtn" type="button" data-i18n="howToUse">How to Use</button>
   <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Simplified Chinese">中文</button>
 
@@ -1377,6 +1499,17 @@
     </div>
   </div>
 
+  <div class="about-backdrop" id="aboutBackdrop" aria-hidden="true">
+    <div class="about-dialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+      <div class="about-title" id="aboutTitle" data-i18n="aboutTitle">What's this?</div>
+      <div class="about-copy">
+        <p data-i18n="aboutLine1">You can always trade 3 candies for any 1 candy, but each exchange loses 2 candies.</p>
+        <p data-i18n="aboutLine2">This calculator finds the route with the least candy loss, or even the most candy gain.</p>
+      </div>
+      <button class="about-close" id="aboutClose" type="button" data-i18n="aboutClose">Close</button>
+    </div>
+  </div>
+
   <script>
     const MAX_SLOTS = 30;
     const DEMAND_SLOTS = 18;
@@ -1388,6 +1521,11 @@
         title: "CARNIVAL CANDYWORKS",
         subtitle: "Trade candy for items.",
         starLink: "Give me a Star",
+        whatsThis: "What's this",
+        aboutTitle: "What's this?",
+        aboutLine1: "You can always trade 3 candies for any 1 candy, but each exchange loses 2 candies.",
+        aboutLine2: "This calculator finds the route with the least candy loss, or even the most candy gain.",
+        aboutClose: "Close",
         targetTitle: "Target Item Candy",
         yourCandy: "Your Candy",
         tradePath: "Trade Path",
@@ -1448,6 +1586,11 @@
         title: "狂欢糖果车",
         subtitle: "使用糖果交换物品。",
         starLink: "给我一颗 Star",
+        whatsThis: "这是什么",
+        aboutTitle: "这是什么？",
+        aboutLine1: "您当然可以用 3 颗糖换任意 1 颗糖，但每次置换都会亏 2 颗糖。",
+        aboutLine2: "本程序能够计算出亏糖数最少，甚至赚糖最多的方案。",
+        aboutClose: "关闭",
         targetTitle: "目标物品糖果",
         yourCandy: "你的糖果",
         tradePath: "兑换路线",
@@ -1530,6 +1673,7 @@
     ];
 
     const els = {
+      aboutBtn: document.querySelector("#aboutBtn"),
       helpBtn: document.querySelector("#helpBtn"),
       languageToggle: document.querySelector("#languageToggle"),
       demandRows: document.querySelector("#demandRows"),
@@ -1553,7 +1697,9 @@
       tourPanel: document.querySelector("#tourPanel"),
       tourStepCount: document.querySelector("#tourStepCount"),
       tourText: document.querySelector("#tourText"),
-      tourNext: document.querySelector("#tourNext")
+      tourNext: document.querySelector("#tourNext"),
+      aboutBackdrop: document.querySelector("#aboutBackdrop"),
+      aboutClose: document.querySelector("#aboutClose")
     };
 
     let pickerTarget = null;
@@ -1889,6 +2035,18 @@
       els.pickerBackdrop.classList.remove("open");
       els.pickerBackdrop.setAttribute("aria-hidden", "true");
       pickerTarget = null;
+    }
+
+    function openAbout() {
+      if (els.pickerBackdrop.classList.contains("open")) closePicker();
+      if (tourIndex >= 0) endTour();
+      els.aboutBackdrop.classList.add("open");
+      els.aboutBackdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function closeAbout() {
+      els.aboutBackdrop.classList.remove("open");
+      els.aboutBackdrop.setAttribute("aria-hidden", "true");
     }
 
     function chooseCandy(kind) {
@@ -2273,6 +2431,7 @@
       if (tourIndex >= 0) endTour();
       runSearch();
     });
+    els.aboutBtn.addEventListener("click", openAbout);
     els.helpBtn.addEventListener("click", startTour);
     els.languageToggle.addEventListener("click", () => {
       currentLang = currentLang === "zh" ? "en" : "zh";
@@ -2288,6 +2447,10 @@
     els.tourBackdrop.addEventListener("click", event => {
       if (event.target === els.tourBackdrop) endTour();
     });
+    els.aboutClose.addEventListener("click", closeAbout);
+    els.aboutBackdrop.addEventListener("click", event => {
+      if (event.target === els.aboutBackdrop) closeAbout();
+    });
     window.addEventListener("resize", positionTourPanel);
     els.pickerClear.addEventListener("click", () => chooseCandy(-1));
     els.pickerBackdrop.addEventListener("click", event => {
@@ -2296,6 +2459,7 @@
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && els.pickerBackdrop.classList.contains("open")) closePicker();
       if (event.key === "Escape" && els.tourBackdrop.classList.contains("open")) endTour();
+      if (event.key === "Escape" && els.aboutBackdrop.classList.contains("open")) closeAbout();
     });
   </script>
 </body>

@@ -90,10 +90,10 @@
       color: inherit;
     }
 
-    .language-toggle {
+    .language-toggle,
+    .help-toggle {
       position: fixed;
       top: 18px;
-      right: 18px;
       z-index: 30;
       min-width: 62px;
       height: 34px;
@@ -114,7 +114,17 @@
       transition: filter .12s ease, transform .12s ease;
     }
 
-    .language-toggle:hover {
+    .language-toggle {
+      right: 18px;
+    }
+
+    .help-toggle {
+      right: 92px;
+      min-width: 112px;
+    }
+
+    .language-toggle:hover,
+    .help-toggle:hover {
       filter: brightness(1.1);
       transform: translateY(-1px);
     }
@@ -212,7 +222,7 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 22px 26px 74px;
+      padding: 22px 26px 34px;
       background:
         linear-gradient(180deg, rgba(0, 7, 18, .72), rgba(18, 15, 32, .92) 50%, rgba(45, 31, 50, .96)),
         var(--asset-widget) center / cover;
@@ -1059,6 +1069,115 @@
       font-weight: 700;
     }
 
+    .tour-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 24;
+      background: rgba(1, 4, 12, .72);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .18s ease, visibility .18s ease;
+    }
+
+    .tour-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .tour-highlight {
+      position: relative;
+      z-index: 31;
+      border-radius: 6px;
+      outline: 2px solid rgba(255, 226, 151, .98);
+      outline-offset: 8px;
+      box-shadow: 0 0 0 9999px rgba(1, 4, 12, .16), 0 0 28px rgba(255, 222, 137, .72);
+    }
+
+    .tour-panel {
+      position: fixed;
+      z-index: 33;
+      width: min(390px, calc(100vw - 32px));
+      min-height: 132px;
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(48, 34, 54, .96), rgba(16, 13, 24, .99)),
+        var(--asset-wood) center / cover;
+      border: 1px solid rgba(235, 195, 116, .55);
+      color: #f8e8c5;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .65), inset 0 0 0 1px rgba(255,255,255,.05);
+      transform: translateY(8px) scale(.96);
+      transition: transform .18s ease;
+    }
+
+    .tour-backdrop.open .tour-panel {
+      transform: translateY(0) scale(1);
+    }
+
+    .tour-step-count {
+      margin-bottom: 9px;
+      color: #d7b779;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .tour-text {
+      color: #fff2cf;
+      font: 700 17px/1.45 var(--font-body);
+      text-shadow: 0 2px 3px #000;
+    }
+
+    .tour-next {
+      position: relative;
+      width: 148px;
+      height: 38px;
+      margin-top: 16px;
+      border: 0;
+      background: transparent;
+      color: #f2d89d;
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 3px #000;
+      isolation: isolate;
+      overflow: visible;
+    }
+
+    .tour-next::before {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background:
+        radial-gradient(ellipse at 50% 15%, rgba(255, 232, 164, .22), transparent 50%),
+        linear-gradient(90deg, rgba(12, 9, 17, .74), rgba(65, 45, 69, .2) 48%, rgba(12, 9, 17, .74)),
+        linear-gradient(180deg, rgba(85, 62, 83, .52), rgba(18, 14, 27, .96) 76%),
+        var(--asset-button-fill) center top / cover no-repeat;
+      clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0 50%);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .tour-next::after {
+      content: "";
+      position: absolute;
+      inset: -7px -15px;
+      background: var(--asset-button) center / 100% 100% no-repeat;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .tour-next:hover {
+      color: #ffe9b0;
+      filter: brightness(1.08);
+    }
+
     @media (max-width: 1180px) {
       .page {
         padding: 24px 18px 28px;
@@ -1081,6 +1200,16 @@
     }
 
     @media (max-width: 780px) {
+      .language-toggle {
+        top: 12px;
+        right: 12px;
+      }
+
+      .help-toggle {
+        top: 52px;
+        right: 12px;
+      }
+
       .offer-grid {
         grid-template-columns: 1fr;
         gap: 18px;
@@ -1141,6 +1270,7 @@
   </style>
 </head>
 <body>
+  <button class="help-toggle" id="helpBtn" type="button" data-i18n="howToUse">How to Use</button>
   <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Simplified Chinese">中文</button>
 
   <main class="page">
@@ -1161,7 +1291,6 @@
               <div class="offer-title" data-i18n="targetTitle">Target Item Candy</div>
               <div class="demand-slots" id="demandRows"></div>
             </div>
-            <button class="ornate-button" id="searchBtn" type="button" data-i18n="trade">Trade</button>
           </article>
 
           <article class="offer-card">
@@ -1170,7 +1299,6 @@
               <div class="offer-title" data-i18n="yourCandy">Your Candy</div>
               <div class="summary-pills" id="inventoryPills"></div>
             </div>
-            <button class="ornate-button" id="clearAll" type="button" data-i18n="clear">Clear</button>
           </article>
 
           <article class="offer-card" id="tradePathCard">
@@ -1180,7 +1308,6 @@
               <div id="status" class="status-box">Enter target candy, current candy, and recipes, then search.</div>
               <div class="steps" id="steps"></div>
             </div>
-            <button class="ornate-button" id="loadExample" type="button" data-i18n="example">Example</button>
           </article>
         </div>
 
@@ -1230,6 +1357,14 @@
     </div>
   </div>
 
+  <div class="tour-backdrop" id="tourBackdrop" aria-hidden="true">
+    <div class="tour-panel" id="tourPanel" role="dialog" aria-modal="true" aria-labelledby="tourText">
+      <div class="tour-step-count" id="tourStepCount"></div>
+      <div class="tour-text" id="tourText"></div>
+      <button class="tour-next" id="tourNext" type="button">Next</button>
+    </div>
+  </div>
+
   <script>
     const MAX_SLOTS = 30;
     const DEMAND_SLOTS = 18;
@@ -1247,11 +1382,12 @@
         trade: "Trade",
         clear: "Clear",
         example: "Example",
-        rerollItems: "Re-Roll Items",
+        rerollItems: "Load Example",
         candies: "Candies",
-        clearSlots: "Clear Slots",
+        clearSlots: "Clear All",
         exchange: "Exchange",
         search: "Search",
+        howToUse: "How to Use",
         chooseCandy: "Choose Candy",
         clearSlot: "Clear Slot",
         searchIdle: "Calculate Trade Path",
@@ -1282,6 +1418,14 @@
         candyBlueShort: "Blue",
         candyBlackName: "Black Coil",
         candyBlackShort: "Black",
+        tourStepCount: "Step {current} / {total}",
+        tourStep1: "Step 1: Click slots to enter the target item candy",
+        tourStep2: "Step 2: Click slots to enter your current candy",
+        tourStep3: "Step 3: Enter the current exchange recipes",
+        tourStep4: "Step 4: Click the button to calculate the trade path",
+        tourStep5: "We prepared an example. Click it to load.",
+        tourNext: "Next",
+        tourDone: "Done",
         switchToEnglish: "Switch to English",
         switchToChinese: "Switch to Simplified Chinese"
       },
@@ -1296,11 +1440,12 @@
         trade: "兑换",
         clear: "清空",
         example: "示例",
-        rerollItems: "重新随机物品",
+        rerollItems: "加载示例",
         candies: "糖果",
-        clearSlots: "清空槽位",
+        clearSlots: "全部清空",
         exchange: "交换",
         search: "搜索",
+        howToUse: "如何使用",
         chooseCandy: "选择糖果",
         clearSlot: "清空槽位",
         searchIdle: "计算兑换路线",
@@ -1331,6 +1476,14 @@
         candyBlueShort: "蓝螺",
         candyBlackName: "黑卷糖",
         candyBlackShort: "黑卷",
+        tourStepCount: "第 {current} / {total} 步",
+        tourStep1: "第一步：点击槽位填入目标物品糖果",
+        tourStep2: "第二步：点击槽位填入已有的糖果",
+        tourStep3: "第三步：填入目前的交换配方",
+        tourStep4: "第四步：点击按钮计算交换方式",
+        tourStep5: "我们已经准备好了一个示例，点击可以加载",
+        tourNext: "下一步",
+        tourDone: "完成",
         switchToEnglish: "切换到英文",
         switchToChinese: "切换到简体中文"
       }
@@ -1361,6 +1514,7 @@
     ];
 
     const els = {
+      helpBtn: document.querySelector("#helpBtn"),
       languageToggle: document.querySelector("#languageToggle"),
       demandRows: document.querySelector("#demandRows"),
       inventoryPills: document.querySelector("#inventoryPills"),
@@ -1369,11 +1523,8 @@
       slots: document.querySelector("#slots"),
       recipeGrid: document.querySelector("#recipeGrid"),
       rerollTrack: document.querySelector("#rerollTrack"),
-      searchBtn: document.querySelector("#searchBtn"),
       searchBtnSmall: document.querySelector("#searchBtnSmall"),
-      clearAll: document.querySelector("#clearAll"),
       clearSlots: document.querySelector("#clearSlots"),
-      loadExample: document.querySelector("#loadExample"),
       rerollBtn: document.querySelector("#rerollBtn"),
       tradePathCard: document.querySelector("#tradePathCard"),
       status: document.querySelector("#status"),
@@ -1381,19 +1532,33 @@
       searchMeta: document.querySelector("#searchMeta"),
       pickerBackdrop: document.querySelector("#pickerBackdrop"),
       pickerOptions: document.querySelector("#pickerOptions"),
-      pickerClear: document.querySelector("#pickerClear")
+      pickerClear: document.querySelector("#pickerClear"),
+      tourBackdrop: document.querySelector("#tourBackdrop"),
+      tourPanel: document.querySelector("#tourPanel"),
+      tourStepCount: document.querySelector("#tourStepCount"),
+      tourText: document.querySelector("#tourText"),
+      tourNext: document.querySelector("#tourNext")
     };
 
     let pickerTarget = null;
     let lastStatus = null;
     let lastSearchMeta = { key: "searchIdle", vars: {} };
     let lastSearchResult = null;
+    let tourIndex = -1;
+    let tourTarget = null;
     let demandSlots = Array(DEMAND_SLOTS).fill(-1);
     let slotKinds = Array(MAX_SLOTS).fill(-1);
     let recipeSlots = Array.from({ length: 4 }, () => ({
       in: Array(RECIPE_SIDE_SLOTS).fill(-1),
       out: Array(RECIPE_SIDE_SLOTS).fill(-1)
     }));
+    const TOUR_STEPS = [
+      { target: "#demandRows", textKey: "tourStep1" },
+      { target: "#slots", textKey: "tourStep2" },
+      { target: "#recipeGrid", textKey: "tourStep3" },
+      { target: "#searchBtnSmall", textKey: "tourStep4" },
+      { target: "#rerollBtn", textKey: "tourStep5" }
+    ];
 
     function locale() {
       return currentLang === "zh" ? "zh-CN" : "en-US";
@@ -1452,6 +1617,9 @@
 
       if (lastSearchResult) {
         renderResult(lastSearchResult.result, lastSearchResult.demand);
+        if (tourIndex >= 0) {
+          renderTourStep(false);
+        }
         return;
       }
 
@@ -1459,6 +1627,91 @@
       if (lastStatus) {
         renderStatus();
       }
+
+      if (tourIndex >= 0) {
+        renderTourStep(false);
+      }
+    }
+
+    function clearTourHighlight() {
+      document.querySelectorAll(".tour-highlight").forEach(node => {
+        node.classList.remove("tour-highlight");
+      });
+    }
+
+    function positionTourPanel() {
+      if (!tourTarget || tourIndex < 0) return;
+
+      const rect = tourTarget.getBoundingClientRect();
+      const panel = els.tourPanel;
+      const margin = 18;
+      const panelWidth = panel.offsetWidth || 360;
+      const panelHeight = panel.offsetHeight || 132;
+      let left = rect.left + (rect.width / 2) - (panelWidth / 2);
+      let top = rect.bottom + margin;
+
+      if (top + panelHeight > window.innerHeight - margin) {
+        top = rect.top - panelHeight - margin;
+      }
+
+      left = Math.max(16, Math.min(left, window.innerWidth - panelWidth - 16));
+      top = Math.max(16, Math.min(top, window.innerHeight - panelHeight - 16));
+
+      panel.style.left = `${left}px`;
+      panel.style.top = `${top}px`;
+    }
+
+    function renderTourStep(shouldScroll = true) {
+      if (tourIndex < 0 || tourIndex >= TOUR_STEPS.length) {
+        endTour();
+        return;
+      }
+
+      clearTourHighlight();
+      const step = TOUR_STEPS[tourIndex];
+      const target = document.querySelector(step.target);
+      if (!target) {
+        endTour();
+        return;
+      }
+
+      tourTarget = target;
+      target.classList.add("tour-highlight");
+      els.tourBackdrop.classList.add("open");
+      els.tourBackdrop.setAttribute("aria-hidden", "false");
+      els.tourStepCount.textContent = t("tourStepCount", { current: tourIndex + 1, total: TOUR_STEPS.length });
+      els.tourText.textContent = t(step.textKey);
+      els.tourNext.textContent = tourIndex === TOUR_STEPS.length - 1 ? t("tourDone") : t("tourNext");
+
+      if (shouldScroll) {
+        target.scrollIntoView({ block: "center", inline: "center", behavior: "smooth" });
+      }
+
+      window.requestAnimationFrame(positionTourPanel);
+      if (shouldScroll) window.setTimeout(positionTourPanel, 240);
+    }
+
+    function startTour() {
+      closePicker();
+      tourIndex = 0;
+      renderTourStep();
+    }
+
+    function advanceTour() {
+      if (tourIndex >= TOUR_STEPS.length - 1) {
+        endTour();
+        return;
+      }
+      tourIndex += 1;
+      renderTourStep();
+    }
+
+    function endTour() {
+      clearTourHighlight();
+      tourIndex = -1;
+      tourTarget = null;
+      els.tourBackdrop.classList.remove("open");
+      els.tourBackdrop.setAttribute("aria-hidden", "true");
     }
 
     function sum(list) {
@@ -1516,7 +1769,10 @@
       button.setAttribute("aria-label", title);
       if (kind === -1) button.append(emptyDot());
       else button.append(icon(kind, ""));
-      button.addEventListener("click", () => openPicker(target));
+      button.addEventListener("click", () => {
+        if (tourIndex >= 0) endTour();
+        openPicker(target);
+      });
       return button;
     }
 
@@ -1965,26 +2221,33 @@
     setStatusKey("statusIntro");
     applyLanguage();
 
-    els.searchBtn.addEventListener("click", runSearch);
-    els.searchBtnSmall.addEventListener("click", runSearch);
+    els.searchBtnSmall.addEventListener("click", () => {
+      if (tourIndex >= 0) endTour();
+      runSearch();
+    });
+    els.helpBtn.addEventListener("click", startTour);
     els.languageToggle.addEventListener("click", () => {
       currentLang = currentLang === "zh" ? "en" : "zh";
       storeLanguage(currentLang);
       applyLanguage();
     });
-    els.clearAll.addEventListener("click", clearAll);
-    els.clearSlots.addEventListener("click", () => {
-      setSlotsFromCounts([0, 0, 0, 0, 0]);
-      updateSummary();
+    els.clearSlots.addEventListener("click", clearAll);
+    els.rerollBtn.addEventListener("click", () => {
+      if (tourIndex >= 0) endTour();
+      loadExample();
     });
-    els.loadExample.addEventListener("click", loadExample);
-    els.rerollBtn.addEventListener("click", loadExample);
+    els.tourNext.addEventListener("click", advanceTour);
+    els.tourBackdrop.addEventListener("click", event => {
+      if (event.target === els.tourBackdrop) endTour();
+    });
+    window.addEventListener("resize", positionTourPanel);
     els.pickerClear.addEventListener("click", () => chooseCandy(-1));
     els.pickerBackdrop.addEventListener("click", event => {
       if (event.target === els.pickerBackdrop) closePicker();
     });
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && els.pickerBackdrop.classList.contains("open")) closePicker();
+      if (event.key === "Escape" && els.tourBackdrop.classList.contains("open")) endTour();
     });
   </script>
 </body>

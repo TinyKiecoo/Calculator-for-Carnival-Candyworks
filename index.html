@@ -255,6 +255,10 @@
       background: radial-gradient(circle at 50% 38%, rgba(110, 180, 255, .17), transparent 30%);
     }
 
+    .offer-card:nth-child(2) .offer-content {
+      transform: translateY(10px);
+    }
+
     .offer-art {
       position: absolute;
       top: 24px;
@@ -292,6 +296,7 @@
     }
 
     .offer-title,
+    .count-section-title,
     .board-title,
     .exchange-title,
     .ornate-button,
@@ -307,7 +312,8 @@
       letter-spacing: .1em;
     }
 
-    .offer-title {
+    .offer-title,
+    .count-section-title {
       min-height: 52px;
       display: flex;
       align-items: center;
@@ -336,31 +342,67 @@
       flex: 0 0 auto;
     }
 
-    .summary-pills {
+    .count-panel {
       width: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
+      display: grid;
+      gap: 6px;
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      min-height: 34px;
+    .count-section {
+      width: 100%;
+      display: grid;
       gap: 4px;
-      padding: 3px 8px 3px 4px;
-      border: 1px solid rgba(213, 174, 100, .18);
-      background: rgba(18, 12, 22, .58);
-      color: #f8e4b6;
-      font: 800 13px/1 var(--font-body);
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, .42);
+      padding: 2px 4px 4px;
     }
 
-    .pill img {
+    .count-inputs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .count-control {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+      justify-items: center;
+      padding: 3px;
+      border: 1px solid rgba(231, 190, 116, .14);
+      background: rgba(8, 8, 14, .44);
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, .45);
+    }
+
+    .count-control img {
       width: 28px;
       height: 28px;
       object-fit: contain;
+      filter: drop-shadow(0 5px 4px rgba(0, 0, 0, .62));
+      pointer-events: none;
+    }
+
+    .count-input {
+      width: 100%;
+      min-width: 0;
+      height: 26px;
+      appearance: textfield;
+      border: 1px solid rgba(224, 185, 112, .28);
+      background: rgba(3, 5, 12, .72);
+      color: #fff1c9;
+      font: 700 14px/1 var(--font-display);
+      text-align: center;
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, .55);
+    }
+
+    .count-input:focus {
+      outline: 1px solid rgba(255, 226, 151, .82);
+      outline-offset: 1px;
+      border-color: rgba(255, 226, 151, .72);
+    }
+
+    .count-input::-webkit-outer-spin-button,
+    .count-input::-webkit-inner-spin-button {
+      margin: 0;
+      -webkit-appearance: none;
     }
 
     .status-box {
@@ -1132,6 +1174,10 @@
       text-transform: uppercase;
     }
 
+    .tour-panel.tip-mode .tour-step-count {
+      display: none;
+    }
+
     .tour-text {
       color: #fff2cf;
       font: 700 17px/1.45 var(--font-body);
@@ -1352,8 +1398,17 @@
         min-height: 430px;
       }
 
+      .offer-card:nth-child(2) {
+        min-height: 560px;
+      }
+
       .offer-art {
         height: 170px;
+      }
+
+      .offer-card:nth-child(2) .offer-art.small {
+        top: 36px;
+        height: 155px;
       }
 
       .offer-art.frame {
@@ -1422,7 +1477,7 @@
           <article class="offer-card">
             <img class="offer-art" src="candywork-assets/reward_candy_huge_png.png" alt="">
             <div class="offer-content">
-              <div class="offer-title" data-i18n="targetTitle">Target Item Candy</div>
+              <div class="offer-title" data-i18n="targetTitle">Target Candy</div>
               <div class="demand-slots" id="demandRows"></div>
             </div>
           </article>
@@ -1430,8 +1485,16 @@
           <article class="offer-card">
             <img class="offer-art small" src="candywork-assets/node_candy_store_psd.png" alt="">
             <div class="offer-content">
-              <div class="offer-title" data-i18n="yourCandy">Your Candy</div>
-              <div class="summary-pills" id="inventoryPills"></div>
+              <div class="count-panel" id="countPanel">
+                <section class="count-section" aria-labelledby="inventoryCountTitle">
+                  <div class="count-section-title" id="inventoryCountTitle" data-i18n="currentCandyCounts">Your Candy</div>
+                  <div class="count-inputs" id="inventoryPills"></div>
+                </section>
+                <section class="count-section" aria-labelledby="targetCountTitle">
+                  <div class="count-section-title" id="targetCountTitle" data-i18n="targetCandyCounts">Target Candy</div>
+                  <div class="count-inputs" id="targetPills"></div>
+                </section>
+              </div>
             </div>
           </article>
 
@@ -1526,8 +1589,10 @@
         aboutLine1: "You can always trade 3 candies for any 1 candy, but each exchange loses 2 candies.",
         aboutLine2: "This calculator finds the route with the least candy loss, or even the most candy gain.",
         aboutClose: "Close",
-        targetTitle: "Target Item Candy",
+        targetTitle: "Target Candy",
         yourCandy: "Your Candy",
+        currentCandyCounts: "Your Candy",
+        targetCandyCounts: "Target Candy",
         tradePath: "Trade Path",
         trade: "Trade",
         clear: "Clear",
@@ -1552,6 +1617,8 @@
         statusLoadedExample: "Loaded the example.",
         targetSlot: "Target slot {n}",
         candySlot: "Candy slot {n}",
+        inventoryCountInput: "Current {candy} count",
+        targetCountInput: "Target {candy} count",
         recipeName: "Recipe {n}",
         recipeInputSlot: "Recipe {recipe} input slot {slot}",
         recipeOutputSlot: "Recipe {recipe} output slot {slot}",
@@ -1576,6 +1643,7 @@
         tourStep3: "Step 3: Enter the current exchange recipes.",
         tourStep4: "Step 4: Click the button to calculate the trade path.",
         tourStep5: "An example was prepared for you. Click to load.",
+        tourStep6: "Too many candies? Enter the counts here and the slots will update automatically.",
         tourNext: "Next",
         tourDone: "Done",
         switchToEnglish: "Switch to English",
@@ -1591,8 +1659,10 @@
         aboutLine1: "您当然可以用 3 颗糖换任意 1 颗糖，但每次置换都会亏 2 颗糖。",
         aboutLine2: "本程序能够计算出亏糖数最少，甚至赚糖最多的方案。",
         aboutClose: "关闭",
-        targetTitle: "目标物品糖果",
+        targetTitle: "目标糖果",
         yourCandy: "你的糖果",
+        currentCandyCounts: "已有糖果",
+        targetCandyCounts: "目标糖果",
         tradePath: "兑换路线",
         trade: "兑换",
         clear: "清空",
@@ -1617,6 +1687,8 @@
         statusLoadedExample: "已载入示例。",
         targetSlot: "目标槽位 {n}",
         candySlot: "糖果槽位 {n}",
+        inventoryCountInput: "已有{candy}数量",
+        targetCountInput: "目标{candy}数量",
         recipeName: "配方 {n}",
         recipeInputSlot: "配方 {recipe} 输入槽位 {slot}",
         recipeOutputSlot: "配方 {recipe} 输出槽位 {slot}",
@@ -1641,6 +1713,7 @@
         tourStep3: "第三步：填入目前的交换配方。",
         tourStep4: "第四步：点击按钮计算交换方式。",
         tourStep5: "一个示例已为您准备好，点击可以加载。",
+        tourStep6: "糖果太多了？直接在此输入数量，槽位会自动更新。",
         tourNext: "下一步",
         tourDone: "完成",
         switchToEnglish: "切换到英文",
@@ -1678,6 +1751,7 @@
       languageToggle: document.querySelector("#languageToggle"),
       demandRows: document.querySelector("#demandRows"),
       inventoryPills: document.querySelector("#inventoryPills"),
+      targetPills: document.querySelector("#targetPills"),
       totalCandy: document.querySelector("#totalCandy"),
       slotTotal: document.querySelector("#slotTotal"),
       slots: document.querySelector("#slots"),
@@ -1719,8 +1793,10 @@
       { target: "#slots", textKey: "tourStep2" },
       { target: "#recipeGrid", textKey: "tourStep3" },
       { target: "#searchBtnSmall", textKey: "tourStep4" },
-      { target: "#rerollBtn", textKey: "tourStep5" }
+      { target: "#rerollBtn", textKey: "tourStep5", counted: false },
+      { target: "#countPanel", textKey: "tourStep6", counted: false }
     ];
+    const TOUR_COUNTED_STEPS = TOUR_STEPS.filter(step => step.counted !== false).length;
 
     function locale() {
       return currentLang === "zh" ? "zh-CN" : "en-US";
@@ -1775,6 +1851,7 @@
       renderSlots();
       renderRecipes();
       renderPickerOptions();
+      renderCountControls();
       updateSummary();
 
       if (lastSearchResult) {
@@ -1842,7 +1919,14 @@
       target.classList.add("tour-highlight");
       els.tourBackdrop.classList.add("open");
       els.tourBackdrop.setAttribute("aria-hidden", "false");
-      els.tourStepCount.textContent = t("tourStepCount", { current: tourIndex + 1, total: TOUR_STEPS.length });
+      const countedStep = step.counted !== false;
+      els.tourPanel.classList.toggle("tip-mode", !countedStep);
+      if (countedStep) {
+        const current = TOUR_STEPS.slice(0, tourIndex + 1).filter(item => item.counted !== false).length;
+        els.tourStepCount.textContent = t("tourStepCount", { current, total: TOUR_COUNTED_STEPS });
+      } else {
+        els.tourStepCount.textContent = "";
+      }
       els.tourText.textContent = t(step.textKey);
       els.tourNext.textContent = tourIndex === TOUR_STEPS.length - 1 ? t("tourDone") : t("tourNext");
 
@@ -1873,6 +1957,7 @@
       clearTourHighlight();
       tourIndex = -1;
       tourTarget = null;
+      els.tourPanel.classList.remove("tip-mode");
       els.tourBackdrop.classList.remove("open");
       els.tourBackdrop.setAttribute("aria-hidden", "true");
     }
@@ -2025,6 +2110,38 @@
       });
     }
 
+    function renderCountControls() {
+      renderCountInputs(els.inventoryPills, "inventory");
+      renderCountInputs(els.targetPills, "target");
+    }
+
+    function renderCountInputs(container, type) {
+      container.innerHTML = "";
+      const labelKey = type === "inventory" ? "inventoryCountInput" : "targetCountInput";
+      CANDIES.forEach((candy, kind) => {
+        const label = document.createElement("label");
+        label.className = "count-control";
+        label.title = candyName(kind);
+
+        const input = document.createElement("input");
+        input.className = "count-input";
+        input.type = "number";
+        input.min = "0";
+        input.max = String(type === "inventory" ? MAX_SLOTS : DEMAND_SLOTS);
+        input.step = "1";
+        input.inputMode = "numeric";
+        input.dataset.kind = kind;
+        input.dataset.countType = type;
+        input.setAttribute("aria-label", t(labelKey, { candy: candyName(kind) }));
+        input.addEventListener("input", handleCountInput);
+        input.addEventListener("change", handleCountInput);
+        input.addEventListener("blur", updateSummary);
+
+        label.append(icon(kind, ""), input);
+        container.append(label);
+      });
+    }
+
     function openPicker(target) {
       pickerTarget = target;
       els.pickerBackdrop.classList.add("open");
@@ -2073,6 +2190,42 @@
 
     function getInventory() {
       return countKinds(slotKinds);
+    }
+
+    function countFromInput(input) {
+      const parsed = Number.parseInt(input.value, 10);
+      if (!Number.isFinite(parsed)) return 0;
+      const max = Number.parseInt(input.max, 10);
+      const capped = Number.isFinite(max) ? Math.min(parsed, max) : parsed;
+      return Math.max(0, capped);
+    }
+
+    function readCountInputs(container) {
+      const counts = Array(CANDIES.length).fill(0);
+      container.querySelectorAll(".count-input").forEach(input => {
+        counts[Number(input.dataset.kind)] = countFromInput(input);
+      });
+      return counts;
+    }
+
+    function syncCountInputs(container, counts) {
+      container.querySelectorAll(".count-input").forEach(input => {
+        const next = String(counts[Number(input.dataset.kind)] ?? 0);
+        if (document.activeElement === input && input.value === "") return;
+        if (input.value !== next) input.value = next;
+      });
+    }
+
+    function handleCountInput(event) {
+      const input = event.currentTarget;
+      if (input.value !== "" && Number(input.value) < 0) input.value = "0";
+
+      if (input.dataset.countType === "inventory") {
+        setSlotsFromCounts(readCountInputs(els.inventoryPills));
+      } else {
+        setDemand(readCountInputs(els.targetPills));
+      }
+      updateSummary();
     }
 
     function setDemand(counts) {
@@ -2131,16 +2284,8 @@
       const total = sum(inventory);
       els.totalCandy.textContent = total;
       els.slotTotal.textContent = `${total} / ${MAX_SLOTS}`;
-
-      els.inventoryPills.innerHTML = "";
-      CANDIES.forEach((candy, i) => {
-        const pill = document.createElement("span");
-        pill.className = "pill";
-        pill.append(icon(i, ""));
-        pill.append(document.createTextNode(`x ${inventory[i]}`));
-        els.inventoryPills.append(pill);
-      });
-
+      syncCountInputs(els.inventoryPills, inventory);
+      syncCountInputs(els.targetPills, demand);
     }
 
     function hasDemand(state, demand) {
@@ -2422,6 +2567,7 @@
     renderRecipes();
     renderRerolls();
     renderPickerOptions();
+    renderCountControls();
     updateSummary();
     setSearchMeta("searchIdle");
     setStatusKey("statusIntro");

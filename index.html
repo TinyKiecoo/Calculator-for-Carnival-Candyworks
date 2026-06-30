@@ -388,7 +388,7 @@
       border: 1px solid rgba(224, 185, 112, .28);
       background: rgba(3, 5, 12, .72);
       color: #fff1c9;
-      font: 700 14px/1 var(--font-display);
+      font: 700 14px/1 "Reaver", "Radiance", "Segoe UI", sans-serif;
       text-align: center;
       box-shadow: inset 0 0 8px rgba(0, 0, 0, .55);
     }
@@ -785,12 +785,58 @@
       justify-self: center;
       width: 150px;
       display: grid;
-      gap: 7px;
+      gap: 9px;
       justify-items: center;
       color: #e0b5a6;
       font: 900 14px/1 var(--font-body);
       letter-spacing: .08em;
       text-transform: uppercase;
+    }
+
+    .slot-capacity-control {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 3px;
+      white-space: nowrap;
+    }
+
+    .slot-capacity-label {
+      color: #e8c0ad;
+      font-family: "Reaver", "Radiance", "Segoe UI", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 2px 3px #000;
+    }
+
+    html[lang="zh-CN"] .slot-capacity-label {
+      font-family: "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
+    }
+
+    .slot-total-input {
+      width: 44px;
+      height: 28px;
+      appearance: textfield;
+      border: 1px solid rgba(230, 189, 119, .28);
+      background: rgba(8, 8, 14, .62);
+      color: #ffd9c6;
+      font: 800 15px/1 "Reaver", "Radiance", "Segoe UI", sans-serif;
+      text-align: center;
+      box-shadow: inset 0 0 9px rgba(0, 0, 0, .55);
+    }
+
+    .slot-total-input:focus {
+      outline: 1px solid rgba(255, 218, 154, .78);
+      outline-offset: 1px;
+      border-color: rgba(255, 218, 154, .68);
+    }
+
+    .slot-total-input::-webkit-outer-spin-button,
+    .slot-total-input::-webkit-inner-spin-button {
+      margin: 0;
+      -webkit-appearance: none;
     }
 
     .metal-button {
@@ -892,6 +938,27 @@
       border-color: rgba(241, 200, 121, .18);
       box-shadow: 0 0 12px rgba(241, 200, 121, .12);
       transform: translateY(-1px);
+    }
+
+    .candy-slot.locked-slot,
+    .candy-slot.locked-slot:hover {
+      cursor: not-allowed;
+      background: rgba(4, 5, 11, .54);
+      border-color: rgba(103, 97, 111, .2);
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, .62);
+      opacity: .48;
+      transform: none;
+    }
+
+    .locked-dot {
+      width: 58%;
+      height: 58%;
+      border: 1px solid rgba(147, 137, 150, .2);
+      background:
+        linear-gradient(45deg, transparent 46%, rgba(172, 159, 164, .5) 47% 53%, transparent 54%),
+        linear-gradient(-45deg, transparent 46%, rgba(172, 159, 164, .5) 47% 53%, transparent 54%),
+        rgba(10, 9, 14, .6);
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, .6);
     }
 
     .candy-slot img {
@@ -1527,7 +1594,10 @@
           </div>
           <div class="slot-action">
             <button class="metal-button" id="clearSlots" type="button" data-i18n="clearSlots">Clear Slots</button>
-            <span id="slotTotal">0 / 30</span>
+            <label class="slot-capacity-control" id="slotCapacityControl">
+              <span class="slot-capacity-label" data-i18n="slotCapacityLabel">Max Slots:</span>
+              <input class="slot-total-input" id="slotTotal" type="number" min="0" max="30" step="1" value="30" inputmode="numeric" aria-label="Available candy slots" data-i18n-title="slotCapacity">
+            </label>
           </div>
         </div>
 
@@ -1611,12 +1681,15 @@
         statusIntro: "Enter target candy, current candy, and recipes, then search.",
         statusSearching: "Searching trade path...",
         statusNoRequirement: "The target item has no candy requirement.",
-        statusTooMany: "The target item requires more than 30 candy slots.",
+        statusTooMany: "The target item requires more candy than your available slots.",
         statusInvalidRecipe: "Recipe {recipes} is missing input or output candy.",
         statusCannotTrade: "This item cannot be traded with the current candy and recipes.",
         statusLoadedExample: "Loaded the example.",
+        slotCapacity: "Available candy slots",
+        slotCapacityLabel: "Max Slots:",
         targetSlot: "Target slot {n}",
         candySlot: "Candy slot {n}",
+        lockedSlot: "Locked candy slot {n}",
         inventoryCountInput: "Current {candy} count",
         targetCountInput: "Target {candy} count",
         recipeName: "Recipe {n}",
@@ -1644,6 +1717,7 @@
         tourStep4: "Step 4: Click the button to calculate the trade path.",
         tourStep5: "An example was prepared for you. Click to load.",
         tourStep6: "Too many candies? Enter the counts here and the slots will update automatically.",
+        tourStep7: "Locked slots? Enter the maximum slot count here to limit the search.",
         tourNext: "Next",
         tourDone: "Done",
         switchToEnglish: "Switch to English",
@@ -1681,12 +1755,15 @@
         statusIntro: "输入目标糖果、已有糖果和配方后开始搜索。",
         statusSearching: "正在搜索兑换路线...",
         statusNoRequirement: "目标物品还没有糖果需求。",
-        statusTooMany: "目标物品需求超过 30 个糖果槽位。",
+        statusTooMany: "目标物品需求超过当前可用糖果槽位。",
         statusInvalidRecipe: "配方 {recipes} 缺少输入或输出糖果。",
         statusCannotTrade: "当前糖果和配方无法兑换该物品。",
         statusLoadedExample: "已载入示例。",
+        slotCapacity: "可用糖果槽位",
+        slotCapacityLabel: "最大槽位数：",
         targetSlot: "目标槽位 {n}",
         candySlot: "糖果槽位 {n}",
+        lockedSlot: "锁定糖果槽位 {n}",
         inventoryCountInput: "已有{candy}数量",
         targetCountInput: "目标{candy}数量",
         recipeName: "配方 {n}",
@@ -1714,6 +1791,7 @@
         tourStep4: "第四步：点击按钮计算交换方式。",
         tourStep5: "一个示例已为您准备好，点击可以加载。",
         tourStep6: "糖果太多了？直接在此输入数量，槽位会自动更新。",
+        tourStep7: "有未解锁的槽位？在此输入最大槽位进行限制。",
         tourNext: "下一步",
         tourDone: "完成",
         switchToEnglish: "切换到英文",
@@ -1784,6 +1862,7 @@
     let tourTarget = null;
     let demandSlots = Array(DEMAND_SLOTS).fill(-1);
     let slotKinds = Array(MAX_SLOTS).fill(-1);
+    let availableSlotCount = MAX_SLOTS;
     let recipeSlots = Array.from({ length: 4 }, () => ({
       in: Array(RECIPE_SIDE_SLOTS).fill(-1),
       out: Array(RECIPE_SIDE_SLOTS).fill(-1)
@@ -1794,7 +1873,8 @@
       { target: "#recipeGrid", textKey: "tourStep3" },
       { target: "#searchBtnSmall", textKey: "tourStep4" },
       { target: "#rerollBtn", textKey: "tourStep5", counted: false },
-      { target: "#countPanel", textKey: "tourStep6", counted: false }
+      { target: "#countPanel", textKey: "tourStep6", counted: false },
+      { target: "#slotCapacityControl", textKey: "tourStep7", counted: false }
     ];
     const TOUR_COUNTED_STEPS = TOUR_STEPS.filter(step => step.counted !== false).length;
 
@@ -1832,6 +1912,7 @@
       });
       els.languageToggle.textContent = currentLang === "zh" ? "EN" : "中文";
       els.languageToggle.setAttribute("aria-label", currentLang === "zh" ? t("switchToEnglish") : t("switchToChinese"));
+      els.slotTotal.setAttribute("aria-label", t("slotCapacity"));
     }
 
     function renderSearchMeta() {
@@ -2008,13 +2089,24 @@
       return span;
     }
 
-    function renderCandySlot(kind, className, title, target) {
+    function lockedDot() {
+      const span = document.createElement("span");
+      span.className = "locked-dot";
+      return span;
+    }
+
+    function renderCandySlot(kind, className, title, target, locked = false) {
       const button = document.createElement("button");
       button.type = "button";
-      button.className = `candy-slot ${className}`;
+      button.className = `candy-slot ${className}${locked ? " locked-slot" : ""}`;
       button.dataset.kind = kind;
       button.title = title;
       button.setAttribute("aria-label", title);
+      if (locked) {
+        button.disabled = true;
+        button.append(lockedDot());
+        return button;
+      }
       if (kind === -1) button.append(emptyDot());
       else button.append(icon(kind, ""));
       button.addEventListener("click", () => {
@@ -2037,10 +2129,12 @@
     function renderSlots() {
       els.slots.innerHTML = "";
       slotKinds.forEach((kind, index) => {
-        els.slots.append(renderCandySlot(kind, "inventory-slot", t("candySlot", { n: index + 1 }), {
+        const locked = index >= availableSlotCount;
+        const title = locked ? t("lockedSlot", { n: index + 1 }) : t("candySlot", { n: index + 1 });
+        els.slots.append(renderCandySlot(kind, "inventory-slot", title, {
           type: "inventory",
           index
-        }));
+        }, locked));
       });
     }
 
@@ -2127,7 +2221,7 @@
         input.className = "count-input";
         input.type = "number";
         input.min = "0";
-        input.max = String(type === "inventory" ? MAX_SLOTS : DEMAND_SLOTS);
+        input.max = String(type === "inventory" ? availableSlotCount : DEMAND_SLOTS);
         input.step = "1";
         input.inputMode = "numeric";
         input.dataset.kind = kind;
@@ -2173,6 +2267,10 @@
         demandSlots[pickerTarget.index] = kind;
         renderDemandRows();
       } else if (pickerTarget.type === "inventory") {
+        if (pickerTarget.index >= availableSlotCount) {
+          closePicker();
+          return;
+        }
         slotKinds[pickerTarget.index] = kind;
         renderSlots();
       } else if (pickerTarget.type === "recipe") {
@@ -2189,7 +2287,55 @@
     }
 
     function getInventory() {
-      return countKinds(slotKinds);
+      return countKinds(slotKinds.slice(0, availableSlotCount));
+    }
+
+    function clampInteger(value, min, max) {
+      const parsed = Number.parseInt(value, 10);
+      if (!Number.isFinite(parsed)) return min;
+      return Math.max(min, Math.min(max, parsed));
+    }
+
+    function syncSlotCapacityInput() {
+      const next = String(availableSlotCount);
+      if (document.activeElement === els.slotTotal && els.slotTotal.value === "") return;
+      if (els.slotTotal.value !== next) els.slotTotal.value = next;
+    }
+
+    function trimInventoryToCapacity() {
+      for (let i = availableSlotCount; i < MAX_SLOTS; i++) {
+        slotKinds[i] = -1;
+      }
+    }
+
+    function updateCountInputLimits() {
+      els.inventoryPills.querySelectorAll(".count-input").forEach(input => {
+        input.max = String(availableSlotCount);
+      });
+      els.targetPills.querySelectorAll(".count-input").forEach(input => {
+        input.max = String(DEMAND_SLOTS);
+      });
+    }
+
+    function setAvailableSlotCount(value) {
+      availableSlotCount = clampInteger(value, 0, MAX_SLOTS);
+      trimInventoryToCapacity();
+      if (pickerTarget?.type === "inventory" && pickerTarget.index >= availableSlotCount) {
+        closePicker();
+      }
+      renderSlots();
+      updateCountInputLimits();
+      syncSlotCapacityInput();
+      updateSummary();
+    }
+
+    function handleSlotCapacityInput() {
+      if (els.slotTotal.value === "") return;
+      setAvailableSlotCount(els.slotTotal.value);
+    }
+
+    function handleSlotCapacityBlur() {
+      setAvailableSlotCount(els.slotTotal.value === "" ? availableSlotCount : els.slotTotal.value);
     }
 
     function countFromInput(input) {
@@ -2234,7 +2380,8 @@
     }
 
     function setSlotsFromCounts(counts) {
-      slotKinds = expandCounts(counts, MAX_SLOTS);
+      slotKinds = expandCounts(counts, availableSlotCount);
+      while (slotKinds.length < MAX_SLOTS) slotKinds.push(-1);
       renderSlots();
     }
 
@@ -2283,7 +2430,8 @@
       const inventory = getInventory();
       const total = sum(inventory);
       els.totalCandy.textContent = total;
-      els.slotTotal.textContent = `${total} / ${MAX_SLOTS}`;
+      syncSlotCapacityInput();
+      updateCountInputLimits();
       syncCountInputs(els.inventoryPills, inventory);
       syncCountInputs(els.targetPills, demand);
     }
@@ -2292,12 +2440,12 @@
       return demand.every((need, i) => state[i] >= need);
     }
 
-    function canApply(state, recipe) {
+    function canApply(state, recipe, capacity) {
       for (let i = 0; i < CANDIES.length; i++) {
         if (state[i] < recipe.consume[i]) return false;
       }
       const nextTotal = sum(state) - sum(recipe.consume) + sum(recipe.produce);
-      return nextTotal <= MAX_SLOTS;
+      return nextTotal <= capacity;
     }
 
     function applyRecipe(state, recipe) {
@@ -2311,10 +2459,10 @@
       return `${recipe.name}: ${candyText(recipe.consume)} -> ${candyText(recipe.produce)}`;
     }
 
-    function buildTransitions(state, randomRecipes) {
+    function buildTransitions(state, randomRecipes, capacity) {
       const transitions = [];
       randomRecipes.forEach(recipe => {
-        if (canApply(state, recipe)) {
+        if (canApply(state, recipe, capacity)) {
           const next = applyRecipe(state, recipe);
           if (keyOf(next) !== keyOf(state)) transitions.push({ next, recipe });
         }
@@ -2341,7 +2489,7 @@
       return total > bestTotal || (total === bestTotal && steps < bestSteps);
     }
 
-    function searchPath(start, demand, randomRecipes) {
+    function searchPath(start, demand, randomRecipes, capacity) {
       const startedAt = performance.now();
       const startKey = keyOf(start);
       const queue = [start];
@@ -2363,7 +2511,7 @@
           bestSteps = steps;
         }
 
-        const moves = buildTransitions(state, randomRecipes);
+        const moves = buildTransitions(state, randomRecipes, capacity);
         for (const move of moves) {
           const nextKey = keyOf(move.next);
           if (distance.has(nextKey)) continue;
@@ -2516,7 +2664,7 @@
         setSearchMeta("searchIdle");
         return;
       }
-      if (totalNeed > MAX_SLOTS) {
+      if (totalNeed > availableSlotCount) {
         setStatusKey("statusTooMany", "bad");
         setSearchMeta("searchIdle");
         return;
@@ -2528,7 +2676,7 @@
       }
 
       window.setTimeout(() => {
-        const result = searchPath(start, demand, recipes);
+        const result = searchPath(start, demand, recipes, availableSlotCount);
         renderResult(result, demand);
       }, 20);
     }
@@ -2549,6 +2697,7 @@
     }
 
     function loadExample() {
+      setAvailableSlotCount(MAX_SLOTS);
       setDemand([2, 8, 4, 0, 1]);
       setSlotsFromCounts([6, 3, 3, 4, 3]);
       setRecipe(0, [0, 0, 1, 2, 0], [0, 0, 0, 0, 3]);
@@ -2584,6 +2733,9 @@
       storeLanguage(currentLang);
       applyLanguage();
     });
+    els.slotTotal.addEventListener("input", handleSlotCapacityInput);
+    els.slotTotal.addEventListener("change", handleSlotCapacityInput);
+    els.slotTotal.addEventListener("blur", handleSlotCapacityBlur);
     els.clearSlots.addEventListener("click", clearAll);
     els.rerollBtn.addEventListener("click", () => {
       if (tourIndex >= 0) endTour();

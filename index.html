@@ -2027,46 +2027,71 @@
       return transitions;
     }
 
+    function isBetterResult(state, steps, bestState, bestSteps) {
+      if (!bestState) return true;
+      const total = sum(state);
+      const bestTotal = sum(bestState);
+      return total > bestTotal || (total === bestTotal && steps < bestSteps);
+    }
+
     function searchPath(start, demand, randomRecipes) {
       const startedAt = performance.now();
       const startKey = keyOf(start);
       const queue = [start];
       let head = 0;
-      const seen = new Set([startKey]);
+      const distance = new Map([[startKey, 0]]);
       const parent = new Map();
-
-      if (hasDemand(start, demand)) {
-        return { found: true, path: [], finalState: start, explored: 1, ms: performance.now() - startedAt };
-      }
+      let bestKey = null;
+      let bestState = null;
+      let bestSteps = Infinity;
 
       while (head < queue.length) {
         const state = queue[head++];
+        const stateKey = keyOf(state);
+        const steps = distance.get(stateKey);
+
+        if (hasDemand(state, demand) && isBetterResult(state, steps, bestState, bestSteps)) {
+          bestKey = stateKey;
+          bestState = state;
+          bestSteps = steps;
+        }
+
         const moves = buildTransitions(state, randomRecipes);
         for (const move of moves) {
           const nextKey = keyOf(move.next);
-          if (seen.has(nextKey)) continue;
-          seen.add(nextKey);
+          if (distance.has(nextKey)) continue;
+          distance.set(nextKey, steps + 1);
           parent.set(nextKey, {
-            prev: keyOf(state),
+            prev: stateKey,
             recipe: move.recipe,
             state: move.next
           });
-          if (hasDemand(move.next, demand)) {
-            const path = [];
-            let cursor = nextKey;
-            while (cursor !== startKey) {
-              const entry = parent.get(cursor);
-              path.push(entry);
-              cursor = entry.prev;
-            }
-            path.reverse();
-            return { found: true, path, finalState: move.next, explored: seen.size, ms: performance.now() - startedAt };
-          }
           queue.push(move.next);
         }
       }
 
-      return { found: false, path: [], finalState: start, explored: seen.size, ms: performance.now() - startedAt };
+      if (!bestKey) {
+        return { found: false, path: [], finalState: start, explored: distance.size, ms: performance.now() - startedAt };
+      }
+
+      const path = [];
+      let cursor = bestKey;
+      while (cursor !== startKey) {
+        const entry = parent.get(cursor);
+        path.push(entry);
+        cursor = entry.prev;
+      }
+      path.reverse();
+
+      return {
+        found: true,
+        path,
+        finalState: bestState,
+        explored: distance.size,
+        ms: performance.now() - startedAt,
+        loss: sum(start) - sum(bestState),
+        steps: bestSteps
+      };
     }
 
     function renderStatus() {

@@ -1419,7 +1419,9 @@
         recipeOutputSlot: "Recipe {recipe} output slot {slot}",
         fixedRecipe: "Fixed recipe",
         none: "None",
-        tradeItem: "Trade Item",
+        netGain: "Net candy gain: {count}",
+        netLoss: "Net candy loss: {count}",
+        netEven: "Net candy change: 0",
         candyGreenName: "Green Ring",
         candyGreenShort: "Green",
         candyMintName: "Peppermint",
@@ -1477,7 +1479,9 @@
         recipeOutputSlot: "配方 {recipe} 输出槽位 {slot}",
         fixedRecipe: "固定配方",
         none: "无",
-        tradeItem: "兑换物品",
+        netGain: "此方案净赚 {count} 颗糖",
+        netLoss: "此方案净亏 {count} 颗糖",
+        netEven: "此方案不亏不赚",
         candyGreenName: "绿环糖",
         candyGreenShort: "绿环",
         candyMintName: "薄荷糖",
@@ -2156,12 +2160,18 @@
       els.steps.append(row);
     }
 
-    function appendTradeItemRow() {
+    function lossText(loss) {
+      if (loss < 0) return t("netGain", { count: Math.abs(loss) });
+      if (loss > 0) return t("netLoss", { count: loss });
+      return t("netEven");
+    }
+
+    function appendTradeItemRow(loss) {
       const row = document.createElement("article");
       row.className = "path-recipe trade-item";
       const text = document.createElement("span");
       text.className = "path-label";
-      text.textContent = t("tradeItem");
+      text.textContent = lossText(loss);
       row.append(text);
       els.steps.append(row);
     }
@@ -2182,7 +2192,7 @@
         appendRecipeRow(entry.recipe.consume, entry.recipe.produce);
       });
 
-      appendTradeItemRow();
+      appendTradeItemRow(result.loss || 0);
     }
 
     function runSearch() {

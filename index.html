@@ -498,11 +498,21 @@
       justify-content: flex-start;
     }
 
+    .path-side.in {
+      justify-content: flex-end;
+    }
+
     .path-side img {
       width: 18px;
       height: 18px;
       object-fit: contain;
       filter: drop-shadow(0 3px 3px rgba(0,0,0,.72));
+      flex: 0 0 auto;
+    }
+
+    .path-empty {
+      width: 18px;
+      height: 18px;
       flex: 0 0 auto;
     }
 
@@ -2068,6 +2078,11 @@
       return next;
     }
 
+    function expandCountsToEnd(counts, length) {
+      const filled = expandCounts(counts, length).filter(kind => kind >= 0);
+      return Array(length - filled.length).fill(-1).concat(filled);
+    }
+
     function candyText(counts) {
       return counts
         .map((n, i) => n ? `${candyShort(i)} x${n}` : "")
@@ -2386,7 +2401,7 @@
     }
 
     function setRecipe(index, consume, produce) {
-      recipeSlots[index].in = expandCounts(consume, RECIPE_SIDE_SLOTS);
+      recipeSlots[index].in = expandCountsToEnd(consume, RECIPE_SIDE_SLOTS);
       recipeSlots[index].out = expandCounts(produce, RECIPE_SIDE_SLOTS);
       renderRecipes();
     }
@@ -2568,10 +2583,30 @@
       els.status.className = "status-box hidden";
     }
 
-    function appendCandyIcons(parent, counts) {
+    function appendCandyIcons(parent, counts, options = {}) {
+      let appended = 0;
+      if (options.length) {
+        const slots = options.alignEnd ? expandCountsToEnd(counts, options.length) : expandCounts(counts, options.length);
+        slots.forEach(kind => {
+          if (kind >= 0) {
+            parent.append(icon(kind, ""));
+            appended += 1;
+          } else {
+            const empty = document.createElement("span");
+            empty.className = "path-empty";
+            parent.append(empty);
+          }
+        });
+        return appended;
+      }
+
       counts.forEach((count, kind) => {
-        for (let i = 0; i < count; i++) parent.append(icon(kind, ""));
+        for (let i = 0; i < count; i++) {
+          parent.append(icon(kind, ""));
+          appended += 1;
+        }
       });
+      return appended;
     }
 
     function appendRecipeRow(consume, produce, label = "") {
@@ -2580,8 +2615,9 @@
 
       const left = document.createElement("div");
       left.className = "path-side in";
-      appendCandyIcons(left, consume);
-      if (!left.childNodes.length) {
+      const leftCandyCount = appendCandyIcons(left, consume, { length: RECIPE_SIDE_SLOTS, alignEnd: true });
+      if (!leftCandyCount) {
+        left.innerHTML = "";
         const empty = document.createElement("span");
         empty.className = "path-label";
         empty.textContent = t("none");

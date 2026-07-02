@@ -7,8 +7,8 @@
   <meta name="description" content="A fan-made calculator for Dota 2 Candyworks to find candy exchange paths.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://www.candyworks.site/">
-  <link rel="icon" type="image/png" href="candywork-assets/reward_candy_huge_png.png">
-  <link rel="shortcut icon" type="image/png" href="candywork-assets/reward_candy_huge_png.png">
+  <link rel="icon" type="image/png" href="candywork-assets/favicon.png">
+  <link rel="shortcut icon" type="image/png" href="candywork-assets/favicon.png">
   <meta property="og:title" content="Calculator for Carnival Candyworks">
   <meta property="og:description" content="A fan-made calculator for Dota 2 Candyworks to find candy exchange paths.">
   <meta property="og:type" content="website">
@@ -17,7 +17,7 @@
   <style>
     @font-face {
       font-family: "Reaver";
-      src: url("candywork-assets/Reaver-Bold.ttf") format("truetype");
+      src: url("candywork-assets/Reaver-Bold.woff2") format("woff2");
       font-weight: 700;
       font-style: normal;
       font-display: swap;
@@ -25,7 +25,7 @@
 
     @font-face {
       font-family: "Radiance";
-      src: url("candywork-assets/radiance.ttf") format("truetype");
+      src: url("candywork-assets/radiance.woff2") format("woff2");
       font-weight: 400 900;
       font-style: normal;
       font-display: swap;
@@ -40,9 +40,9 @@
       --muted: #b8a995;
       --line: rgba(225, 193, 128, .22);
       --shadow: 0 28px 60px rgba(0, 0, 0, .5);
-      --asset-bg: url("candywork-assets/sky_background_png.png");
-      --asset-wood: url("candywork-assets/dark_carnival_woodgrain_04_png.png");
-      --asset-widget: url("candywork-assets/widget_background_png.png");
+      --asset-bg: url("candywork-assets/sky_background_png.webp");
+      --asset-wood: url("candywork-assets/dark_carnival_woodgrain_04_png.webp");
+      --asset-widget: url("candywork-assets/widget_background_png.webp");
       --asset-button: url("candywork-assets/button_border_png.png");
     }
 
@@ -1551,7 +1551,7 @@
       <section class="offers">
         <div class="offer-grid">
           <article class="offer-card">
-            <img class="offer-art" src="candywork-assets/reward_candy_huge_png.png" alt="">
+            <img class="offer-art" src="candywork-assets/reward_candy_huge_png.webp" alt="">
             <div class="offer-content">
               <div class="offer-title" data-i18n="targetTitle">Target Candy</div>
               <div class="demand-slots" id="demandRows"></div>
@@ -1559,7 +1559,7 @@
           </article>
 
           <article class="offer-card">
-            <img class="offer-art small" src="candywork-assets/node_candy_store_psd.png" alt="">
+            <img class="offer-art small" src="candywork-assets/node_candy_store_psd.webp" alt="">
             <div class="offer-content">
               <div class="count-panel" id="countPanel">
                 <section class="count-section" aria-labelledby="inventoryCountTitle">
@@ -1575,7 +1575,7 @@
           </article>
 
           <article class="offer-card" id="tradePathCard">
-            <img class="offer-art frame" src="candywork-assets/reward_candy_reroll_psd.png" alt="">
+            <img class="offer-art frame" src="candywork-assets/reward_candy_reroll_psd.webp" alt="">
             <div class="offer-content">
               <div class="offer-title" data-i18n="tradePath">Trade Path</div>
               <div id="status" class="status-box">Enter target candy, current candy, and recipes, then search.</div>
@@ -1596,7 +1596,7 @@
         <span class="corner-br"></span>
 
         <div class="widget-head">
-          <img class="cauldron" src="candywork-assets/node_candy_store_psd.png" alt="">
+          <img class="cauldron" src="candywork-assets/node_candy_store_psd.webp" alt="">
           <div class="candy-count">
             <strong id="totalCandy">0</strong>
             <span data-i18n="candies">Candies</span>
@@ -1825,11 +1825,11 @@
     const storedLanguage = getStoredLanguage();
     let currentLang = storedLanguage === "zh" ? "zh" : "en";
     const CANDIES = [
-      { nameKey: "candyGreenName", shortKey: "candyGreenShort", img: ASSET + "candy_image_1_psd.png" },
-      { nameKey: "candyMintName", shortKey: "candyMintShort", img: ASSET + "candy_image_2_psd.png" },
-      { nameKey: "candyPurpleName", shortKey: "candyPurpleShort", img: ASSET + "candy_image_3_psd.png" },
-      { nameKey: "candyBlueName", shortKey: "candyBlueShort", img: ASSET + "candy_image_4_psd.png" },
-      { nameKey: "candyBlackName", shortKey: "candyBlackShort", img: ASSET + "candy_image_5_psd.png" }
+      { nameKey: "candyGreenName", shortKey: "candyGreenShort", img: ASSET + "candy_image_1_psd.webp" },
+      { nameKey: "candyMintName", shortKey: "candyMintShort", img: ASSET + "candy_image_2_psd.webp" },
+      { nameKey: "candyPurpleName", shortKey: "candyPurpleShort", img: ASSET + "candy_image_3_psd.webp" },
+      { nameKey: "candyBlueName", shortKey: "candyBlueShort", img: ASSET + "candy_image_4_psd.webp" },
+      { nameKey: "candyBlackName", shortKey: "candyBlackShort", img: ASSET + "candy_image_5_psd.webp" }
     ];
 
     const els = {
@@ -2197,7 +2197,7 @@
       els.rerollTrack.innerHTML = "";
       for (let i = 0; i < 10; i++) {
         const img = document.createElement("img");
-        img.src = ASSET + "reward_candy_reroll_psd.png";
+        img.src = ASSET + "reward_candy_reroll_psd.webp";
         img.alt = "";
         if (i > 3) img.className = "dim";
         els.rerollTrack.append(img);

@@ -395,12 +395,6 @@
       border-color: rgba(255, 226, 151, .72);
     }
 
-    .count-input::-webkit-outer-spin-button,
-    .count-input::-webkit-inner-spin-button {
-      margin: 0;
-      -webkit-appearance: none;
-    }
-
     .status-box {
       width: 100%;
       min-height: 74px;
@@ -1719,16 +1713,11 @@
         netGain: "Net candy gain: {count}",
         netLoss: "Net candy loss: {count}",
         netEven: "Net candy change: 0",
-        candyGreenName: "Green Ring",
-        candyGreenShort: "Green",
-        candyMintName: "Peppermint",
-        candyMintShort: "Mint",
-        candyPurpleName: "Purple Crystal",
-        candyPurpleShort: "Purple",
-        candyBlueName: "Blue Screw",
-        candyBlueShort: "Blue",
-        candyBlackName: "Black Coil",
-        candyBlackShort: "Black",
+        candyGreenName: "Pinelyn Pistachio Nuts",
+        candyMintName: "Smoke Harbor Sweetmeats",
+        candyPurpleName: "Joerlak Jawbreakers",
+        candyBlueName: "Blueheat Breathbolts",
+        candyBlackName: "Keen Confectionary Coils",
         tourStepCount: "Step {current} / {total}",
         tourStep1: "Step 1: Click slots to enter the target item candy.",
         tourStep2: "Step 2: Click slots to enter your current candy.",
@@ -1793,16 +1782,11 @@
         netGain: "此方案净赚 {count} 颗糖",
         netLoss: "此方案净亏 {count} 颗糖",
         netEven: "此方案不亏不赚",
-        candyGreenName: "绿环糖",
-        candyGreenShort: "绿环",
-        candyMintName: "薄荷糖",
-        candyMintShort: "薄荷",
-        candyPurpleName: "紫晶糖",
-        candyPurpleShort: "紫晶",
-        candyBlueName: "蓝螺糖",
-        candyBlueShort: "蓝螺",
-        candyBlackName: "黑卷糖",
-        candyBlackShort: "黑卷",
+        candyGreenName: "松林开心果螺母糖",
+        candyMintName: "迷雾港甜肉干",
+        candyPurpleName: "杰尔拉克碎牙糖",
+        candyBlueName: "蓝心螺栓糖",
+        candyBlackName: "基恩线圈糖",
         tourStepCount: "第 {current} / {total} 步",
         tourStep1: "第一步：点击槽位填入目标物品糖果。",
         tourStep2: "第二步：点击槽位填入已有的糖果。",
@@ -1836,11 +1820,11 @@
     const storedLanguage = getStoredLanguage();
     let currentLang = storedLanguage === "zh" ? "zh" : "en";
     const CANDIES = [
-      { nameKey: "candyGreenName", shortKey: "candyGreenShort", img: ASSET + "candy_image_1_psd.webp" },
-      { nameKey: "candyMintName", shortKey: "candyMintShort", img: ASSET + "candy_image_2_psd.webp" },
-      { nameKey: "candyPurpleName", shortKey: "candyPurpleShort", img: ASSET + "candy_image_3_psd.webp" },
-      { nameKey: "candyBlueName", shortKey: "candyBlueShort", img: ASSET + "candy_image_4_psd.webp" },
-      { nameKey: "candyBlackName", shortKey: "candyBlackShort", img: ASSET + "candy_image_5_psd.webp" }
+      { nameKey: "candyGreenName", img: ASSET + "candy_image_1_psd.webp" },
+      { nameKey: "candyMintName", img: ASSET + "candy_image_2_psd.webp" },
+      { nameKey: "candyPurpleName", img: ASSET + "candy_image_3_psd.webp" },
+      { nameKey: "candyBlueName", img: ASSET + "candy_image_4_psd.webp" },
+      { nameKey: "candyBlackName", img: ASSET + "candy_image_5_psd.webp" }
     ];
 
     const els = {
@@ -1916,10 +1900,6 @@
 
     function candyName(kind) {
       return t(CANDIES[kind].nameKey);
-    }
-
-    function candyShort(kind) {
-      return t(CANDIES[kind].shortKey);
     }
 
     function renderStaticLanguage() {
@@ -2092,13 +2072,6 @@
     function expandCountsToEnd(counts, length) {
       const filled = expandCounts(counts, length).filter(kind => kind >= 0);
       return Array(length - filled.length).fill(-1).concat(filled);
-    }
-
-    function candyText(counts) {
-      return counts
-        .map((n, i) => n ? `${candyShort(i)} x${n}` : "")
-        .filter(Boolean)
-        .join(", ") || t("none");
     }
 
     function icon(kind, className = "candy-icon") {
@@ -2510,13 +2483,6 @@
 
     function applyRecipe(state, recipe) {
       return state.map((n, i) => n - recipe.consume[i] + recipe.produce[i]);
-    }
-
-    function describeMove(recipe) {
-      if (recipe.kind === "fixed") {
-        return `${t("fixedRecipe")}: 3 ${candyShort(recipe.from)} -> 1 ${candyShort(recipe.to)}`;
-      }
-      return `${recipe.name}: ${candyText(recipe.consume)} -> ${candyText(recipe.produce)}`;
     }
 
     function buildTransitions(state, randomRecipes, capacity) {

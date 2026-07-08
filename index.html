@@ -2239,9 +2239,9 @@
       container.innerHTML = "";
       const labelKey = type === "inventory" ? "inventoryCountInput" : "targetCountInput";
       CANDIES.forEach((candy, kind) => {
-        const label = document.createElement("label");
-        label.className = "count-control";
-        label.title = candyName(kind);
+        const control = document.createElement("div");
+        control.className = "count-control";
+        control.title = candyName(kind);
 
         const input = document.createElement("input");
         input.className = "count-input";
@@ -2253,12 +2253,14 @@
         input.dataset.kind = kind;
         input.dataset.countType = type;
         input.setAttribute("aria-label", t(labelKey, { candy: candyName(kind) }));
+        input.addEventListener("focus", clearCountInputForTyping);
+        input.addEventListener("click", clearCountInputForTyping);
         input.addEventListener("input", handleCountInput);
         input.addEventListener("change", handleCountInput);
         input.addEventListener("blur", updateSummary);
 
-        label.append(icon(kind, ""), input);
-        container.append(label);
+        control.append(icon(kind, ""), input);
+        container.append(control);
       });
     }
 
@@ -2388,9 +2390,27 @@
       });
     }
 
+    function clampCountInputToGroupLimit(input) {
+      if (input.value === "") return;
+
+      const container = input.dataset.countType === "inventory" ? els.inventoryPills : els.targetPills;
+      const maxTotal = input.dataset.countType === "inventory" ? availableSlotCount : DEMAND_SLOTS;
+      let otherTotal = 0;
+
+      container.querySelectorAll(".count-input").forEach(nextInput => {
+        if (nextInput !== input) otherTotal += countFromInput(nextInput);
+      });
+
+      const maxForInput = Math.max(0, maxTotal - otherTotal);
+      if (countFromInput(input) > maxForInput) {
+        input.value = String(maxForInput);
+      }
+    }
+
     function handleCountInput(event) {
       const input = event.currentTarget;
       if (input.value !== "" && Number(input.value) < 0) input.value = "0";
+      clampCountInputToGroupLimit(input);
 
       if (input.dataset.countType === "inventory") {
         setSlotsFromCounts(readCountInputs(els.inventoryPills));
@@ -2398,6 +2418,13 @@
         setDemand(readCountInputs(els.targetPills));
       }
       updateSummary();
+    }
+
+    function clearCountInputForTyping(event) {
+      const input = event.currentTarget;
+      if (input.value === "") return;
+      input.value = "";
+      handleCountInput(event);
     }
 
     function setDemand(counts) {

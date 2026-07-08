@@ -47,12 +47,8 @@
     }
 
     html[lang="zh-CN"] {
-      --font-display: "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
-      --font-body: "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
-    }
-
-    html[lang="zh-CN"] #totalCandy {
-      font-family: "Reaver", "Radiance", "Segoe UI", sans-serif;
+      --font-display: "Reaver", "Radiance", "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
+      --font-body: "Reaver", "Radiance", "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
     }
 
     * {
@@ -89,6 +85,7 @@
       color: inherit;
     }
 
+    .github-link,
     .language-toggle,
     .about-toggle,
     .help-toggle {
@@ -114,6 +111,24 @@
       transition: filter .12s ease, transform .12s ease;
     }
 
+    .github-link {
+      left: 18px;
+      width: 42px;
+      min-width: 0;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #f2d89d;
+      text-decoration: none;
+    }
+
+    .github-link svg {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+
     .language-toggle {
       right: 18px;
     }
@@ -128,6 +143,7 @@
       min-width: 124px;
     }
 
+    .github-link:hover,
     .language-toggle:hover,
     .about-toggle:hover,
     .help-toggle:hover {
@@ -175,25 +191,6 @@
       color: #efd6a2;
       font: 700 18px/1 var(--font-body);
       text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
-    }
-
-    .titlebar .subtitle a {
-      color: #f7e3af;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(247, 227, 175, .5);
-      transition: color .12s ease, border-color .12s ease, text-shadow .12s ease;
-    }
-
-    .titlebar .subtitle a::before {
-      content: "·";
-      margin-right: 12px;
-      color: rgba(239, 214, 162, .72);
-    }
-
-    .titlebar .subtitle a:hover {
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, .86);
-      text-shadow: 0 0 12px rgba(247, 227, 175, .42), 0 2px 2px rgba(0, 0, 0, .7);
     }
 
     .stage {
@@ -1220,6 +1217,10 @@
       box-shadow: 0 0 0 9999px rgba(1, 4, 12, .16), 0 0 28px rgba(255, 222, 137, .72);
     }
 
+    .github-link.tour-highlight {
+      position: fixed;
+    }
+
     .tour-panel {
       position: fixed;
       z-index: 33;
@@ -1416,7 +1417,10 @@
 
     html[lang="zh-CN"] .language-toggle,
     html[lang="zh-CN"] .about-toggle,
-    html[lang="zh-CN"] .help-toggle,
+    html[lang="zh-CN"] .help-toggle {
+      font-family: 'Reaver', 'Microsoft YaHei';
+    }
+
     html[lang="zh-CN"] .ornate-button,
     html[lang="zh-CN"] .metal-button,
     html[lang="zh-CN"] .reroll-button,
@@ -1450,6 +1454,11 @@
     }
 
     @media (max-width: 780px) {
+      .github-link {
+        top: 12px;
+        left: 12px;
+      }
+
       .language-toggle {
         top: 12px;
         right: 12px;
@@ -1534,6 +1543,9 @@
   </style>
 </head>
 <body>
+  <a class="github-link" id="githubLink" href="https://github.com/TinyKiecoo/Calculator-for-Carnival-Candyworks" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" title="GitHub repository">
+    <svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-mark-github" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" display="inline-block" overflow="visible"><path d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943"></path></svg>
+  </a>
   <button class="about-toggle" id="aboutBtn" type="button" data-i18n="whatsThis">What's this</button>
   <button class="help-toggle" id="helpBtn" type="button" data-i18n="howToUse">How to Use</button>
   <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Simplified Chinese">中文</button>
@@ -1542,8 +1554,7 @@
     <header class="titlebar">
       <h1 data-i18n="title">CARNIVAL CANDYWORKS</h1>
       <div class="subtitle">
-        <span data-i18n="subtitle">Trade candy for items.</span>
-        <a href="https://github.com/TinyKiecoo/Calculator-for-Carnival-Candyworks" target="_blank" rel="noopener noreferrer" data-i18n="starLink">Give me a Star</a>
+        <span data-i18n="subtitle">An open-source calculator for Dota 2 Candyworks.</span>
       </div>
     </header>
 
@@ -1661,8 +1672,7 @@
       en: {
         pageTitle: "Calculator for Carnival Candyworks",
         title: "CARNIVAL CANDYWORKS",
-        subtitle: "Trade candy for items.",
-        starLink: "Give me a Star",
+        subtitle: "An open-source calculator for Dota 2 Candyworks.",
         whatsThis: "What's this",
         aboutTitle: "What's this?",
         aboutLine1: "You can always trade 3 candies for any 1 candy, but each exchange loses 2 candies.",
@@ -1727,6 +1737,7 @@
         tourStep5: "An example was prepared for you. Click to load.",
         tourStep6: "Too many candies? Enter the counts here and the slots will update automatically.",
         tourStep7: "Locked slots? Enter the maximum slot count here to limit the search.",
+        tourStep8: "If this calculator helps, please give me a free Star on GitHub. This means a lot to me. Thank you :)",
         tourNext: "Next",
         tourDone: "Done",
         switchToEnglish: "Switch to English",
@@ -1735,8 +1746,7 @@
       zh: {
         pageTitle: "Dota 2 狂欢糖果车计算器",
         title: "狂欢糖果车",
-        subtitle: "使用糖果交换物品。",
-        starLink: "给我一颗 Star",
+        subtitle: "开源的 Dota 2 糖果车计算器",
         whatsThis: "这是什么",
         aboutTitle: "这是什么？",
         aboutLine1: "您当然可以用 3 颗糖换任意 1 颗糖，但每次置换都会亏 2 颗糖。",
@@ -1801,6 +1811,7 @@
         tourStep5: "一个示例已为您准备好，点击可以加载。",
         tourStep6: "糖果太多了？直接在此输入数量，槽位会自动更新。",
         tourStep7: "有未解锁的槽位？在此输入最大槽位进行限制。",
+        tourStep8: "如果这个计算器帮到了您，欢迎在 GitHub 中给一颗免费的 Star。真的非常感激！",
         tourNext: "下一步",
         tourDone: "完成",
         switchToEnglish: "切换到英文",
@@ -1883,7 +1894,8 @@
       { target: "#searchBtnSmall", textKey: "tourStep4" },
       { target: "#rerollBtn", textKey: "tourStep5", counted: false },
       { target: "#countPanel", textKey: "tourStep6", counted: false },
-      { target: "#slotCapacityControl", textKey: "tourStep7", counted: false }
+      { target: "#slotCapacityControl", textKey: "tourStep7", counted: false },
+      { target: "#githubLink", textKey: "tourStep8", counted: false }
     ];
     const TOUR_COUNTED_STEPS = TOUR_STEPS.filter(step => step.counted !== false).length;
 

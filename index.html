@@ -2245,11 +2245,12 @@
 
         const input = document.createElement("input");
         input.className = "count-input";
-        input.type = "number";
+        input.type = "text";
         input.min = "0";
         input.max = String(type === "inventory" ? availableSlotCount : DEMAND_SLOTS);
         input.step = "1";
         input.inputMode = "numeric";
+        input.pattern = "[0-9]*";
         input.dataset.kind = kind;
         input.dataset.countType = type;
         input.setAttribute("aria-label", t(labelKey, { candy: candyName(kind) }));
@@ -2374,6 +2375,12 @@
       return Math.max(0, capped);
     }
 
+    function normalizeCountInput(input) {
+      if (input.value === "") return;
+      const parsed = Number.parseInt(input.value, 10);
+      input.value = Number.isFinite(parsed) ? String(Math.max(0, parsed)) : "";
+    }
+
     function readCountInputs(container) {
       const counts = Array(CANDIES.length).fill(0);
       container.querySelectorAll(".count-input").forEach(input => {
@@ -2409,7 +2416,7 @@
 
     function handleCountInput(event) {
       const input = event.currentTarget;
-      if (input.value !== "" && Number(input.value) < 0) input.value = "0";
+      normalizeCountInput(input);
       clampCountInputToGroupLimit(input);
 
       if (input.dataset.countType === "inventory") {

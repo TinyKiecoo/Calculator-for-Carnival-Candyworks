@@ -2227,7 +2227,7 @@
         input.addEventListener("click", clearCountInputForTyping);
         input.addEventListener("input", handleCountInput);
         input.addEventListener("change", handleCountInput);
-        input.addEventListener("blur", updateSummary);
+        input.addEventListener("blur", finishCountInputEdit);
 
         control.append(icon(kind, ""), input);
         container.append(control);
@@ -2386,6 +2386,8 @@
     function handleCountInput(event) {
       const input = event.currentTarget;
       normalizeCountInput(input);
+      if (input.value === "") return;
+
       clampCountInputToGroupLimit(input);
 
       if (input.dataset.countType === "inventory") {
@@ -2400,6 +2402,23 @@
       const input = event.currentTarget;
       if (input.value === "") return;
       input.value = "";
+    }
+
+    function restoreCountInputFromState(input) {
+      const counts = input.dataset.countType === "inventory" ? getInventory() : getDemand();
+      input.value = String(counts[Number(input.dataset.kind)] ?? 0);
+    }
+
+    function finishCountInputEdit(event) {
+      const input = event.currentTarget;
+      normalizeCountInput(input);
+
+      if (input.value === "") {
+        restoreCountInputFromState(input);
+        updateSummary();
+        return;
+      }
+
       handleCountInput(event);
     }
 

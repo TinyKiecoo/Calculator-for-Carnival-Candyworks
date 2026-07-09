@@ -22,7 +22,7 @@ This project include Dota 2 / Valve-derived images, fonts, and UI materials insi
 
 The project is not affiliated with Valve or Dota 2. The license does not grant any rights to those third-party materials.
 
-The website uses third-party services to track public visitor data, which can be accessed [here](https://www.busuanzi.cc/count.php?search=www.candyworks.site) by everyone.
+The website uses third-party visitor counters. The public counter value can be viewed [here](https://www.busuanzi.cc/count.php?search=www.candyworks.site).
 
 ## License
 

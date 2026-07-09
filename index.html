@@ -87,6 +87,7 @@
     }
 
     .github-link,
+    .info-toggle,
     .language-toggle,
     .about-toggle,
     .help-toggle {
@@ -124,10 +125,19 @@
       text-decoration: none;
     }
 
-    .github-link svg {
+    .info-toggle {
+      left: 68px;
+      width: 42px;
+      min-width: 0;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .github-link svg, .info-icon {
       width: 28px;
       height: 28px;
-      display: block;
     }
 
     .language-toggle {
@@ -145,6 +155,7 @@
     }
 
     .github-link:hover,
+    .info-toggle:hover,
     .language-toggle:hover,
     .about-toggle:hover,
     .help-toggle:hover {
@@ -1363,6 +1374,25 @@
       margin: 0;
     }
 
+    .disclaimer-dialog {
+      width: min(650px, 100%);
+    }
+
+    .disclaimer-copy {
+      gap: 12px;
+      font-size: 16px;
+    }
+
+    .disclaimer-copy a {
+      color: #ffe5a8;
+      text-decoration-color: rgba(255, 229, 168, .55);
+    }
+
+    .disclaimer-copy a:hover {
+      color: #ffffff;
+      text-decoration-color: rgba(255, 255, 255, .86);
+    }
+
     .about-close {
       position: relative;
       width: 148px;
@@ -1454,6 +1484,11 @@
         left: 12px;
       }
 
+      .info-toggle {
+        top: 12px;
+        left: 62px;
+      }
+
       .language-toggle {
         top: 12px;
         right: 12px;
@@ -1541,6 +1576,9 @@
   <a class="github-link" id="githubLink" href="https://github.com/TinyKiecoo/Calculator-for-Carnival-Candyworks" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" title="GitHub repository">
     <svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-mark-github" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" display="inline-block" overflow="visible"><path d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943"></path></svg>
   </a>
+  <button class="info-toggle" id="disclaimerBtn" type="button" aria-label="Disclaimer" title="Disclaimer">
+    <img class="info-icon" src="candywork-assets/icon_info_f2d89d.png">
+  </button>
   <button class="about-toggle" id="aboutBtn" type="button" data-i18n="whatsThis">What's this</button>
   <button class="help-toggle" id="helpBtn" type="button" data-i18n="howToUse">How to Use</button>
   <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Simplified Chinese">中文</button>
@@ -1658,6 +1696,17 @@
     </div>
   </div>
 
+  <div class="about-backdrop" id="disclaimerBackdrop" aria-hidden="true">
+    <div class="about-dialog disclaimer-dialog" role="dialog">
+      <div class="about-copy disclaimer-copy">
+        <p data-i18n="disclaimerLine1">This is a free, open-source, non-commercial fan project and is not affiliated with Valve, Steam, or Dota 2.</p>
+        <p data-i18n="disclaimerLine2">It uses Dota 2 / Valve-derived images, fonts, names, and UI materials. Those materials remain the property of Valve and their respective rights holders; this project's open-source license does not grant rights to them.</p>
+        <p><span data-i18n="disclaimerLine3Before">This site uses third-party visit counters. The public counter value can be viewed</span> <a href="https://www.busuanzi.cc/count.php?search=www.candyworks.site" target="_blank" rel="noopener noreferrer" data-i18n="disclaimerLine3Link">here</a><span data-i18n="disclaimerLine3After">.</span></p>
+      </div>
+      <button class="about-close" id="disclaimerClose" type="button" data-i18n="aboutClose">Close</button>
+    </div>
+  </div>
+
   <script>
     const MAX_SLOTS = 30;
     const DEMAND_SLOTS = 18;
@@ -1668,6 +1717,12 @@
         pageTitle: "Calculator for Carnival Candyworks",
         title: "CARNIVAL CANDYWORKS",
         subtitle: "An open-source calculator for Dota 2 Candyworks.",
+        disclaimerButton: "Disclaimer",
+        disclaimerLine1: "This is a free, open-source, non-commercial fan project and is not affiliated with Valve, Steam, or Dota 2.",
+        disclaimerLine2: "It uses Dota 2 / Valve-derived images, fonts, names, and UI materials. Those materials remain the property of Valve and their respective rights holders; this project's open-source license does not grant rights to them.",
+        disclaimerLine3Before: "This site uses third-party visit counters. The public counter value can be viewed",
+        disclaimerLine3Link: "here",
+        disclaimerLine3After: ".",
         whatsThis: "What's this",
         aboutTitle: "What's this?",
         aboutLine1: "You can always trade 3 candies for any 1 candy, but each exchange loses 2 candies.",
@@ -1735,6 +1790,12 @@
         pageTitle: "狂欢糖果车计算器",
         title: "狂欢糖果车",
         subtitle: "开源的 Dota 2 糖果车计算器",
+        disclaimerButton: "免责声明",
+        disclaimerLine1: "这是一个免费、开源、非商业的玩家项目，与 Valve、Steam 或 Dota 2 官方无关联。",
+        disclaimerLine2: "本项目使用了 Dota 2 / Valve 相关图片、字体、名称和界面素材。这些素材仍归 Valve 及相应权利方所有；本项目的开源许可证不授予这些素材的使用权。",
+        disclaimerLine3Before: "本站使用第三方访问计数服务。公开的计数值可在",
+        disclaimerLine3Link: "这里 ",
+        disclaimerLine3After: "查看。",
         whatsThis: "这是什么",
         aboutTitle: "这是什么？",
         aboutLine1: "您当然可以用 3 颗糖换任意 1 颗糖，但每次置换都会亏 2 颗糖。",
@@ -1825,6 +1886,7 @@
     ];
 
     const els = {
+      disclaimerBtn: document.querySelector("#disclaimerBtn"),
       aboutBtn: document.querySelector("#aboutBtn"),
       helpBtn: document.querySelector("#helpBtn"),
       languageToggle: document.querySelector("#languageToggle"),
@@ -1851,6 +1913,8 @@
       tourStepCount: document.querySelector("#tourStepCount"),
       tourText: document.querySelector("#tourText"),
       tourNext: document.querySelector("#tourNext"),
+      disclaimerBackdrop: document.querySelector("#disclaimerBackdrop"),
+      disclaimerClose: document.querySelector("#disclaimerClose"),
       aboutBackdrop: document.querySelector("#aboutBackdrop"),
       aboutClose: document.querySelector("#aboutClose")
     };
@@ -1910,6 +1974,8 @@
       });
       els.languageToggle.textContent = currentLang === "zh" ? "EN" : "中文";
       els.languageToggle.setAttribute("aria-label", currentLang === "zh" ? t("switchToEnglish") : t("switchToChinese"));
+      els.disclaimerBtn.setAttribute("aria-label", t("disclaimerButton"));
+      els.disclaimerBtn.title = t("disclaimerButton");
       els.slotTotal.setAttribute("aria-label", t("slotCapacity"));
     }
 
@@ -2250,6 +2316,7 @@
     function openAbout() {
       if (els.pickerBackdrop.classList.contains("open")) closePicker();
       if (tourIndex >= 0) endTour();
+      closeDisclaimer();
       els.aboutBackdrop.classList.add("open");
       els.aboutBackdrop.setAttribute("aria-hidden", "false");
     }
@@ -2257,6 +2324,19 @@
     function closeAbout() {
       els.aboutBackdrop.classList.remove("open");
       els.aboutBackdrop.setAttribute("aria-hidden", "true");
+    }
+
+    function openDisclaimer() {
+      if (els.pickerBackdrop.classList.contains("open")) closePicker();
+      if (tourIndex >= 0) endTour();
+      closeAbout();
+      els.disclaimerBackdrop.classList.add("open");
+      els.disclaimerBackdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDisclaimer() {
+      els.disclaimerBackdrop.classList.remove("open");
+      els.disclaimerBackdrop.setAttribute("aria-hidden", "true");
     }
 
     function chooseCandy(kind) {
@@ -2789,6 +2869,7 @@
       if (tourIndex >= 0) endTour();
       runSearch();
     });
+    els.disclaimerBtn.addEventListener("click", openDisclaimer);
     els.aboutBtn.addEventListener("click", openAbout);
     els.helpBtn.addEventListener("click", startTour);
     els.languageToggle.addEventListener("click", () => {
@@ -2812,6 +2893,10 @@
     els.aboutBackdrop.addEventListener("click", event => {
       if (event.target === els.aboutBackdrop) closeAbout();
     });
+    els.disclaimerClose.addEventListener("click", closeDisclaimer);
+    els.disclaimerBackdrop.addEventListener("click", event => {
+      if (event.target === els.disclaimerBackdrop) closeDisclaimer();
+    });
     window.addEventListener("resize", positionTourPanel);
     els.pickerClear.addEventListener("click", () => chooseCandy(-1));
     els.pickerBackdrop.addEventListener("click", event => {
@@ -2821,6 +2906,7 @@
       if (event.key === "Escape" && els.pickerBackdrop.classList.contains("open")) closePicker();
       if (event.key === "Escape" && els.tourBackdrop.classList.contains("open")) endTour();
       if (event.key === "Escape" && els.aboutBackdrop.classList.contains("open")) closeAbout();
+      if (event.key === "Escape" && els.disclaimerBackdrop.classList.contains("open")) closeDisclaimer();
     });
   </script>
   <script defer>

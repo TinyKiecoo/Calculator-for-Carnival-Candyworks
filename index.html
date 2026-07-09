@@ -2823,5 +2823,14 @@
       if (event.key === "Escape" && els.aboutBackdrop.classList.contains("open")) closeAbout();
     });
   </script>
+  <script defer>
+    fetch("https://w.saobby.com/api/visit/7bplg3t4", {
+      method: "GET",
+      mode: "no-cors",
+      credentials: "omit",
+      cache: "no-store",
+      referrerPolicy: "origin"
+    }).catch(() => {});
+  </script>
 </body>
 </html>

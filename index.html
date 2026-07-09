@@ -1200,7 +1200,7 @@
     .tour-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 24;
+      z-index: 900;
       background: rgba(1, 4, 12, .72);
       opacity: 0;
       visibility: hidden;
@@ -1216,7 +1216,7 @@
 
     .tour-highlight {
       position: relative;
-      z-index: 31;
+      z-index: 1000;
       border-radius: 6px;
       outline: 2px solid rgba(255, 226, 151, .98);
       outline-offset: 8px;
@@ -1229,7 +1229,7 @@
 
     .tour-panel {
       position: fixed;
-      z-index: 33;
+      z-index: 1100;
       width: min(390px, calc(100vw - 32px));
       min-height: 132px;
       padding: 18px;
@@ -1239,11 +1239,17 @@
       border: 1px solid rgba(235, 195, 116, .55);
       color: #f8e8c5;
       box-shadow: 0 24px 70px rgba(0, 0, 0, .65), inset 0 0 0 1px rgba(255,255,255,.05);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
       transform: translateY(8px) scale(.96);
-      transition: transform .18s ease;
+      transition: transform .18s ease, opacity .18s ease, visibility .18s ease;
     }
 
-    .tour-backdrop.open .tour-panel {
+    .tour-panel.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
       transform: translateY(0) scale(1);
     }
 
@@ -1677,12 +1683,11 @@
     </div>
   </div>
 
-  <div class="tour-backdrop" id="tourBackdrop" aria-hidden="true">
-    <div class="tour-panel" id="tourPanel" role="dialog" aria-modal="true" aria-labelledby="tourText">
-      <div class="tour-step-count" id="tourStepCount"></div>
-      <div class="tour-text" id="tourText"></div>
-      <button class="tour-next" id="tourNext" type="button">Next</button>
-    </div>
+  <div class="tour-backdrop" id="tourBackdrop" aria-hidden="true"></div>
+  <div class="tour-panel" id="tourPanel" role="dialog" aria-modal="true" aria-labelledby="tourText" aria-hidden="true">
+    <div class="tour-step-count" id="tourStepCount"></div>
+    <div class="tour-text" id="tourText"></div>
+    <button class="tour-next" id="tourNext" type="button">Next</button>
   </div>
 
   <div class="about-backdrop" id="aboutBackdrop" aria-hidden="true">
@@ -2039,6 +2044,10 @@
         top = rect.top - panelHeight - margin + stepExtraOffset;
       }
 
+      if (tourIndex === 0) {
+        top -= panelHeight * 1.5;
+      }
+
       left = Math.max(16, Math.min(left, window.innerWidth - panelWidth - 16));
       top = Math.max(16, Math.min(top, window.innerHeight - panelHeight - 16));
 
@@ -2064,6 +2073,8 @@
       target.classList.add("tour-highlight");
       els.tourBackdrop.classList.add("open");
       els.tourBackdrop.setAttribute("aria-hidden", "false");
+      els.tourPanel.classList.add("open");
+      els.tourPanel.setAttribute("aria-hidden", "false");
       const countedStep = step.counted !== false;
       els.tourPanel.classList.toggle("tip-mode", !countedStep);
       if (countedStep) {
@@ -2102,7 +2113,8 @@
       clearTourHighlight();
       tourIndex = -1;
       tourTarget = null;
-      els.tourPanel.classList.remove("tip-mode");
+      els.tourPanel.classList.remove("open", "tip-mode");
+      els.tourPanel.setAttribute("aria-hidden", "true");
       els.tourBackdrop.classList.remove("open");
       els.tourBackdrop.setAttribute("aria-hidden", "true");
     }

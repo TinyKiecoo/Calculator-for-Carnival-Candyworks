@@ -63,10 +63,7 @@
       color-scheme: dark;
       --font-display: "Reaver", "Candyworks Kai", "Candyworks Russian", Arial, sans-serif;
       --font-body: "Radiance", "Candyworks Kai", "Candyworks Russian", Arial, sans-serif;
-      --gold: #f0d59a;
       --ink: #f6ead2;
-      --muted: #b8a995;
-      --line: rgba(225, 193, 128, .22);
       --shadow: 0 28px 60px rgba(0, 0, 0, .5);
       --asset-bg: url("candywork-assets/sky_background_png.webp");
       --asset-wood: url("candywork-assets/dark_carnival_woodgrain_04_png.webp");
@@ -396,7 +393,6 @@
     .count-section-title,
     .board-title,
     .exchange-title,
-    .ornate-button,
     .metal-button,
     .reroll-button,
     .widget-search-button,
@@ -429,14 +425,6 @@
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 7px;
       align-items: center;
-    }
-
-    .candy-icon {
-      width: 34px;
-      height: 34px;
-      object-fit: contain;
-      filter: drop-shadow(0 5px 4px rgba(0, 0, 0, .6));
-      flex: 0 0 auto;
     }
 
     .count-panel {
@@ -508,11 +496,6 @@
       box-shadow: inset 0 0 12px rgba(0, 0, 0, .55);
     }
 
-    .status-box.ok {
-      color: #b9f0c7;
-      border-color: rgba(111, 206, 135, .28);
-    }
-
     .status-box.bad {
       color: #ffc1b8;
       border-color: rgba(238, 91, 73, .32);
@@ -529,39 +512,6 @@
       display: grid;
       gap: 7px;
       padding-right: 4px;
-    }
-
-    .step {
-      display: grid;
-      grid-template-columns: 28px minmax(0, 1fr);
-      gap: 8px;
-      align-items: start;
-      padding: 7px;
-      border: 1px solid rgba(221, 185, 116, .14);
-      background: rgba(10, 8, 15, .55);
-      font: 600 12px/1.35 var(--font-body);
-      color: #d9cbb4;
-    }
-
-    .step-no {
-      width: 24px;
-      height: 24px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: #2d1c12;
-      background: #d6ae70;
-      font-weight: 900;
-    }
-
-    .step-title {
-      color: #fff0c9;
-      font-weight: 800;
-    }
-
-    .state-line {
-      margin-top: 2px;
-      color: #a99a88;
     }
 
     .path-recipe {
@@ -668,49 +618,6 @@
       display: none;
     }
 
-    .ornate-button {
-      position: absolute;
-      left: 50%;
-      bottom: 18px;
-      width: min(82%, 226px);
-      height: 40px;
-      transform: translateX(-50%);
-      border: 0;
-      background: transparent;
-      color: #f2d89d;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 700;
-      text-shadow: 0 2px 3px #000;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, .4);
-      isolation: isolate;
-      overflow: visible;
-    }
-
-    .ornate-button::before {
-      content: "";
-      position: absolute;
-      inset: -7px -15px;
-      background:
-        radial-gradient(ellipse at 50% 15%, rgba(255, 232, 164, .22), transparent 50%),
-        linear-gradient(90deg, rgba(12, 9, 17, .74), rgba(65, 45, 69, .2) 48%, rgba(12, 9, 17, .74)),
-        linear-gradient(180deg, rgba(85, 62, 83, .52), rgba(18, 14, 27, .96) 76%),
-        center top / cover no-repeat;
-      clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0 50%);
-      pointer-events: none;
-      z-index: -2;
-    }
-
-    .ornate-button::after {
-      content: "";
-      position: absolute;
-      inset: -7px -15px;
-      background: var(--asset-button) center / 100% 100% no-repeat;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .ornate-button:hover,
     .reroll-button:hover,
     .metal-button:hover,
     .widget-search-button:hover {
@@ -1543,7 +1450,6 @@
       font-family: "Reaver", "Candyworks YaHei", "Candyworks Russian", Arial, sans-serif;
     }
 
-    html[lang="zh-CN"] .ornate-button,
     html[lang="zh-CN"] .metal-button,
     html[lang="zh-CN"] .reroll-button,
     html[lang="zh-CN"] .widget-search-button,
@@ -2108,9 +2014,6 @@
         targetCandy: "Target Candy",
         yourCandy: "Your Candy",
         tradePath: "Trade Path",
-        trade: "Trade",
-        clear: "Clear",
-        example: "Example",
         rerollItems: "Load Example",
         candies: "Candies",
         clearSlots: "Clear All",
@@ -2139,7 +2042,6 @@
         recipeName: "Recipe {n}",
         recipeInputSlot: "Recipe {recipe} input slot {slot}",
         recipeOutputSlot: "Recipe {recipe} output slot {slot}",
-        fixedRecipe: "Fixed recipe",
         none: "None",
         netGain: "Net candy gain: {count}",
         netLoss: "Net candy loss: {count}",
@@ -2157,15 +2059,11 @@
         tourStep3: "Step 3: Enter the current exchange recipes.",
         tourStep4: "Step 4: Click the button to calculate the trade path.",
         tourStep5: "An example was prepared for you. Click to load.",
-        tourStep6: "Too many candies? Enter the counts here and the slots will update automatically.",
         tourStep7: "Locked slots? Enter the maximum slot count here to limit the search. (In Dark Carnival, all slots are unlocked.)",
         tourStep8: "If this calculator helps, please give me a free Star on GitHub. This means a lot to me. Thank you :)",
         tourNext: "Next",
         tourDone: "Done",
         closeResults: "Close results",
-        switchToEnglish: "Switch to English",
-        switchToChinese: "Switch to Simplified Chinese",
-        switchToRussian: "Switch to Russian",
         languageButtonLabel: "Choose language. Current: {language}",
         languageMenuLabel: "Choose language"
       },
@@ -2187,9 +2085,6 @@
         targetCandy: "目标糖果",
         yourCandy: "您的糖果",
         tradePath: "兑换路线",
-        trade: "兑换",
-        clear: "清空",
-        example: "示例",
         rerollItems: "加载示例",
         candies: "糖果",
         clearSlots: "全部清空",
@@ -2218,7 +2113,6 @@
         recipeName: "配方 {n}",
         recipeInputSlot: "配方 {recipe} 输入槽位 {slot}",
         recipeOutputSlot: "配方 {recipe} 输出槽位 {slot}",
-        fixedRecipe: "固定配方",
         none: "无",
         netGain: "此方案净赚 {count} 颗糖",
         netLoss: "此方案净亏 {count} 颗糖",
@@ -2236,15 +2130,11 @@
         tourStep3: "第三步：填入目前的交换配方。",
         tourStep4: "第四步：点击按钮计算交换方式。",
         tourStep5: "一个示例已为您准备好，点击可以加载。",
-        tourStep6: "糖果太多了？直接在此输入数量，槽位会自动更新。",
         tourStep7: "有未解锁的槽位？在此输入最大槽位进行限制。（暗黑狂欢活动所有槽位都是解锁的。）",
         tourStep8: "如果这个计算器帮到了您，欢迎在 GitHub 中给一颗免费的 Star。真的非常感激！",
         tourNext: "下一步",
         tourDone: "完成",
         closeResults: "关闭搜索结果",
-        switchToEnglish: "切换到英文",
-        switchToChinese: "切换到简体中文",
-        switchToRussian: "切换到俄文",
         languageButtonLabel: "选择语言，当前为：{language}",
         languageMenuLabel: "选择语言"
       },
@@ -2266,9 +2156,6 @@
         targetCandy: "Нужные конфеты",
         yourCandy: "Ваши конфеты",
         tradePath: "Путь обмена",
-        trade: "Обмен",
-        clear: "Очистить",
-        example: "Пример",
         rerollItems: "Загрузить пример",
         candies: "Конфеты",
         clearSlots: "Очистить всё",
@@ -2297,7 +2184,6 @@
         recipeName: "Рецепт {n}",
         recipeInputSlot: "Рецепт {recipe}, входная ячейка {slot}",
         recipeOutputSlot: "Рецепт {recipe}, выходная ячейка {slot}",
-        fixedRecipe: "Фиксированный рецепт",
         none: "Нет",
         netGain: "Чистый прирост конфет: {count}",
         netLoss: "Чистая потеря конфет: {count}",
@@ -2315,15 +2201,11 @@
         tourStep3: "Шаг 3: Введите текущие рецепты обмена.",
         tourStep4: "Шаг 4: Нажмите кнопку, чтобы рассчитать путь обмена.",
         tourStep5: "Для вас подготовлен пример. Нажмите, чтобы загрузить его.",
-        tourStep6: "Много конфет? Введите количество здесь, и ячейки обновятся автоматически.",
         tourStep7: "Есть заблокированные ячейки? Укажите максимальное число доступных ячеек. (В «Тёмном карнавале» открыты все ячейки.)",
         tourStep8: "Если калькулятор вам помог, поставьте бесплатную звезду на GitHub. Большое спасибо!",
         tourNext: "Далее",
         tourDone: "Готово",
         closeResults: "Закрыть результаты",
-        switchToEnglish: "Переключить на английский",
-        switchToChinese: "Переключить на упрощённый китайский",
-        switchToRussian: "Переключить на русский",
         languageButtonLabel: "Выбор языка. Текущий: {language}",
         languageMenuLabel: "Выбор языка"
       }
@@ -2412,11 +2294,10 @@
     };
 
     let pickerTarget = null;
-    let lastStatus = null;
+    let lastStatus = { key: "statusIntro", mode: "", vars: {} };
     let lastSearchMeta = { key: "searchIdle", vars: {} };
     let lastSearchResult = null;
     let tourIndex = -1;
-    let tourTarget = null;
     let tourTargets = [];
     let demandSlots = Array(DEMAND_SLOTS).fill(-1);
     let slotKinds = Array(MAX_SLOTS).fill(-1);
@@ -2562,7 +2443,7 @@
     }
 
     function positionTourPanel() {
-      if (!tourTarget || !tourTargets.length || tourIndex < 0) return;
+      if (!tourTargets.length || tourIndex < 0) return;
 
       const rects = tourTargets.map(target => target.getBoundingClientRect());
       const rect = {
@@ -2608,7 +2489,6 @@
         return;
       }
 
-      tourTarget = target;
       tourTargets = targets;
       tourTargets.forEach(item => item.classList.add("tour-highlight"));
       els.tourBackdrop.classList.add("open");
@@ -2653,7 +2533,6 @@
     function endTour() {
       clearTourHighlight();
       tourIndex = -1;
-      tourTarget = null;
       tourTargets = [];
       els.tourPanel.classList.remove("open", "tip-mode");
       els.tourPanel.setAttribute("aria-hidden", "true");
@@ -2691,9 +2570,8 @@
       return Array(length - filled.length).fill(-1).concat(filled);
     }
 
-    function icon(kind, className = "candy-icon") {
+    function icon(kind) {
       const img = document.createElement("img");
-      img.className = className;
       img.src = CANDIES[kind].img;
       img.alt = candyName(kind);
       return img;
@@ -2724,7 +2602,7 @@
         return button;
       }
       if (kind === -1) button.append(emptyDot());
-      else button.append(icon(kind, ""));
+      else button.append(icon(kind));
       button.addEventListener("click", () => {
         if (tourIndex >= 0) endTour();
         openPicker(target);
@@ -2808,16 +2686,16 @@
 
     function renderPickerOptions() {
       els.pickerOptions.innerHTML = "";
-      CANDIES.forEach((candy, kind) => {
+      for (let kind = 0; kind < CANDIES.length; kind++) {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "picker-option";
         button.title = candyName(kind);
         button.setAttribute("aria-label", candyName(kind));
-        button.append(icon(kind, ""));
+        button.append(icon(kind));
         button.addEventListener("click", () => chooseCandy(kind));
         els.pickerOptions.append(button);
-      });
+      }
     }
 
     function renderCountControls() {
@@ -2828,7 +2706,7 @@
     function renderCountInputs(container, type) {
       container.innerHTML = "";
       const labelKey = type === "inventory" ? "inventoryCountInput" : "targetCountInput";
-      CANDIES.forEach((candy, kind) => {
+      for (let kind = 0; kind < CANDIES.length; kind++) {
         const control = document.createElement("div");
         control.className = "count-control";
         control.title = candyName(kind);
@@ -2836,9 +2714,7 @@
         const input = document.createElement("input");
         input.className = "count-input";
         input.type = "text";
-        input.min = "0";
         input.max = String(type === "inventory" ? availableSlotCount : DEMAND_SLOTS);
-        input.step = "1";
         input.inputMode = "numeric";
         input.pattern = "[0-9]*";
         input.dataset.kind = kind;
@@ -2850,9 +2726,9 @@
         input.addEventListener("change", handleCountInput);
         input.addEventListener("blur", finishCountInputEdit);
 
-        control.append(icon(kind, ""), input);
+        control.append(icon(kind), input);
         container.append(control);
-      });
+      }
     }
 
     function openPicker(target) {
@@ -2977,12 +2853,9 @@
       }
     }
 
-    function updateCountInputLimits() {
+    function updateInventoryInputLimits() {
       els.inventoryPills.querySelectorAll(".count-input").forEach(input => {
         input.max = String(availableSlotCount);
-      });
-      els.targetPills.querySelectorAll(".count-input").forEach(input => {
-        input.max = String(DEMAND_SLOTS);
       });
     }
 
@@ -2993,8 +2866,7 @@
         closePicker();
       }
       renderSlots();
-      updateCountInputLimits();
-      syncSlotCapacityInput();
+      updateInventoryInputLimits();
       updateSummary();
     }
 
@@ -3107,7 +2979,6 @@
     function setRecipe(index, consume, produce) {
       recipeSlots[index].in = expandCountsToEnd(consume, RECIPE_SIDE_SLOTS);
       recipeSlots[index].out = expandCounts(produce, RECIPE_SIDE_SLOTS);
-      renderRecipes();
     }
 
     function readRecipes() {
@@ -3122,12 +2993,7 @@
         const bad = !empty && (inTotal === 0 || outTotal === 0);
         if (bad) invalid.push(r + 1);
         if (!empty && !bad) {
-          recipes.push({
-            name: t("recipeName", { n: r + 1 }),
-            consume,
-            produce,
-            kind: "random"
-          });
+          recipes.push({ consume, produce });
         }
       }
       return { recipes, invalid };
@@ -3150,7 +3016,6 @@
       const total = sum(inventory);
       els.totalCandy.textContent = total;
       syncSlotCapacityInput();
-      updateCountInputLimits();
       syncCountInputs(els.inventoryPills, inventory);
       syncCountInputs(els.targetPills, demand);
     }
@@ -3187,7 +3052,7 @@
           const produce = Array(CANDIES.length).fill(0);
           consume[from] = 3;
           produce[to] = 1;
-          const recipe = { kind: "fixed", name: t("fixedRecipe"), consume, produce, from, to };
+          const recipe = { consume, produce };
           transitions.push({ next: applyRecipe(state, recipe), recipe });
         }
       }
@@ -3197,13 +3062,12 @@
     function getBalancedMetrics(state, demand, baselineReserve) {
       const remainingState = state.map((count, index) => count - demand[index]);
       const reserveTotal = sum(remainingState);
-      const remainingTypes = remainingState.filter(count => count > 0).length;
       const flexibility = remainingState.reduce((total, count) => total + Math.min(count, 2), 0);
       const depletedTypes = remainingState.reduce((total, count, index) => (
         total + (baselineReserve[index] > 0 && count === 0 ? 1 : 0)
       ), 0);
 
-      return { remainingState, reserveTotal, remainingTypes, flexibility, depletedTypes };
+      return { reserveTotal, flexibility, depletedTypes };
     }
 
     function isBetterBalancedCandidate(candidate, bestCandidate) {
@@ -3254,15 +3118,14 @@
           distance.set(nextKey, steps + 1);
           parent.set(nextKey, {
             prev: stateKey,
-            recipe: move.recipe,
-            state: move.next
+            recipe: move.recipe
           });
           queue.push(move.next);
         }
       }
 
       if (!candidates.length) {
-        return { found: false, path: [], finalState: start, explored: distance.size, ms: performance.now() - startedAt };
+        return { found: false, path: [], explored: distance.size, ms: performance.now() - startedAt };
       }
 
       const maxReserveTotal = candidates.reduce((maximum, candidate) => (
@@ -3274,10 +3137,8 @@
         if (isBetterBalancedCandidate(candidate, bestCandidate)) bestCandidate = candidate;
       });
 
-      const bestKey = bestCandidate.key;
-
       const path = [];
-      let cursor = bestKey;
+      let cursor = bestCandidate.key;
       while (cursor !== startKey) {
         const entry = parent.get(cursor);
         path.push(entry);
@@ -3288,20 +3149,9 @@
       return {
         found: true,
         path,
-        finalState: bestCandidate.state,
-        remainingState: bestCandidate.remainingState,
         explored: distance.size,
         ms: performance.now() - startedAt,
-        loss: sum(start) - sum(bestCandidate.state),
-        steps: bestCandidate.steps,
-        balance: {
-          reserveTotal: bestCandidate.reserveTotal,
-          maxReserveTotal,
-          totalTradeoff: maxReserveTotal - bestCandidate.reserveTotal,
-          remainingTypes: bestCandidate.remainingTypes,
-          flexibility: bestCandidate.flexibility,
-          depletedTypes: bestCandidate.depletedTypes
-        }
+        loss: sum(start) - sum(bestCandidate.state)
       };
     }
 
@@ -3330,7 +3180,7 @@
         const slots = options.alignEnd ? expandCountsToEnd(counts, options.length) : expandCounts(counts, options.length);
         slots.forEach(kind => {
           if (kind >= 0) {
-            parent.append(icon(kind, ""));
+            parent.append(icon(kind));
             appended += 1;
           } else {
             const empty = document.createElement("span");
@@ -3343,7 +3193,7 @@
 
       counts.forEach((count, kind) => {
         for (let i = 0; i < count; i++) {
-          parent.append(icon(kind, ""));
+          parent.append(icon(kind));
           appended += 1;
         }
       });
@@ -3394,14 +3244,9 @@
       return t("netEven");
     }
 
-    function appendTradeItemRow(loss) {
-      appendTradeSummaryRow(lossText(loss));
-    }
-
-    function appendTradeSummaryRow(value, className = "", title = "") {
+    function appendTradeSummaryRow(value) {
       const row = document.createElement("article");
-      row.className = `path-recipe trade-item ${className}`.trim();
-      if (title) row.title = title;
+      row.className = "path-recipe trade-item";
       const text = document.createElement("span");
       text.className = "path-label";
       text.textContent = value;
@@ -3425,7 +3270,7 @@
         appendRecipeRow(entry.recipe.consume, entry.recipe.produce);
       });
 
-      appendTradeItemRow(result.loss || 0);
+      appendTradeSummaryRow(lossText(result.loss || 0));
     }
 
     function runSearch() {
@@ -3486,6 +3331,7 @@
       setRecipe(1, [0, 2, 2, 0, 0], [1, 0, 0, 1, 2]);
       setRecipe(2, [2, 0, 0, 0, 0], [0, 0, 2, 1, 0]);
       setRecipe(3, [2, 0, 0, 0, 1], [0, 1, 1, 2, 0]);
+      renderRecipes();
       updateSummary();
       els.steps.innerHTML = "";
       lastSearchResult = null;
@@ -3493,15 +3339,7 @@
       setStatusKey("statusLoadedExample");
     }
 
-    renderDemandRows();
-    renderSlots();
-    renderRecipes();
     renderRerolls();
-    renderPickerOptions();
-    renderCountControls();
-    updateSummary();
-    setSearchMeta("searchIdle");
-    setStatusKey("statusIntro");
     applyLanguage();
 
     els.searchBtnSmall.addEventListener("click", () => {
@@ -3550,9 +3388,8 @@
     });
     window.addEventListener("resize", () => {
       if (tourIndex >= 0) renderTourStep(false);
-      else positionTourPanel();
+      handleLayoutChange();
     });
-    window.addEventListener("resize", handleLayoutChange);
     els.resultClose.addEventListener("click", closeResults);
     els.resultBackdrop.addEventListener("click", closeResults);
     els.pickerClear.addEventListener("click", () => chooseCandy(-1));

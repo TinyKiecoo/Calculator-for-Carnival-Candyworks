@@ -32,10 +32,37 @@
       font-display: swap;
     }
 
+    @font-face {
+      font-family: "Candyworks Kai";
+      src: local("KaiTi"), local("STKaiti"), local("楷体"), local("Kaiti SC");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+2E80-2EFF, U+2F00-2FDF, U+3000-303F, U+31C0-31EF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FF00-FFEF, U+20000-2FA1F;
+    }
+
+    @font-face {
+      font-family: "Candyworks YaHei";
+      src: local("Microsoft YaHei Bold"), local("Microsoft YaHei UI Bold"), local("微软雅黑 Bold");
+      font-weight: 600 900;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+2E80-2EFF, U+2F00-2FDF, U+3000-303F, U+31C0-31EF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FF00-FFEF, U+20000-2FA1F;
+    }
+
+    @font-face {
+      font-family: "Candyworks Russian";
+      src: local("Arial"), local("Roboto"), local("Liberation Sans"), local("Noto Sans");
+      font-weight: 400 500;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+0400-052F, U+2DE0-2DFF, U+A640-A69F;
+    }
+
     :root {
       color-scheme: dark;
-      --font-display: "Reaver", "Radiance", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
-      --font-body: "Radiance", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
+      --font-display: "Reaver", "Candyworks Kai", "Candyworks Russian", Arial, sans-serif;
+      --font-body: "Radiance", "Candyworks Kai", "Candyworks Russian", Arial, sans-serif;
       --gold: #f0d59a;
       --ink: #f6ead2;
       --muted: #b8a995;
@@ -45,11 +72,6 @@
       --asset-wood: url("candywork-assets/dark_carnival_woodgrain_04_png.webp");
       --asset-widget: url("candywork-assets/widget_background_png.webp");
       --asset-button: url("candywork-assets/button_border_png.png");
-    }
-
-    html[lang="zh-CN"] {
-      --font-display: "Reaver", "Radiance", "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
-      --font-body: "Reaver", "Radiance", "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
     }
 
     * {
@@ -104,7 +126,7 @@
         center top / cover no-repeat;
       color: #f2d89d;
       cursor: pointer;
-      font-family: var(--font-display), "Microsoft YaHei", sans-serif;
+      font-family: var(--font-display);
       font-size: 13px;
       font-weight: 700;
       letter-spacing: .04em;
@@ -148,14 +170,77 @@
       right: 18px;
     }
 
+    .language-menu {
+      position: fixed;
+      top: 60px;
+      right: 18px;
+      z-index: 50;
+      width: 184px;
+      padding: 7px;
+      display: grid;
+      gap: 5px;
+      border: 1px solid rgba(225, 193, 128, .42);
+      background:
+        linear-gradient(180deg, rgba(48, 34, 54, .98), rgba(16, 13, 24, .99)),
+        var(--asset-wood) center / cover;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, .58), inset 0 0 0 1px rgba(255,255,255,.05);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-6px) scale(.97);
+      transform-origin: top right;
+      transition: opacity .16s ease, visibility .16s ease, transform .16s ease;
+    }
+
+    .language-menu.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .language-option {
+      min-height: 38px;
+      padding: 7px 10px;
+      border: 1px solid rgba(231, 190, 116, .18);
+      background: rgba(10, 8, 14, .55);
+      color: #d9c8ad;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: left;
+      transition: border-color .12s ease, background .12s ease, color .12s ease;
+    }
+
+    .language-option:hover,
+    .language-option:focus-visible {
+      outline: none;
+      border-color: rgba(255, 221, 157, .62);
+      background: rgba(72, 52, 42, .72);
+      color: #fff0c9;
+    }
+
+    .language-option[aria-selected="true"] {
+      border-color: rgba(255, 226, 151, .72);
+      background: rgba(111, 76, 54, .76);
+      color: #fff3cf;
+    }
+
     .help-toggle {
       right: 92px;
+      width: 112px;
       min-width: 112px;
+      padding-inline: 8px;
+      line-height: 1.1;
     }
 
     .about-toggle {
       right: 220px;
+      width: 124px;
       min-width: 124px;
+      padding-inline: 8px;
+      line-height: 1.1;
     }
 
     .github-link:hover,
@@ -400,7 +485,7 @@
       border: 1px solid rgba(224, 185, 112, .28);
       background: rgba(3, 5, 12, .72);
       color: #fff1c9;
-      font: 700 14px/1 "Reaver", "Radiance", "Segoe UI", sans-serif;
+      font: 700 14px/1 var(--font-display);
       text-align: center;
       box-shadow: inset 0 0 8px rgba(0, 0, 0, .55);
     }
@@ -825,15 +910,11 @@
 
     .slot-capacity-label {
       color: #e8c0ad;
-      font-family: "Reaver", "Radiance", "Segoe UI", sans-serif;
+      font-family: var(--font-display);
       font-size: 16px;
       font-weight: 700;
       line-height: 1;
       text-shadow: 0 2px 3px #000;
-    }
-
-    html[lang="zh-CN"] .slot-capacity-label {
-      font-family: "KaiTi", "STKaiti", "楷体", "Kaiti SC", "Microsoft YaHei", serif;
     }
 
     .slot-total-input {
@@ -843,7 +924,7 @@
       border: 1px solid rgba(230, 189, 119, .28);
       background: rgba(8, 8, 14, .62);
       color: #ffd9c6;
-      font: 800 15px/1 "Reaver", "Radiance", "Segoe UI", sans-serif;
+      font: 800 15px/1 var(--font-display);
       text-align: center;
       box-shadow: inset 0 0 9px rgba(0, 0, 0, .55);
     }
@@ -1455,10 +1536,11 @@
       filter: brightness(1.08);
     }
 
-    html[lang="zh-CN"] .language-toggle,
-    html[lang="zh-CN"] .about-toggle,
-    html[lang="zh-CN"] .help-toggle {
-      font-family: 'Reaver', 'Microsoft YaHei';
+    .language-option,
+    .language-toggle,
+    .about-toggle,
+    .help-toggle {
+      font-family: "Reaver", "Candyworks YaHei", "Candyworks Russian", Arial, sans-serif;
     }
 
     html[lang="zh-CN"] .ornate-button,
@@ -1553,6 +1635,12 @@
         right: 10px;
         width: 46px;
         font-size: 11px;
+      }
+
+      .language-menu {
+        top: 50px;
+        right: 10px;
+        width: 156px;
       }
 
       .top-actions > .help-toggle {
@@ -1859,7 +1947,12 @@
     <button class="info-toggle" id="disclaimerBtn" type="button" aria-label="Disclaimer" title="Disclaimer">
       <img class="info-icon" src="candywork-assets/icon_info_f2d89d.png" alt="">
     </button>
-    <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Simplified Chinese">中文</button>
+    <button class="language-toggle" id="languageToggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="languageMenu" aria-label="Choose language">EN</button>
+    <div class="language-menu" id="languageMenu" role="listbox" aria-label="Choose language" aria-hidden="true">
+      <button class="language-option" type="button" role="option" data-language="en" lang="en" aria-selected="true">English</button>
+      <button class="language-option" type="button" role="option" data-language="zh" lang="zh-CN" aria-selected="false">简体中文</button>
+      <button class="language-option" type="button" role="option" data-language="ru" lang="ru" aria-selected="false">Русский (Beta)</button>
+    </div>
     <button class="about-toggle" id="aboutBtn" type="button" data-i18n="whatsThis">What's this</button>
     <button class="help-toggle" id="helpBtn" type="button" data-i18n="howToUse">How to Use</button>
   </nav>
@@ -2070,7 +2163,10 @@
         tourDone: "Done",
         closeResults: "Close results",
         switchToEnglish: "Switch to English",
-        switchToChinese: "Switch to Simplified Chinese"
+        switchToChinese: "Switch to Simplified Chinese",
+        switchToRussian: "Switch to Russian",
+        languageButtonLabel: "Choose language. Current: {language}",
+        languageMenuLabel: "Choose language"
       },
       zh: {
         pageTitle: "狂欢糖果车计算器",
@@ -2088,7 +2184,7 @@
         aboutLine2: "本程序能够计算出亏糖数最少，甚至赚糖最多的方案。",
         aboutClose: "关闭",
         targetCandy: "目标糖果",
-        yourCandy: "你的糖果",
+        yourCandy: "您的糖果",
         tradePath: "兑换路线",
         trade: "兑换",
         clear: "清空",
@@ -2146,9 +2242,97 @@
         tourDone: "完成",
         closeResults: "关闭搜索结果",
         switchToEnglish: "切换到英文",
-        switchToChinese: "切换到简体中文"
+        switchToChinese: "切换到简体中文",
+        switchToRussian: "切换到俄文",
+        languageButtonLabel: "选择语言，当前为：{language}",
+        languageMenuLabel: "选择语言"
+      },
+      ru: {
+        pageTitle: "Калькулятор для карнавальной лавки конфет",
+        title: "КАРНАВАЛЬНАЯ ЛАВКА КОНФЕТ",
+        subtitle: "Калькулятор лавки конфет Dota 2 с открытым исходным кодом.",
+        disclaimerButton: "Отказ от ответственности",
+        disclaimerLine1: "Это бесплатный некоммерческий фанатский проект с открытым исходным кодом, не связанный с Valve, Steam или Dota 2.",
+        disclaimerLine2: "В проекте используются изображения, шрифты, названия и элементы интерфейса из Dota 2 / Valve. Права на эти материалы принадлежат Valve и другим правообладателям; лицензия проекта с открытым исходным кодом не предоставляет прав на них.",
+        disclaimerLine3Before: "Сайт использует сторонние счётчики посещений. Публичные данные счётчика доступны",
+        disclaimerLine3Link: "здесь",
+        disclaimerLine3After: ".",
+        whatsThis: "Что это?",
+        aboutTitle: "Что это?",
+        aboutLine1: "Вы всегда можете обменять 3 конфеты на 1 любую, но при каждом таком обмене теряются 2 конфеты.",
+        aboutLine2: "Калькулятор находит путь с наименьшей потерей конфет или даже с наибольшей прибылью.",
+        aboutClose: "Закрыть",
+        targetCandy: "Нужные конфеты",
+        yourCandy: "Ваши конфеты",
+        tradePath: "Путь обмена",
+        trade: "Обмен",
+        clear: "Очистить",
+        example: "Пример",
+        rerollItems: "Загрузить пример",
+        candies: "Конфеты",
+        clearSlots: "Очистить всё",
+        exchange: "Обмен конфет",
+        search: "Поиск",
+        howToUse: "Как пользоваться",
+        chooseCandy: "Выберите конфету",
+        clearSlot: "Очистить ячейку",
+        searchIdle: "Рассчитать путь обмена",
+        searching: "Поиск",
+        visitedStates: "Проверено состояний: {count}, {ms} мс",
+        statusIntro: "Введите нужные и имеющиеся конфеты, а также рецепты, затем запустите поиск.",
+        statusSearching: "Поиск пути обмена...",
+        statusNoRequirement: "Для целевого предмета не указаны нужные конфеты.",
+        statusTooMany: "Для целевого предмета требуется больше конфет, чем доступно ячеек.",
+        statusInvalidRecipe: "В рецепте {recipes} не указаны входные или выходные конфеты.",
+        statusCannotTrade: "С текущими конфетами и рецептами получить этот предмет невозможно.",
+        statusLoadedExample: "Пример загружен.",
+        slotCapacity: "Доступные ячейки для конфет",
+        slotCapacityLabel: "Макс. ячеек:",
+        targetSlot: "Ячейка нужных конфет {n}",
+        candySlot: "Ячейка конфет {n}",
+        lockedSlot: "Заблокированная ячейка конфет {n}",
+        inventoryCountInput: "Количество «{candy}» у вас",
+        targetCountInput: "Нужное количество «{candy}»",
+        recipeName: "Рецепт {n}",
+        recipeInputSlot: "Рецепт {recipe}, входная ячейка {slot}",
+        recipeOutputSlot: "Рецепт {recipe}, выходная ячейка {slot}",
+        fixedRecipe: "Фиксированный рецепт",
+        none: "Нет",
+        netGain: "Чистый прирост конфет: {count}",
+        netLoss: "Чистая потеря конфет: {count}",
+        netEven: "Изменение количества конфет: 0",
+        candyGreenName: "Пинелинские шурупчики",
+        candyMintName: "Сласти Дымной гавани",
+        candyPurpleName: "Йорлакские зуболомы",
+        candyBlueName: "Свежедувы Голубого сердца",
+        candyBlackName: "Кондитерские катушки смышлёнцев",
+        tourStepCount: "Шаг {current} из {total}",
+        tourStep1: "Шаг 1: Укажите количество нужных конфет.",
+        tourStep2: "Шаг 2: Укажите количество имеющихся конфет.",
+        tourStep1Desktop: "Шаг 1: Нажмите ячейки нужных конфет или укажите их количество.",
+        tourStep2Desktop: "Шаг 2: Нажмите ячейки имеющихся конфет или укажите их количество.",
+        tourStep3: "Шаг 3: Введите текущие рецепты обмена.",
+        tourStep4: "Шаг 4: Нажмите кнопку, чтобы рассчитать путь обмена.",
+        tourStep5: "Для вас подготовлен пример. Нажмите, чтобы загрузить его.",
+        tourStep6: "Много конфет? Введите количество здесь, и ячейки обновятся автоматически.",
+        tourStep7: "Есть заблокированные ячейки? Укажите максимальное число доступных ячеек. (В «Тёмном карнавале» открыты все ячейки.)",
+        tourStep8: "Если калькулятор вам помог, поставьте бесплатную звезду на GitHub. Большое спасибо!",
+        tourNext: "Далее",
+        tourDone: "Готово",
+        closeResults: "Закрыть результаты",
+        switchToEnglish: "Переключить на английский",
+        switchToChinese: "Переключить на упрощённый китайский",
+        switchToRussian: "Переключить на русский",
+        languageButtonLabel: "Выбор языка. Текущий: {language}",
+        languageMenuLabel: "Выбор языка"
       }
     };
+    const LANGUAGE_OPTIONS = Object.freeze({
+      en: { htmlLang: "en", locale: "en-US", shortLabel: "EN", displayName: "English" },
+      zh: { htmlLang: "zh-CN", locale: "zh-CN", shortLabel: "中文", displayName: "简体中文" },
+      ru: { htmlLang: "ru", locale: "ru-RU", shortLabel: "RU", displayName: "Русский (Beta)" }
+    });
+
     function getStoredLanguage() {
       try {
         return window.localStorage.getItem("candyworks-language");
@@ -2164,8 +2348,23 @@
       }
     }
 
+    function getPreferredLanguage() {
+      const browserLanguages = Array.isArray(navigator.languages) && navigator.languages.length
+        ? navigator.languages
+        : [navigator.language];
+
+      for (const languageTag of browserLanguages) {
+        const primaryLanguage = String(languageTag || "").toLowerCase().split(/[-_]/)[0];
+        if (Object.hasOwn(LANGUAGE_OPTIONS, primaryLanguage)) return primaryLanguage;
+      }
+
+      return "en";
+    }
+
     const storedLanguage = getStoredLanguage();
-    let currentLang = storedLanguage === "zh" ? "zh" : "en";
+    let currentLang = Object.hasOwn(LANGUAGE_OPTIONS, storedLanguage)
+      ? storedLanguage
+      : getPreferredLanguage();
     const CANDIES = [
       { nameKey: "candyGreenName", img: ASSET + "candy_image_1_psd.webp" },
       { nameKey: "candyMintName", img: ASSET + "candy_image_2_psd.webp" },
@@ -2179,6 +2378,7 @@
       aboutBtn: document.querySelector("#aboutBtn"),
       helpBtn: document.querySelector("#helpBtn"),
       languageToggle: document.querySelector("#languageToggle"),
+      languageMenu: document.querySelector("#languageMenu"),
       demandRows: document.querySelector("#demandRows"),
       inventoryPills: document.querySelector("#inventoryPills"),
       targetPills: document.querySelector("#targetPills"),
@@ -2246,7 +2446,7 @@
     const TOUR_COUNTED_STEPS = TOUR_STEPS.filter(step => step.counted !== false).length;
 
     function locale() {
-      return currentLang === "zh" ? "zh-CN" : "en-US";
+      return LANGUAGE_OPTIONS[currentLang].locale;
     }
 
     function formatValue(value) {
@@ -2265,7 +2465,8 @@
     }
 
     function renderStaticLanguage() {
-      document.documentElement.lang = currentLang === "zh" ? "zh-CN" : "en";
+      const language = LANGUAGE_OPTIONS[currentLang];
+      document.documentElement.lang = language.htmlLang;
       document.title = t("pageTitle");
       document.querySelectorAll("[data-i18n]").forEach(node => {
         node.textContent = t(node.dataset.i18n);
@@ -2273,8 +2474,12 @@
       document.querySelectorAll("[data-i18n-title]").forEach(node => {
         node.title = t(node.dataset.i18nTitle);
       });
-      els.languageToggle.textContent = currentLang === "zh" ? "EN" : "中文";
-      els.languageToggle.setAttribute("aria-label", currentLang === "zh" ? t("switchToEnglish") : t("switchToChinese"));
+      els.languageToggle.textContent = language.shortLabel;
+      els.languageToggle.setAttribute("aria-label", t("languageButtonLabel", { language: language.displayName }));
+      els.languageMenu.setAttribute("aria-label", t("languageMenuLabel"));
+      els.languageMenu.querySelectorAll(".language-option").forEach(option => {
+        option.setAttribute("aria-selected", String(option.dataset.language === currentLang));
+      });
       els.disclaimerBtn.setAttribute("aria-label", t("disclaimerButton"));
       els.disclaimerBtn.title = t("disclaimerButton");
       els.slotTotal.setAttribute("aria-label", t("slotCapacity"));
@@ -2318,6 +2523,35 @@
       if (tourIndex >= 0) {
         renderTourStep(false);
       }
+    }
+
+    function closeLanguageMenu({ restoreFocus = false } = {}) {
+      els.languageMenu.classList.remove("open");
+      els.languageMenu.setAttribute("aria-hidden", "true");
+      els.languageToggle.setAttribute("aria-expanded", "false");
+      if (restoreFocus) els.languageToggle.focus({ preventScroll: true });
+    }
+
+    function openLanguageMenu() {
+      if (tourIndex >= 0) endTour();
+      els.languageMenu.classList.add("open");
+      els.languageMenu.setAttribute("aria-hidden", "false");
+      els.languageToggle.setAttribute("aria-expanded", "true");
+      const selected = els.languageMenu.querySelector(`[data-language="${currentLang}"]`);
+      window.requestAnimationFrame(() => selected?.focus({ preventScroll: true }));
+    }
+
+    function toggleLanguageMenu() {
+      if (els.languageMenu.classList.contains("open")) closeLanguageMenu();
+      else openLanguageMenu();
+    }
+
+    function selectLanguage(language) {
+      if (!Object.hasOwn(LANGUAGE_OPTIONS, language)) return;
+      currentLang = language;
+      storeLanguage(currentLang);
+      applyLanguage();
+      closeLanguageMenu({ restoreFocus: true });
     }
 
     function clearTourHighlight() {
@@ -3228,10 +3462,21 @@
     els.disclaimerBtn.addEventListener("click", openDisclaimer);
     els.aboutBtn.addEventListener("click", openAbout);
     els.helpBtn.addEventListener("click", startTour);
-    els.languageToggle.addEventListener("click", () => {
-      currentLang = currentLang === "zh" ? "en" : "zh";
-      storeLanguage(currentLang);
-      applyLanguage();
+    els.languageToggle.addEventListener("click", toggleLanguageMenu);
+    els.languageMenu.querySelectorAll(".language-option").forEach(option => {
+      option.addEventListener("click", () => selectLanguage(option.dataset.language));
+    });
+    els.languageMenu.addEventListener("keydown", event => {
+      const options = Array.from(els.languageMenu.querySelectorAll(".language-option"));
+      const currentIndex = options.indexOf(document.activeElement);
+      let nextIndex = currentIndex;
+      if (event.key === "ArrowDown") nextIndex = (currentIndex + 1 + options.length) % options.length;
+      else if (event.key === "ArrowUp") nextIndex = (currentIndex - 1 + options.length) % options.length;
+      else if (event.key === "Home") nextIndex = 0;
+      else if (event.key === "End") nextIndex = options.length - 1;
+      else return;
+      event.preventDefault();
+      options[nextIndex].focus();
     });
     els.slotTotal.addEventListener("input", handleSlotCapacityInput);
     els.slotTotal.addEventListener("change", handleSlotCapacityInput);
@@ -3264,7 +3509,13 @@
     els.pickerBackdrop.addEventListener("click", event => {
       if (event.target === els.pickerBackdrop) closePicker();
     });
+    document.addEventListener("click", event => {
+      if (!els.languageMenu.classList.contains("open")) return;
+      if (event.target === els.languageToggle || els.languageMenu.contains(event.target)) return;
+      closeLanguageMenu();
+    });
     document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && els.languageMenu.classList.contains("open")) closeLanguageMenu({ restoreFocus: true });
       if (event.key === "Escape" && els.pickerBackdrop.classList.contains("open")) closePicker();
       if (event.key === "Escape" && els.tourBackdrop.classList.contains("open")) endTour();
       if (event.key === "Escape" && els.aboutBackdrop.classList.contains("open")) closeAbout();

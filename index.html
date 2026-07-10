@@ -2087,6 +2087,7 @@
     const MAX_SLOTS = 30;
     const DEMAND_SLOTS = 18;
     const RECIPE_SIDE_SLOTS = 4;
+    const BALANCED_TOTAL_TOLERANCE = 2;
     const ASSET = "candywork-assets/";
     const I18N = {
       en: {
@@ -2102,7 +2103,7 @@
         whatsThis: "What's this",
         aboutTitle: "What's this?",
         aboutLine1: "You can always trade 3 candies for any 1 candy, but each exchange loses 2 candies.",
-        aboutLine2: "This calculator finds the route with the least candy loss, or even the most candy gain.",
+        aboutLine2: "This calculator finds a relatively reasonable exchange plan.",
         aboutClose: "Close",
         targetCandy: "Target Candy",
         yourCandy: "Your Candy",
@@ -2181,7 +2182,7 @@
         whatsThis: "这是什么",
         aboutTitle: "这是什么？",
         aboutLine1: "您当然可以用 3 颗糖换任意 1 颗糖，但每次置换都会亏 2 颗糖。",
-        aboutLine2: "本程序能够计算出亏糖数最少，甚至赚糖最多的方案。",
+        aboutLine2: "本程序能够计算出一个较为合理的兑换方案。",
         aboutClose: "关闭",
         targetCandy: "目标糖果",
         yourCandy: "您的糖果",
@@ -2260,7 +2261,7 @@
         whatsThis: "Что это?",
         aboutTitle: "Что это?",
         aboutLine1: "Вы всегда можете обменять 3 конфеты на 1 любую, но при каждом таком обмене теряются 2 конфеты.",
-        aboutLine2: "Калькулятор находит путь с наименьшей потерей конфет или даже с наибольшей прибылью.",
+        aboutLine2: "Этот калькулятор находит относительно разумный план обмена.",
         aboutClose: "Закрыть",
         targetCandy: "Нужные конфеты",
         yourCandy: "Ваши конфеты",
@@ -3193,11 +3194,33 @@
       return transitions;
     }
 
-    function isBetterResult(state, steps, bestState, bestSteps) {
-      if (!bestState) return true;
-      const total = sum(state);
-      const bestTotal = sum(bestState);
-      return total > bestTotal || (total === bestTotal && steps < bestSteps);
+    function getBalancedMetrics(state, demand, baselineReserve) {
+      const remainingState = state.map((count, index) => count - demand[index]);
+      const reserveTotal = sum(remainingState);
+      const remainingTypes = remainingState.filter(count => count > 0).length;
+      const flexibility = remainingState.reduce((total, count) => total + Math.min(count, 2), 0);
+      const depletedTypes = remainingState.reduce((total, count, index) => (
+        total + (baselineReserve[index] > 0 && count === 0 ? 1 : 0)
+      ), 0);
+
+      return { remainingState, reserveTotal, remainingTypes, flexibility, depletedTypes };
+    }
+
+    function isBetterBalancedCandidate(candidate, bestCandidate) {
+      if (!bestCandidate) return true;
+      if (candidate.depletedTypes !== bestCandidate.depletedTypes) {
+        return candidate.depletedTypes < bestCandidate.depletedTypes;
+      }
+      if (candidate.flexibility !== bestCandidate.flexibility) {
+        return candidate.flexibility > bestCandidate.flexibility;
+      }
+      if (candidate.steps !== bestCandidate.steps) {
+        return candidate.steps < bestCandidate.steps;
+      }
+      if (candidate.reserveTotal !== bestCandidate.reserveTotal) {
+        return candidate.reserveTotal > bestCandidate.reserveTotal;
+      }
+      return candidate.key < bestCandidate.key;
     }
 
     function searchPath(start, demand, randomRecipes, capacity) {
@@ -3207,19 +3230,21 @@
       let head = 0;
       const distance = new Map([[startKey, 0]]);
       const parent = new Map();
-      let bestKey = null;
-      let bestState = null;
-      let bestSteps = Infinity;
+      const baselineReserve = start.map((count, index) => Math.max(0, count - demand[index]));
+      const candidates = [];
 
       while (head < queue.length) {
         const state = queue[head++];
         const stateKey = keyOf(state);
         const steps = distance.get(stateKey);
 
-        if (hasDemand(state, demand) && isBetterResult(state, steps, bestState, bestSteps)) {
-          bestKey = stateKey;
-          bestState = state;
-          bestSteps = steps;
+        if (hasDemand(state, demand)) {
+          candidates.push({
+            key: stateKey,
+            state,
+            steps,
+            ...getBalancedMetrics(state, demand, baselineReserve)
+          });
         }
 
         const moves = buildTransitions(state, randomRecipes, capacity);
@@ -3236,9 +3261,20 @@
         }
       }
 
-      if (!bestKey) {
+      if (!candidates.length) {
         return { found: false, path: [], finalState: start, explored: distance.size, ms: performance.now() - startedAt };
       }
+
+      const maxReserveTotal = candidates.reduce((maximum, candidate) => (
+        Math.max(maximum, candidate.reserveTotal)
+      ), -Infinity);
+      let bestCandidate = null;
+      candidates.forEach(candidate => {
+        if (maxReserveTotal - candidate.reserveTotal > BALANCED_TOTAL_TOLERANCE) return;
+        if (isBetterBalancedCandidate(candidate, bestCandidate)) bestCandidate = candidate;
+      });
+
+      const bestKey = bestCandidate.key;
 
       const path = [];
       let cursor = bestKey;
@@ -3252,11 +3288,20 @@
       return {
         found: true,
         path,
-        finalState: bestState,
+        finalState: bestCandidate.state,
+        remainingState: bestCandidate.remainingState,
         explored: distance.size,
         ms: performance.now() - startedAt,
-        loss: sum(start) - sum(bestState),
-        steps: bestSteps
+        loss: sum(start) - sum(bestCandidate.state),
+        steps: bestCandidate.steps,
+        balance: {
+          reserveTotal: bestCandidate.reserveTotal,
+          maxReserveTotal,
+          totalTradeoff: maxReserveTotal - bestCandidate.reserveTotal,
+          remainingTypes: bestCandidate.remainingTypes,
+          flexibility: bestCandidate.flexibility,
+          depletedTypes: bestCandidate.depletedTypes
+        }
       };
     }
 
@@ -3350,11 +3395,16 @@
     }
 
     function appendTradeItemRow(loss) {
+      appendTradeSummaryRow(lossText(loss));
+    }
+
+    function appendTradeSummaryRow(value, className = "", title = "") {
       const row = document.createElement("article");
-      row.className = "path-recipe trade-item";
+      row.className = `path-recipe trade-item ${className}`.trim();
+      if (title) row.title = title;
       const text = document.createElement("span");
       text.className = "path-label";
-      text.textContent = lossText(loss);
+      text.textContent = value;
       row.append(text);
       els.steps.append(row);
     }

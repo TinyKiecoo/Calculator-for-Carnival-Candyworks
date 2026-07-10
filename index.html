@@ -113,6 +113,10 @@
       transition: filter .12s ease, transform .12s ease;
     }
 
+    .top-actions {
+      display: contents;
+    }
+
     .github-link {
       left: 18px;
       width: 42px;
@@ -572,6 +576,11 @@
     .offer-card.result-mode .steps {
       max-height: 430px;
       gap: 5px;
+    }
+
+    .result-close,
+    .result-backdrop {
+      display: none;
     }
 
     .ornate-button {
@@ -1485,109 +1494,375 @@
     }
 
     @media (max-width: 780px) {
-      .github-link {
-        top: 12px;
-        left: 12px;
+      body {
+        zoom: 1;
+        background-attachment: scroll;
       }
 
-      .info-toggle {
-        top: 12px;
-        left: 62px;
+      body.results-open {
+        overflow: hidden;
       }
 
-      .language-toggle {
-        top: 12px;
-        right: 12px;
+      .top-actions {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 30;
+        width: 100%;
+        height: 54px;
+        display: block;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(4, 8, 20, .88), rgba(4, 8, 20, .58) 72%, transparent);
+        backdrop-filter: blur(5px);
       }
 
-      .help-toggle {
-        top: 52px;
-        right: 12px;
+      .top-actions > .github-link,
+      .top-actions > .info-toggle,
+      .top-actions > .language-toggle,
+      .top-actions > .help-toggle,
+      .top-actions > .about-toggle {
+        position: absolute;
+        top: 10px;
+        height: 34px;
+        min-width: 0;
+        padding-inline: 6px;
+        pointer-events: auto;
+        transform: none;
       }
 
-      .about-toggle {
-        top: 92px;
-        right: 12px;
+      .top-actions > .github-link:hover,
+      .top-actions > .info-toggle:hover,
+      .top-actions > .language-toggle:hover,
+      .top-actions > .help-toggle:hover,
+      .top-actions > .about-toggle:hover {
+        transform: none;
+      }
+
+      .top-actions > .github-link {
+        left: 10px;
+        width: 42px;
+        padding: 0;
+      }
+
+      .top-actions > .info-toggle {
+        left: 58px;
+        width: 42px;
+        padding: 0;
+      }
+
+      .top-actions > .language-toggle {
+        right: 10px;
+        width: 46px;
+        font-size: 11px;
+      }
+
+      .top-actions > .help-toggle {
+        right: 62px;
+        width: 68px;
+        font-size: 10px;
+        letter-spacing: .02em;
+      }
+
+      .top-actions > .about-toggle {
+        right: 136px;
+        width: 68px;
+        font-size: 10px;
+        letter-spacing: .02em;
+      }
+
+      .page {
+        min-height: 0;
+        padding: 70px 12px 28px;
+        gap: 22px;
+      }
+
+      .titlebar h1 {
+        font-size: clamp(28px, 9vw, 40px);
+        line-height: 1.08;
+      }
+
+      .titlebar .subtitle {
+        font-size: 15px;
+        line-height: 1.3;
+      }
+
+      .stage {
+        gap: 18px;
+      }
+
+      .offers {
+        gap: 14px;
       }
 
       .offer-grid {
         grid-template-columns: 1fr;
-        gap: 18px;
+        gap: 0;
       }
 
-      .offer-card {
-        min-height: 430px;
+      .offer-card:first-child {
+        display: none;
       }
 
       .offer-card:nth-child(2) {
-        min-height: 560px;
+        min-height: 0;
+        padding: 24px 14px 26px;
+        justify-content: flex-start;
       }
 
-      .offer-art {
-        height: 170px;
+      .offer-card:nth-child(2) .offer-content {
+        width: 100%;
+        transform: none;
       }
 
       .offer-card:nth-child(2) .offer-art.small {
-        top: 36px;
-        height: 155px;
+        display: none;
       }
 
-      .offer-art.frame {
-        top: 55px;
+      .count-panel {
+        gap: 10px;
+      }
+
+      .count-section {
+        gap: 7px;
+        padding-inline: 0;
+      }
+
+      .count-section-title {
+        min-height: 38px;
+        font-size: 17px;
+      }
+
+      .count-inputs {
+        gap: 4px;
+      }
+
+      .count-control {
+        gap: 5px;
+        padding: 5px 3px;
+      }
+
+      .count-control img {
+        width: min(30px, 8vw);
+        height: min(30px, 8vw);
+      }
+
+      .count-input {
+        height: 36px;
+        font-size: 16px;
       }
 
       .bottom-row {
+        min-height: 58px;
         grid-template-columns: 1fr;
         justify-items: center;
       }
 
       .bottom-row::before,
-      .bottom-row::after {
+      .bottom-row::after,
+      .reroll-track,
+      .bottom-row > div:last-child {
         display: none;
       }
 
+      .reroll-button {
+        width: min(246px, calc(100vw - 64px));
+        min-height: 44px;
+      }
+
+      .widget {
+        min-height: 0;
+        padding: 18px 12px 24px;
+      }
+
       .widget-head {
-        grid-template-columns: 118px 1fr;
-        min-height: 112px;
+        min-height: 0;
+        margin: 0 0 18px;
+        display: flex;
+        justify-content: center;
+        background: none;
+        border: 0;
+        box-shadow: none;
       }
 
-      .cauldron {
-        width: 118px;
-        height: 118px;
-        top: -34px;
-      }
-
-      .candy-count {
-        grid-column: 2;
+      .cauldron,
+      .candy-count,
+      .board-title,
+      .slots {
+        display: none;
       }
 
       .slot-action {
-        grid-column: 1 / -1;
-        justify-self: end;
-        margin-right: 12px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px 12px;
       }
 
-      .slots {
-        grid-template-columns: repeat(6, 1fr);
+      .slot-action .metal-button {
+        width: 100px;
+        height: 38px;
+        flex: 0 0 100px;
+        padding-inline: 4px;
+        font-size: 12px;
+      }
+
+      html[lang="zh-CN"] .slot-action .metal-button {
+        font-size: 16px;
+      }
+
+      .slot-action .slot-capacity-control {
+        flex: 0 1 auto;
+        min-width: 0;
+        margin-top: 0;
+        gap: 4px;
+      }
+
+      .slot-action .slot-capacity-label {
+        font-size: 13px;
+      }
+
+      .slot-action .slot-total-input {
+        width: 38px;
+        height: 28px;
+        flex: 0 0 38px;
       }
 
       .recipe {
-        grid-template-columns: 1fr 40px 1fr;
+        grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
         gap: 4px;
+        padding: 7px 4px;
+      }
+
+      .recipe-side {
+        gap: 3px;
+      }
+
+      .recipe-slot {
+        min-width: 0;
+        height: 40px;
+      }
+
+      .recipe-slot img {
+        width: min(30px, 7.5vw);
+        height: min(30px, 7.5vw);
+      }
+
+      .exchange-button {
+        width: 34px;
+        height: 34px;
+      }
+
+      .widget-search-button {
+        min-height: 46px;
+      }
+
+      .offer-card:nth-child(3) {
+        display: none;
+      }
+
+      .result-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: block;
+        background: rgba(1, 4, 12, .78);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity .18s ease, visibility .18s ease;
+      }
+
+      .result-backdrop.open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .offer-card:nth-child(3).mobile-open {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        z-index: 70;
+        display: flex;
+        width: min(520px, calc(100vw - 28px));
+        max-height: calc(100dvh - 36px);
+        min-height: 0;
+        padding: 24px 14px 18px;
+        justify-content: flex-start;
+        overflow: auto;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(235, 195, 116, .5);
+      }
+
+      .offer-card:nth-child(3).mobile-open .offer-art {
+        display: none;
+      }
+
+      .offer-card:nth-child(3).mobile-open .offer-content {
+        width: 100%;
+        transform: none;
+        justify-items: stretch;
+      }
+
+      .offer-card:nth-child(3).mobile-open .offer-title,
+      .offer-card:nth-child(3).mobile-open.result-mode .offer-title {
+        min-height: 32px;
+        display: flex;
+        padding-inline: 36px;
+      }
+
+      .offer-card:nth-child(3).mobile-open .steps,
+      .offer-card:nth-child(3).mobile-open.result-mode .steps {
+        max-height: min(58dvh, 460px);
+      }
+
+      .result-close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 2;
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(231, 190, 116, .32);
+        border-radius: 50%;
+        background: rgba(10, 8, 14, .72);
+        color: #f2d89d;
+        cursor: pointer;
+        font: 700 24px/1 var(--font-display);
+      }
+
+      .tour-highlight {
+        outline-offset: 4px;
+      }
+
+      .tour-panel {
+        min-height: 0;
+        padding: 16px;
+      }
+
+      .about-backdrop,
+      .picker-backdrop {
+        padding: 14px;
       }
     }
   </style>
 </head>
 <body>
-  <a class="github-link" id="githubLink" href="https://github.com/TinyKiecoo/Calculator-for-Carnival-Candyworks" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" title="GitHub repository">
-    <svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-mark-github" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" display="inline-block" overflow="visible"><path d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943"></path></svg>
-  </a>
-  <button class="info-toggle" id="disclaimerBtn" type="button" aria-label="Disclaimer" title="Disclaimer">
-    <img class="info-icon" src="candywork-assets/icon_info_f2d89d.png">
-  </button>
-  <button class="about-toggle" id="aboutBtn" type="button" data-i18n="whatsThis">What's this</button>
-  <button class="help-toggle" id="helpBtn" type="button" data-i18n="howToUse">How to Use</button>
-  <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Simplified Chinese">中文</button>
+  <nav class="top-actions" aria-label="Page actions">
+    <a class="github-link" id="githubLink" href="https://github.com/TinyKiecoo/Calculator-for-Carnival-Candyworks" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" title="GitHub repository">
+      <svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-mark-github" viewBox="0 0 24 24" width="32" height="32" fill="currentColor" display="inline-block" overflow="visible"><path d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943"></path></svg>
+    </a>
+    <button class="info-toggle" id="disclaimerBtn" type="button" aria-label="Disclaimer" title="Disclaimer">
+      <img class="info-icon" src="candywork-assets/icon_info_f2d89d.png" alt="">
+    </button>
+    <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Simplified Chinese">中文</button>
+    <button class="about-toggle" id="aboutBtn" type="button" data-i18n="whatsThis">What's this</button>
+    <button class="help-toggle" id="helpBtn" type="button" data-i18n="howToUse">How to Use</button>
+  </nav>
 
   <main class="page">
     <header class="titlebar">
@@ -1612,22 +1887,23 @@
             <img class="offer-art small" src="candywork-assets/node_candy_store_psd.webp" alt="">
             <div class="offer-content">
               <div class="count-panel" id="countPanel">
-                <section class="count-section" aria-labelledby="inventoryCountTitle">
-                  <div class="count-section-title" id="inventoryCountTitle" data-i18n="yourCandy">Your Candy</div>
-                  <div class="count-inputs" id="inventoryPills"></div>
-                </section>
                 <section class="count-section" aria-labelledby="targetCountTitle">
                   <div class="count-section-title" id="targetCountTitle" data-i18n="targetCandy">Target Candy</div>
                   <div class="count-inputs" id="targetPills"></div>
+                </section>
+                <section class="count-section" aria-labelledby="inventoryCountTitle">
+                  <div class="count-section-title" id="inventoryCountTitle" data-i18n="yourCandy">Your Candy</div>
+                  <div class="count-inputs" id="inventoryPills"></div>
                 </section>
               </div>
             </div>
           </article>
 
           <article class="offer-card" id="tradePathCard">
+            <button class="result-close" id="resultClose" type="button" aria-label="Close results">×</button>
             <img class="offer-art frame" src="candywork-assets/reward_candy_reroll_psd.webp" alt="">
             <div class="offer-content">
-              <div class="offer-title" data-i18n="tradePath">Trade Path</div>
+              <div class="offer-title" id="resultTitle" data-i18n="tradePath">Trade Path</div>
               <div id="status" class="status-box">Enter target candy, current candy, and recipes, then search.</div>
               <div class="steps" id="steps"></div>
             </div>
@@ -1674,6 +1950,8 @@
       </aside>
     </section>
   </main>
+
+  <div class="result-backdrop" id="resultBackdrop" aria-hidden="true"></div>
 
   <div class="picker-backdrop" id="pickerBackdrop" aria-hidden="true">
     <div class="picker-dialog" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
@@ -1778,8 +2056,8 @@
         candyBlueName: "Blueheat Breathbolts",
         candyBlackName: "Keen Confectionary Coils",
         tourStepCount: "Step {current} / {total}",
-        tourStep1: "Step 1: Click slots to enter the target item candy.",
-        tourStep2: "Step 2: Click slots to enter your current candy.",
+        tourStep1: "Step 1: Enter the target candy counts.",
+        tourStep2: "Step 2: Enter your current candy counts.",
         tourStep3: "Step 3: Enter the current exchange recipes.",
         tourStep4: "Step 4: Click the button to calculate the trade path.",
         tourStep5: "An example was prepared for you. Click to load.",
@@ -1788,6 +2066,7 @@
         tourStep8: "If this calculator helps, please give me a free Star on GitHub. This means a lot to me. Thank you :)",
         tourNext: "Next",
         tourDone: "Done",
+        closeResults: "Close results",
         switchToEnglish: "Switch to English",
         switchToChinese: "Switch to Simplified Chinese"
       },
@@ -1851,8 +2130,8 @@
         candyBlueName: "蓝心螺栓糖",
         candyBlackName: "基恩线圈糖",
         tourStepCount: "第 {current} / {total} 步",
-        tourStep1: "第一步：点击槽位填入目标物品糖果。",
-        tourStep2: "第二步：点击槽位填入已有的糖果。",
+        tourStep1: "第一步：填入目标物品所需的各类糖果数量。",
+        tourStep2: "第二步：填入目前已有的各类糖果数量。",
         tourStep3: "第三步：填入目前的交换配方。",
         tourStep4: "第四步：点击按钮计算交换方式。",
         tourStep5: "一个示例已为您准备好，点击可以加载。",
@@ -1861,6 +2140,7 @@
         tourStep8: "如果这个计算器帮到了您，欢迎在 GitHub 中给一颗免费的 Star。真的非常感激！",
         tourNext: "下一步",
         tourDone: "完成",
+        closeResults: "关闭搜索结果",
         switchToEnglish: "切换到英文",
         switchToChinese: "切换到简体中文"
       }
@@ -1907,6 +2187,8 @@
       clearSlots: document.querySelector("#clearSlots"),
       rerollBtn: document.querySelector("#rerollBtn"),
       tradePathCard: document.querySelector("#tradePathCard"),
+      resultBackdrop: document.querySelector("#resultBackdrop"),
+      resultClose: document.querySelector("#resultClose"),
       status: document.querySelector("#status"),
       steps: document.querySelector("#steps"),
       searchMeta: document.querySelector("#searchMeta"),
@@ -1938,12 +2220,11 @@
       out: Array(RECIPE_SIDE_SLOTS).fill(-1)
     }));
     const TOUR_STEPS = [
-      { target: "#demandRows", textKey: "tourStep1" },
-      { target: "#slots", textKey: "tourStep2" },
+      { target: "#targetPills", textKey: "tourStep1" },
+      { target: "#inventoryPills", textKey: "tourStep2" },
       { target: "#recipeGrid", textKey: "tourStep3" },
       { target: "#searchBtnSmall", textKey: "tourStep4" },
       { target: "#rerollBtn", textKey: "tourStep5", counted: false },
-      { target: "#countPanel", textKey: "tourStep6", counted: false },
       { target: "#slotCapacityControl", textKey: "tourStep7", counted: false },
       { target: "#githubLink", textKey: "tourStep8", counted: false }
     ];
@@ -1982,6 +2263,8 @@
       els.disclaimerBtn.setAttribute("aria-label", t("disclaimerButton"));
       els.disclaimerBtn.title = t("disclaimerButton");
       els.slotTotal.setAttribute("aria-label", t("slotCapacity"));
+      els.resultClose.setAttribute("aria-label", t("closeResults"));
+      els.resultClose.title = t("closeResults");
     }
 
     function renderSearchMeta() {
@@ -2034,18 +2317,13 @@
       const rect = tourTarget.getBoundingClientRect();
       const panel = els.tourPanel;
       const margin = 18;
-      const stepExtraOffset = tourIndex === 1 ? 34 : 0;
       const panelWidth = panel.offsetWidth || 360;
       const panelHeight = panel.offsetHeight || 132;
       let left = rect.left + (rect.width / 2) - (panelWidth / 2);
-      let top = rect.bottom + margin + stepExtraOffset;
+      let top = rect.bottom + margin;
 
       if (top + panelHeight > window.innerHeight - margin) {
-        top = rect.top - panelHeight - margin + stepExtraOffset;
-      }
-
-      if (tourIndex === 0) {
-        top -= panelHeight * 1.5;
+        top = rect.top - panelHeight - margin;
       }
 
       left = Math.max(16, Math.min(left, window.innerWidth - panelWidth - 16));
@@ -2323,6 +2601,42 @@
       els.pickerBackdrop.classList.remove("open");
       els.pickerBackdrop.setAttribute("aria-hidden", "true");
       pickerTarget = null;
+    }
+
+    function isMobileLayout() {
+      return window.matchMedia("(max-width: 780px)").matches;
+    }
+
+    function openResults() {
+      if (!isMobileLayout()) return;
+      els.resultBackdrop.classList.add("open");
+      els.resultBackdrop.setAttribute("aria-hidden", "false");
+      els.tradePathCard.classList.add("mobile-open");
+      els.tradePathCard.setAttribute("role", "dialog");
+      els.tradePathCard.setAttribute("aria-modal", "true");
+      els.tradePathCard.setAttribute("aria-labelledby", "resultTitle");
+      els.tradePathCard.removeAttribute("aria-hidden");
+      document.body.classList.add("results-open");
+      els.resultClose.focus({ preventScroll: true });
+    }
+
+    function closeResults() {
+      els.resultBackdrop.classList.remove("open");
+      els.resultBackdrop.setAttribute("aria-hidden", "true");
+      els.tradePathCard.classList.remove("mobile-open");
+      els.tradePathCard.removeAttribute("role");
+      els.tradePathCard.removeAttribute("aria-modal");
+      els.tradePathCard.removeAttribute("aria-labelledby");
+      els.tradePathCard.toggleAttribute("aria-hidden", isMobileLayout());
+      document.body.classList.remove("results-open");
+      if (isMobileLayout()) els.searchBtnSmall.focus({ preventScroll: true });
+    }
+
+    function handleLayoutChange() {
+      if (!isMobileLayout()) closeResults();
+      else if (!els.tradePathCard.classList.contains("mobile-open")) {
+        els.tradePathCard.setAttribute("aria-hidden", "true");
+      }
     }
 
     function openAbout() {
@@ -2879,6 +3193,7 @@
 
     els.searchBtnSmall.addEventListener("click", () => {
       if (tourIndex >= 0) endTour();
+      openResults();
       runSearch();
     });
     els.disclaimerBtn.addEventListener("click", openDisclaimer);
@@ -2910,6 +3225,9 @@
       if (event.target === els.disclaimerBackdrop) closeDisclaimer();
     });
     window.addEventListener("resize", positionTourPanel);
+    window.addEventListener("resize", handleLayoutChange);
+    els.resultClose.addEventListener("click", closeResults);
+    els.resultBackdrop.addEventListener("click", closeResults);
     els.pickerClear.addEventListener("click", () => chooseCandy(-1));
     els.pickerBackdrop.addEventListener("click", event => {
       if (event.target === els.pickerBackdrop) closePicker();
@@ -2919,7 +3237,9 @@
       if (event.key === "Escape" && els.tourBackdrop.classList.contains("open")) endTour();
       if (event.key === "Escape" && els.aboutBackdrop.classList.contains("open")) closeAbout();
       if (event.key === "Escape" && els.disclaimerBackdrop.classList.contains("open")) closeDisclaimer();
+      if (event.key === "Escape" && els.tradePathCard.classList.contains("mobile-open")) closeResults();
     });
+    handleLayoutChange();
   </script>
   <script defer>
     fetch("https://w.saobby.com/api/visit/7bplg3t4", {

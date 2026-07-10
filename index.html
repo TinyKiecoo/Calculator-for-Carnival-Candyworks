@@ -2058,6 +2058,8 @@
         tourStepCount: "Step {current} / {total}",
         tourStep1: "Step 1: Enter the target candy counts.",
         tourStep2: "Step 2: Enter your current candy counts.",
+        tourStep1Desktop: "Step 1: Click the target slots or enter the target candy counts.",
+        tourStep2Desktop: "Step 2: Click your candy slots or enter your current candy counts.",
         tourStep3: "Step 3: Enter the current exchange recipes.",
         tourStep4: "Step 4: Click the button to calculate the trade path.",
         tourStep5: "An example was prepared for you. Click to load.",
@@ -2132,6 +2134,8 @@
         tourStepCount: "第 {current} / {total} 步",
         tourStep1: "第一步：填入目标物品所需的各类糖果数量。",
         tourStep2: "第二步：填入目前已有的各类糖果数量。",
+        tourStep1Desktop: "第一步：点击目标糖果槽位，或填入目标物品所需的各类糖果数量。",
+        tourStep2Desktop: "第二步：点击已有糖果槽位，或填入目前已有的各类糖果数量。",
         tourStep3: "第三步：填入目前的交换配方。",
         tourStep4: "第四步：点击按钮计算交换方式。",
         tourStep5: "一个示例已为您准备好，点击可以加载。",
@@ -2212,6 +2216,7 @@
     let lastSearchResult = null;
     let tourIndex = -1;
     let tourTarget = null;
+    let tourTargets = [];
     let demandSlots = Array(DEMAND_SLOTS).fill(-1);
     let slotKinds = Array(MAX_SLOTS).fill(-1);
     let availableSlotCount = MAX_SLOTS;
@@ -2220,8 +2225,18 @@
       out: Array(RECIPE_SIDE_SLOTS).fill(-1)
     }));
     const TOUR_STEPS = [
-      { target: "#targetPills", textKey: "tourStep1" },
-      { target: "#inventoryPills", textKey: "tourStep2" },
+      {
+        target: "#targetPills",
+        desktopTargets: ["#demandRows", "#targetPills"],
+        textKey: "tourStep1",
+        desktopTextKey: "tourStep1Desktop"
+      },
+      {
+        target: "#inventoryPills",
+        desktopTargets: ["#slots", "#inventoryPills"],
+        textKey: "tourStep2",
+        desktopTextKey: "tourStep2Desktop"
+      },
       { target: "#recipeGrid", textKey: "tourStep3" },
       { target: "#searchBtnSmall", textKey: "tourStep4" },
       { target: "#rerollBtn", textKey: "tourStep5", counted: false },
@@ -2312,13 +2327,21 @@
     }
 
     function positionTourPanel() {
-      if (!tourTarget || tourIndex < 0) return;
+      if (!tourTarget || !tourTargets.length || tourIndex < 0) return;
 
-      const rect = tourTarget.getBoundingClientRect();
+      const rects = tourTargets.map(target => target.getBoundingClientRect());
+      const rect = {
+        left: Math.min(...rects.map(item => item.left)),
+        right: Math.max(...rects.map(item => item.right)),
+        top: Math.min(...rects.map(item => item.top)),
+        bottom: Math.max(...rects.map(item => item.bottom))
+      };
+      rect.width = rect.right - rect.left;
       const panel = els.tourPanel;
       const margin = 18;
-      const panelWidth = panel.offsetWidth || 360;
-      const panelHeight = panel.offsetHeight || 132;
+      const pageZoom = Number.parseFloat(getComputedStyle(document.body).zoom) || 1;
+      const panelWidth = (panel.offsetWidth || 360) * pageZoom;
+      const panelHeight = (panel.offsetHeight || 132) * pageZoom;
       let left = rect.left + (rect.width / 2) - (panelWidth / 2);
       let top = rect.bottom + margin;
 
@@ -2329,8 +2352,8 @@
       left = Math.max(16, Math.min(left, window.innerWidth - panelWidth - 16));
       top = Math.max(16, Math.min(top, window.innerHeight - panelHeight - 16));
 
-      panel.style.left = `${left}px`;
-      panel.style.top = `${top}px`;
+      panel.style.left = `${left / pageZoom}px`;
+      panel.style.top = `${top / pageZoom}px`;
     }
 
     function renderTourStep(shouldScroll = true) {
@@ -2341,14 +2364,18 @@
 
       clearTourHighlight();
       const step = TOUR_STEPS[tourIndex];
-      const target = document.querySelector(step.target);
-      if (!target) {
+      const useDesktopTargets = !isMobileLayout() && Array.isArray(step.desktopTargets);
+      const targetSelectors = useDesktopTargets ? step.desktopTargets : [step.target];
+      const targets = targetSelectors.map(selector => document.querySelector(selector));
+      const target = document.querySelector(step.target) || targets[0];
+      if (!target || targets.some(item => !item)) {
         endTour();
         return;
       }
 
       tourTarget = target;
-      target.classList.add("tour-highlight");
+      tourTargets = targets;
+      tourTargets.forEach(item => item.classList.add("tour-highlight"));
       els.tourBackdrop.classList.add("open");
       els.tourBackdrop.setAttribute("aria-hidden", "false");
       els.tourPanel.classList.add("open");
@@ -2361,7 +2388,8 @@
       } else {
         els.tourStepCount.textContent = "";
       }
-      els.tourText.textContent = t(step.textKey);
+      const textKey = useDesktopTargets && step.desktopTextKey ? step.desktopTextKey : step.textKey;
+      els.tourText.textContent = t(textKey);
       els.tourNext.textContent = tourIndex === TOUR_STEPS.length - 1 ? t("tourDone") : t("tourNext");
 
       if (shouldScroll) {
@@ -2391,6 +2419,7 @@
       clearTourHighlight();
       tourIndex = -1;
       tourTarget = null;
+      tourTargets = [];
       els.tourPanel.classList.remove("open", "tip-mode");
       els.tourPanel.setAttribute("aria-hidden", "true");
       els.tourBackdrop.classList.remove("open");
@@ -3224,7 +3253,10 @@
     els.disclaimerBackdrop.addEventListener("click", event => {
       if (event.target === els.disclaimerBackdrop) closeDisclaimer();
     });
-    window.addEventListener("resize", positionTourPanel);
+    window.addEventListener("resize", () => {
+      if (tourIndex >= 0) renderTourStep(false);
+      else positionTourPanel();
+    });
     window.addEventListener("resize", handleLayoutChange);
     els.resultClose.addEventListener("click", closeResults);
     els.resultBackdrop.addEventListener("click", closeResults);

@@ -2038,7 +2038,7 @@
         clearSlot: "Clear Slot",
         searchIdle: "Calculate Trade Path",
         searching: "Searching",
-        visitedStates: "Visited {count} states, {ms} ms",
+        searchComplete: "Search Complete",
         statusIntro: "Enter target candy, current candy, and recipes, then search.",
         statusSearching: "Searching trade path...",
         statusNoRequirement: "The target item has no candy requirement.",
@@ -2110,7 +2110,7 @@
         clearSlot: "清空槽位",
         searchIdle: "计算兑换路线",
         searching: "搜索中",
-        visitedStates: "已访问 {count} 个状态，{ms} 毫秒",
+        searchComplete: "搜索完成",
         statusIntro: "输入目标糖果、已有糖果和配方后开始搜索。",
         statusSearching: "正在搜索兑换路线...",
         statusNoRequirement: "目标物品还没有糖果需求。",
@@ -2182,7 +2182,7 @@
         clearSlot: "Очистить ячейку",
         searchIdle: "Рассчитать путь обмена",
         searching: "Поиск",
-        visitedStates: "Проверено состояний: {count}, {ms} мс",
+        searchComplete: "Поиск завершён",
         statusIntro: "Введите нужные и имеющиеся конфеты, а также рецепты, затем запустите поиск.",
         statusSearching: "Поиск пути обмена...",
         statusNoRequirement: "Для целевого предмета не указаны нужные конфеты.",
@@ -3105,7 +3105,6 @@
     }
 
     function searchPath(start, demand, randomRecipes, capacity) {
-      const startedAt = performance.now();
       const startKey = keyOf(start);
       const queue = [start];
       let head = 0;
@@ -3142,7 +3141,7 @@
       }
 
       if (!candidates.length) {
-        return { found: false, path: [], explored: distance.size, ms: performance.now() - startedAt };
+        return { found: false, path: [] };
       }
 
       const maxReserveTotal = candidates.reduce((maximum, candidate) => (
@@ -3166,8 +3165,6 @@
       return {
         found: true,
         path,
-        explored: distance.size,
-        ms: performance.now() - startedAt,
         loss: sum(start) - sum(bestCandidate.state)
       };
     }
@@ -3274,7 +3271,7 @@
     function renderResult(result, demand) {
       lastSearchResult = { result, demand };
       els.steps.innerHTML = "";
-      setSearchMeta("visitedStates", { count: result.explored, ms: Math.round(result.ms) });
+      setSearchMeta("searchComplete");
 
       if (!result.found) {
         setStatusKey("statusCannotTrade", "bad");

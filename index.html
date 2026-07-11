@@ -61,6 +61,7 @@
 
     :root {
       color-scheme: dark;
+      --page-zoom: .86;
       --font-display: "Reaver", "Candyworks Kai", "Candyworks Russian", Arial, sans-serif;
       --font-body: "Radiance", "Candyworks Kai", "Candyworks Russian", Arial, sans-serif;
       --ink: #f6ead2;
@@ -80,7 +81,7 @@
       min-height: 100vh;
       color: var(--ink);
       font-family: var(--font-body);
-      zoom: .86;
+      zoom: var(--page-zoom);
       background:
         radial-gradient(circle at 50% 8%, rgba(77, 111, 151, .45), transparent 34%),
         linear-gradient(180deg, rgba(7, 11, 25, .18), rgba(2, 7, 18, .95)),
@@ -251,7 +252,8 @@
 
     .page {
       width: min(1530px, 100%);
-      min-height: 100vh;
+      min-height: 116.28vh;
+      min-height: calc(100vh / var(--page-zoom));
       margin: 0 auto;
       padding: 30px 42px 32px;
       display: flex;

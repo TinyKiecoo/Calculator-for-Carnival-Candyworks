@@ -836,10 +836,21 @@
       box-shadow: inset 0 0 9px rgba(0, 0, 0, .55);
     }
 
-    .slot-total-input:focus {
+    .slot-total-input:focus:not([readonly]) {
       outline: 1px solid rgba(255, 218, 154, .78);
       outline-offset: 1px;
       border-color: rgba(255, 218, 154, .68);
+    }
+
+    .slot-total-input[readonly] {
+      cursor: not-allowed;
+      user-select: none;
+      caret-color: transparent;
+    }
+
+    .slot-total-input[readonly]:focus {
+      outline: none;
+      border-color: rgba(230, 189, 119, .28);
     }
 
     .slot-total-input::-webkit-outer-spin-button,
@@ -1930,7 +1941,7 @@
             <button class="metal-button" id="clearSlots" type="button" data-i18n="clearSlots">Clear Slots</button>
             <label class="slot-capacity-control" id="slotCapacityControl">
               <span class="slot-capacity-label" data-i18n="slotCapacityLabel">Max Slots:</span>
-              <input class="slot-total-input" id="slotTotal" type="number" min="0" max="30" step="1" value="30" inputmode="numeric" aria-label="Available candy slots" data-i18n-title="slotCapacity">
+              <input class="slot-total-input" id="slotTotal" type="number" min="0" max="30" step="1" value="30" inputmode="numeric" aria-label="All slots are unlocked in Dark Carnival" data-i18n-title="slotCapacityAllUnlock" readonly>
             </label>
           </div>
         </div>
@@ -1994,6 +2005,7 @@
     const DEMAND_SLOTS = 18;
     const RECIPE_SIDE_SLOTS = 4;
     const BALANCED_TOTAL_TOLERANCE = 2;
+    const SHOW_SLOT_CAPACITY_TOUR_STEP = false;
     const ASSET = "candywork-assets/";
     const I18N = {
       en: {
@@ -2033,6 +2045,7 @@
         statusCannotTrade: "This item cannot be traded with the current candy and recipes.",
         statusLoadedExample: "Loaded the example.",
         slotCapacity: "Available candy slots",
+        slotCapacityAllUnlock: "All slots are unlocked in Dark Carnival",
         slotCapacityLabel: "Max Slots:",
         targetSlot: "Target slot {n}",
         candySlot: "Candy slot {n}",
@@ -2059,7 +2072,7 @@
         tourStep3: "Step 3: Enter the current exchange recipes.",
         tourStep4: "Step 4: Click the button to calculate the trade path.",
         tourStep5: "An example was prepared for you. Click to load.",
-        tourStep7: "Locked slots? Enter the maximum slot count here to limit the search. (In Dark Carnival, all slots are unlocked.)",
+        tourStep7: "Locked slots? Enter the maximum slot count here to limit the search.",
         tourStep8: "If this calculator helps, please give me a free Star on GitHub. This means a lot to me. Thank you :)",
         tourNext: "Next",
         tourDone: "Done",
@@ -2104,6 +2117,7 @@
         statusCannotTrade: "当前糖果和配方无法兑换该物品。",
         statusLoadedExample: "已载入示例。",
         slotCapacity: "可用糖果槽位",
+        slotCapacityAllUnlock: "暗黑狂欢活动所有槽位都是解锁的",
         slotCapacityLabel: "最大槽位数：",
         targetSlot: "目标槽位 {n}",
         candySlot: "糖果槽位 {n}",
@@ -2130,7 +2144,7 @@
         tourStep3: "第三步：填入目前的交换配方。",
         tourStep4: "第四步：点击按钮计算交换方式。",
         tourStep5: "一个示例已为您准备好，点击可以加载。",
-        tourStep7: "有未解锁的槽位？在此输入最大槽位进行限制。（暗黑狂欢活动所有槽位都是解锁的。）",
+        tourStep7: "有未解锁的槽位？在此输入最大槽位进行限制。",
         tourStep8: "如果这个计算器帮到了您，欢迎在 GitHub 中给一颗免费的 Star。真的非常感激！",
         tourNext: "下一步",
         tourDone: "完成",
@@ -2175,6 +2189,7 @@
         statusCannotTrade: "С текущими конфетами и рецептами получить этот предмет невозможно.",
         statusLoadedExample: "Пример загружен.",
         slotCapacity: "Доступные ячейки для конфет",
+        slotCapacityAllUnlock: "В «Тёмном карнавале» открыты все ячейки",
         slotCapacityLabel: "Макс. ячеек:",
         targetSlot: "Ячейка нужных конфет {n}",
         candySlot: "Ячейка конфет {n}",
@@ -2201,7 +2216,7 @@
         tourStep3: "Шаг 3: Введите текущие рецепты обмена.",
         tourStep4: "Шаг 4: Нажмите кнопку, чтобы рассчитать путь обмена.",
         tourStep5: "Для вас подготовлен пример. Нажмите, чтобы загрузить его.",
-        tourStep7: "Есть заблокированные ячейки? Укажите максимальное число доступных ячеек. (В «Тёмном карнавале» открыты все ячейки.)",
+        tourStep7: "Есть заблокированные ячейки? Укажите максимальное число доступных ячеек.",
         tourStep8: "Если калькулятор вам помог, поставьте бесплатную звезду на GitHub. Большое спасибо!",
         tourNext: "Далее",
         tourDone: "Готово",
@@ -2324,7 +2339,7 @@
       { target: "#rerollBtn", textKey: "tourStep5", counted: false },
       { target: "#slotCapacityControl", textKey: "tourStep7", counted: false },
       { target: "#githubLink", textKey: "tourStep8", counted: false }
-    ];
+    ].filter(step => SHOW_SLOT_CAPACITY_TOUR_STEP || step.textKey !== "tourStep7");
     const TOUR_COUNTED_STEPS = TOUR_STEPS.filter(step => step.counted !== false).length;
 
     function locale() {
@@ -2364,7 +2379,7 @@
       });
       els.disclaimerBtn.setAttribute("aria-label", t("disclaimerButton"));
       els.disclaimerBtn.title = t("disclaimerButton");
-      els.slotTotal.setAttribute("aria-label", t("slotCapacity"));
+      els.slotTotal.setAttribute("aria-label", t("slotCapacityAllUnlock"));
       els.resultClose.setAttribute("aria-label", t("closeResults"));
       els.resultClose.title = t("closeResults");
     }

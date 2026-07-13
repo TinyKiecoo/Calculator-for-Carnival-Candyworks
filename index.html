@@ -2617,7 +2617,7 @@
       button.type = "button";
       button.className = `candy-slot ${className}${locked ? " locked-slot" : ""}`;
       button.dataset.kind = kind;
-      button.title = title;
+      button.title = kind === -1 ? title : candyName(kind);
       button.setAttribute("aria-label", title);
       if (locked) {
         button.disabled = true;

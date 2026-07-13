@@ -352,7 +352,7 @@
     }
 
     .offer-card:nth-child(2) .offer-content {
-      transform: translateY(10px);
+      top: 10px;
     }
 
     .offer-art {
@@ -385,7 +385,6 @@
 
     .offer-content {
       position: relative;
-      z-index: 1;
       display: grid;
       gap: 13px;
       justify-items: center;
@@ -1500,20 +1499,24 @@
         background-attachment: scroll;
       }
 
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 29;
+        width: 100%;
+        height: 54px;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(4, 8, 20, .88), rgba(4, 8, 20, .58) 72%, transparent);
+        backdrop-filter: blur(5px);
+      }
+
       body.results-open {
         overflow: hidden;
       }
 
       .top-actions {
-        position: fixed;
-        inset: 0 0 auto;
-        z-index: 30;
-        width: 100%;
-        height: 54px;
-        display: block;
-        pointer-events: none;
-        background: linear-gradient(180deg, rgba(4, 8, 20, .88), rgba(4, 8, 20, .58) 72%, transparent);
-        backdrop-filter: blur(5px);
+        display: contents;
       }
 
       .top-actions > .github-link,
@@ -1521,7 +1524,7 @@
       .top-actions > .language-toggle,
       .top-actions > .help-toggle,
       .top-actions > .about-toggle {
-        position: absolute;
+        position: fixed;
         top: 10px;
         height: 34px;
         min-width: 0;
@@ -1617,7 +1620,7 @@
 
       .offer-card:nth-child(2) .offer-content {
         width: 100%;
-        transform: none;
+        top: 0;
       }
 
       .offer-card:nth-child(2) .offer-art.small {
@@ -2548,6 +2551,9 @@
     }
 
     function endTour() {
+      if (els.tourPanel.contains(document.activeElement)) {
+        els.helpBtn.focus({ preventScroll: true });
+      }
       clearTourHighlight();
       tourIndex = -1;
       tourTargets = [];

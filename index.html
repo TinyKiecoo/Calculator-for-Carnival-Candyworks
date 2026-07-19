@@ -2282,6 +2282,9 @@
       helpBtn: document.querySelector("#helpBtn"),
       languageToggle: document.querySelector("#languageToggle"),
       languageMenu: document.querySelector("#languageMenu"),
+      stage: document.querySelector(".stage"),
+      offers: document.querySelector(".offers"),
+      rerollRow: document.querySelector(".bottom-row"),
       demandRows: document.querySelector("#demandRows"),
       inventoryPills: document.querySelector("#inventoryPills"),
       targetPills: document.querySelector("#targetPills"),
@@ -2770,6 +2773,11 @@
       return window.matchMedia("(max-width: 780px)").matches;
     }
 
+    function placeRerollButton() {
+      const parent = isMobileLayout() ? els.stage : els.offers;
+      if (els.rerollRow.parentElement !== parent) parent.append(els.rerollRow);
+    }
+
     function openResults() {
       if (!isMobileLayout()) return;
       els.resultBackdrop.classList.add("open");
@@ -2796,6 +2804,7 @@
     }
 
     function handleLayoutChange() {
+      placeRerollButton();
       if (!isMobileLayout()) closeResults();
       else if (!els.tradePathCard.classList.contains("mobile-open")) {
         els.tradePathCard.setAttribute("aria-hidden", "true");
@@ -3407,8 +3416,8 @@
       if (event.target === els.disclaimerBackdrop) closeDisclaimer();
     });
     window.addEventListener("resize", () => {
-      if (tourIndex >= 0) renderTourStep(false);
       handleLayoutChange();
+      if (tourIndex >= 0) renderTourStep(false);
     });
     els.resultClose.addEventListener("click", closeResults);
     els.resultBackdrop.addEventListener("click", closeResults);

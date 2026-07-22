@@ -1350,7 +1350,7 @@
     }
 
     .about-dialog {
-      width: min(520px, 100%);
+      width: min(650px, 100%);
       padding: 22px 24px 24px;
       background:
         linear-gradient(180deg, rgba(51, 36, 58, .96), rgba(16, 13, 24, .99)),
@@ -1378,21 +1378,12 @@
       margin: 0;
     }
 
-    .disclaimer-dialog {
-      width: min(650px, 100%);
-    }
-
-    .disclaimer-copy {
-      gap: 12px;
-      font-size: 16px;
-    }
-
-    .disclaimer-copy a {
+    .about-copy a {
       color: #ffe5a8;
       text-decoration-color: rgba(255, 229, 168, .55);
     }
 
-    .disclaimer-copy a:hover {
+    .about-copy a:hover {
       color: #ffffff;
       text-decoration-color: rgba(255, 255, 255, .86);
     }
@@ -1935,8 +1926,8 @@
   </div>
 
   <div class="about-backdrop" id="disclaimerBackdrop" aria-hidden="true">
-    <div class="about-dialog disclaimer-dialog" role="dialog">
-      <div class="about-copy disclaimer-copy">
+    <div class="about-dialog" role="dialog">
+      <div class="about-copy">
         <p data-i18n="disclaimerLine1">This is a free, open-source, non-commercial fan project and is not affiliated with Valve, Steam, or Dota 2.</p>
         <p data-i18n="disclaimerLine2">It uses Dota 2 / Valve-derived images, fonts, names, and UI materials. Those materials remain the property of Valve and their respective rights holders; this project's open-source license does not grant rights to them.</p>
         <p><span data-i18n="disclaimerLine3Before">This site uses third-party visit counters. The public counter value can be viewed</span> <a href="https://www.busuanzi.cc/count.php?search=www.candyworks.site" target="_blank" rel="noopener noreferrer" data-i18n="disclaimerLine3Link">here</a><span data-i18n="disclaimerLine3After">.</span></p>

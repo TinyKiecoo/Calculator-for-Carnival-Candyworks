@@ -1234,7 +1234,8 @@
       position: fixed;
       z-index: 1100;
       width: min(390px, calc(100vw - 32px));
-      min-height: 132px;
+      height: auto;
+      min-height: 0;
       padding: 18px;
       background:
         linear-gradient(180deg, rgba(48, 34, 54, .96), rgba(16, 13, 24, .99)),
@@ -1767,7 +1768,6 @@
       }
 
       .tour-panel {
-        min-height: 0;
         padding: 16px;
       }
 
@@ -1994,7 +1994,6 @@
         tourStep7: "Locked slots? Enter the maximum slot count here to limit the search.",
         tourStep8: "If this calculator helps, please give me a free Star on GitHub. This means a lot to me. Thank you :)",
         tourNext: "Next",
-        tourDone: "Done",
         closeResults: "Close results",
         languageButtonLabel: "Choose language. Current: {language}",
         languageMenuLabel: "Choose language"
@@ -2065,7 +2064,6 @@
         tourStep7: "有未解锁的槽位？在此输入最大槽位进行限制。",
         tourStep8: "如果这个计算器帮到了您，欢迎在 GitHub 中给一颗免费的 Star。真的非常感激！",
         tourNext: "下一步",
-        tourDone: "完成",
         closeResults: "关闭搜索结果",
         languageButtonLabel: "选择语言，当前为：{language}",
         languageMenuLabel: "选择语言"
@@ -2136,7 +2134,6 @@
         tourStep7: "Есть заблокированные ячейки? Укажите максимальное число доступных ячеек.",
         tourStep8: "Если калькулятор вам помог, поставьте бесплатную звезду на GitHub. Большое спасибо!",
         tourNext: "Далее",
-        tourDone: "Готово",
         closeResults: "Закрыть результаты",
         languageButtonLabel: "Выбор языка. Текущий: {language}",
         languageMenuLabel: "Выбор языка"
@@ -2390,7 +2387,7 @@
       const margin = 18;
       const pageZoom = Number.parseFloat(getComputedStyle(document.body).zoom) || 1;
       const panelWidth = (panel.offsetWidth || 360) * pageZoom;
-      const panelHeight = (panel.offsetHeight || 132) * pageZoom;
+      const panelHeight = panel.offsetHeight * pageZoom;
       let left = rect.left + (rect.width / 2) - (panelWidth / 2);
       let top = rect.bottom + margin;
 
@@ -2438,7 +2435,12 @@
       }
       const textKey = useDesktopTargets && step.desktopTextKey ? step.desktopTextKey : step.textKey;
       els.tourText.textContent = t(textKey);
-      els.tourNext.textContent = tourIndex === TOUR_STEPS.length - 1 ? t("tourDone") : t("tourNext");
+      const isLastStep = tourIndex === TOUR_STEPS.length - 1;
+      els.tourNext.textContent = t("tourNext");
+      els.tourNext.hidden = isLastStep;
+      if (isLastStep && document.activeElement === els.tourNext) {
+        target.focus({ preventScroll: true });
+      }
 
       if (shouldScroll) {
         target.scrollIntoView({ block: "center", inline: "center", behavior: "smooth" });
@@ -2455,10 +2457,6 @@
     }
 
     function advanceTour() {
-      if (tourIndex >= TOUR_STEPS.length - 1) {
-        endTour();
-        return;
-      }
       tourIndex += 1;
       renderTourStep();
     }

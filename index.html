@@ -14,7 +14,6 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.candyworks.site/">
   <meta name="twitter:card" content="summary">
-  <script src="https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script>
   <style>
     @font-face {
       font-family: "Reaver";
@@ -3345,14 +3344,20 @@
     });
     handleLayoutChange();
   </script>
-  <script defer>
-    fetch("https://w.saobby.com/api/visit/7bplg3t4", {
-      method: "GET",
-      mode: "no-cors",
-      credentials: "omit",
-      cache: "no-store",
-      referrerPolicy: "origin"
-    }).catch(() => {});
+  <script>
+    if (window.location.hostname === "www.candyworks.site") {
+      const busuanziScript = document.createElement("script");
+      busuanziScript.src = "https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js";
+      document.head.append(busuanziScript);
+
+      fetch("https://w.saobby.com/api/visit/7bplg3t4", {
+        method: "GET",
+        mode: "no-cors",
+        credentials: "omit",
+        cache: "no-store",
+        referrerPolicy: "origin"
+      }).catch(() => {});
+    }
   </script>
 </body>
 </html>

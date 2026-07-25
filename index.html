@@ -2991,7 +2991,7 @@
     function getBalancedMetrics(state, demand, baselineReserve) {
       const remainingState = state.map((count, index) => count - demand[index]);
       const reserveTotal = sum(remainingState);
-      const flexibility = remainingState.reduce((total, count) => total + Math.min(count, 2), 0);
+      const flexibility = remainingState.reduce((total, count) => total + Math.min(count, 3), 0);
       const depletedTypes = remainingState.reduce((total, count, index) => (
         total + (baselineReserve[index] > 0 && count === 0 ? 1 : 0)
       ), 0);

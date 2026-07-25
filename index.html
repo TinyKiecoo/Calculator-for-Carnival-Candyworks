@@ -3059,9 +3059,12 @@
       const maxReserveTotal = candidates.reduce((maximum, candidate) => (
         Math.max(maximum, candidate.reserveTotal)
       ), -Infinity);
+      const startReserveTotal = sum(start) - sum(demand);
+      const canEarnCandy = maxReserveTotal > startReserveTotal;
+      const balanceTolerance = canEarnCandy ? BALANCED_TOTAL_TOLERANCE : 0;
       let bestCandidate = null;
       candidates.forEach(candidate => {
-        if (maxReserveTotal - candidate.reserveTotal > BALANCED_TOTAL_TOLERANCE) return;
+        if (maxReserveTotal - candidate.reserveTotal > balanceTolerance) return;
         if (isBetterBalancedCandidate(candidate, bestCandidate)) bestCandidate = candidate;
       });
 

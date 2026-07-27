@@ -758,6 +758,19 @@
       z-index: 2;
     }
 
+    .cauldron-fx {
+      position: absolute;
+      left: -35px;
+      top: -139px;
+      z-index: 0;
+      width: 260px;
+      height: 320px;
+      pointer-events: none;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgb(26 97 53) 20%, rgba(79, 255, 146, .2) 35%, transparent 55%);
+      filter: blur(15px) brightness(2.7);
+    }
+
     .candy-count {
       grid-column: 2;
       align-self: center;
@@ -1642,6 +1655,7 @@
       }
 
       .cauldron,
+      .cauldron-fx,
       .candy-count,
       .board-title,
       .slots {
@@ -1884,6 +1898,7 @@
 
       <aside class="widget">
         <div class="widget-head">
+          <span class="cauldron-fx" aria-hidden="true"></span>
           <img class="cauldron" src="candywork-assets/node_candy_store_psd.webp">
           <div class="candy-count">
             <strong id="totalCandy">0</strong>

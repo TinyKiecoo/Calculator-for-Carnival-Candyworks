@@ -381,6 +381,7 @@
 
     .offer-content {
       position: relative;
+      min-width: 0;
       display: grid;
       gap: 13px;
       justify-items: center;
@@ -418,6 +419,7 @@
 
     .demand-slots {
       width: 100%;
+      min-width: 0;
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 7px;
@@ -696,6 +698,7 @@
 
     .widget {
       position: relative;
+      min-width: 0;
       min-height: 640px;
       padding: 0 24px 24px;
       background: var(--asset-wood) center / cover;
@@ -888,6 +891,27 @@
       z-index: -1;
     }
 
+    .reroll-button.undo-active,
+    .metal-button.undo-active {
+      color: #f1ffd4;
+      text-shadow: 0 2px 4px #092b1f;
+    }
+
+    .reroll-button.undo-active::before,
+    .metal-button.undo-active::before {
+      background:
+        radial-gradient(ellipse at 50% 12%, rgba(164, 224, 149, .28), transparent 50%),
+        linear-gradient(90deg, rgba(7, 36, 29, .98), rgba(27, 93, 61, .96) 48%, rgba(7, 36, 29, .98)),
+        linear-gradient(180deg, rgba(45, 116, 73, .95), rgba(8, 45, 34, .99) 76%);
+      box-shadow: 0 0 12px rgba(54, 166, 101, .28);
+    }
+
+    .reroll-button.undo-active:hover,
+    .metal-button.undo-active:hover {
+      color: #ffffff;
+      filter: brightness(1.12);
+    }
+
     .board-title {
       position: relative;
       margin: 18px 0 14px;
@@ -914,6 +938,7 @@
     }
 
     .empty-dot {
+      box-sizing: border-box;
       width: 74%;
       height: 74%;
       border-radius: 2px;
@@ -923,16 +948,22 @@
     }
 
     .slots {
+      min-width: 0;
       display: grid;
-      grid-template-columns: repeat(10, 1fr);
+      grid-template-columns: repeat(10, minmax(0, 1fr));
       gap: 5px 7px;
       min-height: 126px;
       align-items: center;
     }
 
     .candy-slot {
+      box-sizing: border-box;
       width: 100%;
+      min-width: 0;
+      min-height: 0;
+      max-width: 100%;
       aspect-ratio: 1 / 1;
+      contain: size;
       border: 1px solid rgba(219, 178, 105, .08);
       background: rgba(17, 12, 22, .18);
       cursor: pointer;
@@ -961,6 +992,7 @@
     }
 
     .locked-dot {
+      box-sizing: border-box;
       width: 58%;
       height: 58%;
       border: 1px solid rgba(147, 137, 150, .2);
@@ -972,8 +1004,11 @@
     }
 
     .candy-slot img {
+      display: block;
       width: 40px;
       height: 40px;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
       filter: drop-shadow(0 4px 4px rgba(0,0,0,.75));
       pointer-events: none;
@@ -1941,6 +1976,7 @@
         rerollItems: "Load Example",
         candies: "Candies",
         clearSlots: "Clear All",
+        undo: "Undo",
         exchange: "Exchange",
         search: "Search",
         howToUse: "How to Use",
@@ -2011,6 +2047,7 @@
         rerollItems: "加载示例",
         candies: "糖果",
         clearSlots: "全部清空",
+        undo: "撤销",
         exchange: "交换",
         search: "搜索",
         howToUse: "如何使用",
@@ -2081,6 +2118,7 @@
         rerollItems: "Загрузить пример",
         candies: "Конфеты",
         clearSlots: "Очистить всё",
+        undo: "Отменить",
         exchange: "Обмен конфет",
         search: "Поиск",
         howToUse: "Как пользоваться",
@@ -2229,6 +2267,102 @@
       in: Array(RECIPE_SIDE_SLOTS).fill(-1),
       out: Array(RECIPE_SIDE_SLOTS).fill(-1)
     }));
+    let undoState = null;
+    const UNDO_BUTTONS = {
+      clear: { element: els.clearSlots, labelKey: "clearSlots" },
+      example: { element: els.rerollBtn, labelKey: "rerollItems" }
+    };
+
+    function cloneData(value) {
+      return value == null ? value : JSON.parse(JSON.stringify(value));
+    }
+
+    function captureCalculatorState() {
+      return {
+        demandSlots: demandSlots.slice(),
+        slotKinds: slotKinds.slice(),
+        availableSlotCount,
+        recipeSlots: cloneData(recipeSlots),
+        lastStatus: cloneData(lastStatus),
+        lastSearchMeta: cloneData(lastSearchMeta),
+        lastSearchResult: cloneData(lastSearchResult)
+      };
+    }
+
+    function calculatorConfigKey(state = null) {
+      const demand = state?.demandSlots ?? demandSlots;
+      const inventory = state?.slotKinds ?? slotKinds;
+      const capacity = state?.availableSlotCount ?? availableSlotCount;
+      const recipes = state?.recipeSlots ?? recipeSlots;
+      return JSON.stringify([
+        capacity,
+        countKinds(demand),
+        countKinds(inventory.slice(0, capacity)),
+        recipes.map(recipe => [countKinds(recipe.in), countKinds(recipe.out)])
+      ]);
+    }
+
+    function restoreCalculatorState(state) {
+      demandSlots = state.demandSlots.slice();
+      slotKinds = state.slotKinds.slice();
+      availableSlotCount = state.availableSlotCount;
+      recipeSlots = cloneData(state.recipeSlots);
+      lastStatus = cloneData(state.lastStatus);
+      lastSearchMeta = cloneData(state.lastSearchMeta);
+      lastSearchResult = cloneData(state.lastSearchResult);
+
+      renderDemandRows();
+      renderSlots();
+      renderRecipes();
+      updateInventoryInputLimits();
+      updateSummary();
+      els.steps.innerHTML = "";
+
+      if (lastSearchResult) {
+        renderResult(lastSearchResult.result, lastSearchResult.demand);
+      } else {
+        renderSearchMeta();
+        renderStatus();
+      }
+    }
+
+    function renderUndoButtons() {
+      Object.entries(UNDO_BUTTONS).forEach(([type, button]) => {
+        const isActive = undoState?.type === type;
+        button.element.classList.toggle("undo-active", isActive);
+        button.element.textContent = t(isActive ? "undo" : button.labelKey);
+      });
+    }
+
+    function cancelUndo() {
+      if (!undoState) return;
+      undoState = null;
+      renderUndoButtons();
+    }
+
+    function restoreUndo() {
+      if (!undoState) return;
+      const state = undoState.snapshot;
+      undoState = null;
+      restoreCalculatorState(state);
+      renderUndoButtons();
+    }
+
+    function runUndoableAction(type, action) {
+      if (undoState?.type === type) {
+        restoreUndo();
+        return;
+      }
+
+      cancelUndo();
+      const snapshot = captureCalculatorState();
+      const previousConfigKey = calculatorConfigKey(snapshot);
+      action();
+      if (calculatorConfigKey() === previousConfigKey) return;
+      undoState = { type, snapshot };
+      renderUndoButtons();
+    }
+
     const TOUR_STEPS = [
       {
         target: "#targetPills",
@@ -2290,6 +2424,7 @@
       els.slotTotal.setAttribute("aria-label", t("slotCapacityAllUnlock"));
       els.resultClose.setAttribute("aria-label", t("closeResults"));
       els.resultClose.title = t("closeResults");
+      renderUndoButtons();
     }
 
     function renderSearchMeta() {
@@ -2736,6 +2871,7 @@
 
     function chooseCandy(kind) {
       if (!pickerTarget) return;
+      cancelUndo();
 
       if (pickerTarget.type === "demand") {
         demandSlots[pickerTarget.index] = kind;
@@ -2801,10 +2937,12 @@
 
     function handleSlotCapacityInput() {
       if (els.slotTotal.value === "") return;
+      cancelUndo();
       setAvailableSlotCount(els.slotTotal.value);
     }
 
     function handleSlotCapacityBlur() {
+      cancelUndo();
       setAvailableSlotCount(els.slotTotal.value === "" ? availableSlotCount : els.slotTotal.value);
     }
 
@@ -2872,6 +3010,7 @@
       const input = event.currentTarget;
       normalizeCountInput(input);
       if (input.value === "") return;
+      cancelUndo();
 
       rebalanceCountInputGroup(input);
 
@@ -3216,6 +3355,7 @@
     }
 
     function runSearch() {
+      cancelUndo();
       updateRecipeTotals();
       updateSummary();
       const demand = getDemand();
@@ -3311,10 +3451,10 @@
     els.slotTotal.addEventListener("input", handleSlotCapacityInput);
     els.slotTotal.addEventListener("change", handleSlotCapacityInput);
     els.slotTotal.addEventListener("blur", handleSlotCapacityBlur);
-    els.clearSlots.addEventListener("click", clearAll);
+    els.clearSlots.addEventListener("click", () => runUndoableAction("clear", clearAll));
     els.rerollBtn.addEventListener("click", () => {
       if (tourIndex >= 0) endTour();
-      loadExample();
+      runUndoableAction("example", loadExample);
     });
     els.tourNext.addEventListener("click", advanceTour);
     els.tourBackdrop.addEventListener("click", event => {

@@ -703,7 +703,6 @@
     .widget {
       --widget-border-size: 30px;
       position: relative;
-      isolation: isolate;
       min-width: 0;
       min-height: 640px;
       padding: 0 24px 24px;
@@ -738,7 +737,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      z-index: -1;
+      z-index: 0;
       pointer-events: none;
       background: linear-gradient(90deg, #988463 0 50%, rgba(124, 39, 31, 0) 100%)
         right top / calc(100% - 1px) 100% no-repeat;
@@ -772,6 +771,8 @@
     }
 
     .candy-count {
+      position: relative;
+      z-index: 1;
       grid-column: 2;
       align-self: center;
       display: grid;
@@ -792,6 +793,8 @@
     }
 
     .slot-action {
+      position: relative;
+      z-index: 1;
       grid-column: 3;
       align-self: center;
       justify-self: center;

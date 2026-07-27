@@ -1006,9 +1006,9 @@
     .candy-slot img {
       display: block;
       width: 40px;
-      height: 40px;
+      height: auto;
       max-width: 100%;
-      max-height: 100%;
+      aspect-ratio: 1 / 1;
       object-fit: contain;
       filter: drop-shadow(0 4px 4px rgba(0,0,0,.75));
       pointer-events: none;
@@ -1016,7 +1016,7 @@
 
     .demand-slot img {
       width: 34px;
-      height: 34px;
+      height: auto;
     }
 
     .candy-slot .empty-dot {
@@ -1071,7 +1071,7 @@
 
     .recipe-slot img {
       width: 30px;
-      height: 30px;
+      height: auto;
     }
 
     .exchange-button {
@@ -1706,7 +1706,7 @@
 
       .recipe-slot img {
         width: min(30px, 7.5vw);
-        height: min(30px, 7.5vw);
+        height: auto;
       }
 
       .exchange-button {

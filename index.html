@@ -448,6 +448,7 @@
     .count-control {
       min-width: 0;
       display: grid;
+      grid-template-columns: minmax(0, 1fr);
       gap: 2px;
       justify-items: center;
       padding: 3px;
@@ -458,7 +459,9 @@
 
     .count-control img {
       width: 28px;
-      height: 28px;
+      height: auto;
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
       object-fit: contain;
       filter: drop-shadow(0 5px 4px rgba(0, 0, 0, .62));
       pointer-events: none;
@@ -467,6 +470,7 @@
     .count-input {
       width: 100%;
       min-width: 0;
+      max-width: 100%;
       height: 26px;
       appearance: textfield;
       border: 1px solid rgba(224, 185, 112, .28);
@@ -1609,7 +1613,7 @@
 
       .count-control img {
         width: min(30px, 8vw);
-        height: min(30px, 8vw);
+        height: auto;
       }
 
       .count-input {

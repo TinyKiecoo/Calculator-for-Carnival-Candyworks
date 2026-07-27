@@ -2838,21 +2838,34 @@
       });
     }
 
-    function clampCountInputToGroupLimit(input) {
+    function rebalanceCountsFromIndex(counts, changedIndex, maxTotal) {
+      const next = counts.slice();
+      const earlierTotal = sum(next.slice(0, changedIndex));
+      next[changedIndex] = Math.min(next[changedIndex], Math.max(0, maxTotal - earlierTotal));
+
+      let overflow = Math.max(0, sum(next) - maxTotal);
+      for (let index = next.length - 1; index > changedIndex && overflow > 0; index--) {
+        const reduction = Math.min(next[index], overflow);
+        next[index] -= reduction;
+        overflow -= reduction;
+      }
+      return next;
+    }
+
+    function rebalanceCountInputGroup(input) {
       if (input.value === "") return;
 
       const container = input.dataset.countType === "inventory" ? els.inventoryPills : els.targetPills;
       const maxTotal = input.dataset.countType === "inventory" ? availableSlotCount : DEMAND_SLOTS;
-      let otherTotal = 0;
+      const inputs = Array.from(container.querySelectorAll(".count-input"));
+      const changedIndex = inputs.indexOf(input);
+      if (changedIndex < 0) return;
 
-      container.querySelectorAll(".count-input").forEach(nextInput => {
-        if (nextInput !== input) otherTotal += countFromInput(nextInput);
+      const counts = rebalanceCountsFromIndex(inputs.map(countFromInput), changedIndex, maxTotal);
+      inputs.forEach((nextInput, index) => {
+        const next = String(counts[index]);
+        if (nextInput.value !== next) nextInput.value = next;
       });
-
-      const maxForInput = Math.max(0, maxTotal - otherTotal);
-      if (countFromInput(input) > maxForInput) {
-        input.value = String(maxForInput);
-      }
     }
 
     function handleCountInput(event) {
@@ -2860,7 +2873,7 @@
       normalizeCountInput(input);
       if (input.value === "") return;
 
-      clampCountInputToGroupLimit(input);
+      rebalanceCountInputGroup(input);
 
       if (input.dataset.countType === "inventory") {
         setSlotsFromCounts(readCountInputs(els.inventoryPills));

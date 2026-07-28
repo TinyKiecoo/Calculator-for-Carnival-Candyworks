@@ -13,7 +13,3 @@ This includes, without limitation, any game UI images, candy images, background 
 Dota 2, Steam, Valve, and related names, marks, logos, and trade dress are trademarks or property of Valve Corporation and/or their respective owners.
 
 Use of those names or materials in this repository is for identification and non-commercial fan-project context only.
-
-## Public Publishing Recommendation
-
-If you want the safest public GitHub Pages version, replace files in `candywork-assets/` with self-made or openly licensed alternatives before publishing.

@@ -507,13 +507,16 @@
     .steps {
       width: 100%;
       max-height: 160px;
-      overflow: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
       display: grid;
       gap: 7px;
       padding-right: 4px;
     }
 
     .path-recipe {
+      min-width: 0;
+      max-width: 100%;
       display: grid;
       grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr);
       gap: 5px;
@@ -581,14 +584,45 @@
 
     .path-recipe.trade-item {
       grid-template-columns: 1fr;
+      gap: 6px;
       min-height: 32px;
+      padding: 7px;
       place-items: center;
+      overflow: hidden;
     }
 
     .path-recipe.trade-item .path-label {
+      max-width: 100%;
       color: #fff1c7;
       font-size: 12px;
+      text-align: center;
       text-shadow: 0 2px 3px #000;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .remaining-candies {
+      width: min(100%, 198px);
+      min-width: 0;
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 2px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .remaining-candies img {
+      width: 100%;
+      max-width: 18px;
+      height: auto;
+      min-width: 0;
+      aspect-ratio: 1;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 3px rgba(0,0,0,.72));
+    }
+
+    .remaining-candies .path-label {
+      grid-column: 1 / -1;
     }
 
     .offer-card.result-mode {
@@ -615,6 +649,72 @@
     .result-close,
     .result-backdrop {
       display: none;
+    }
+
+    .feature-notice {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      z-index: 35;
+      width: min(370px, calc(100vw - 36px));
+      padding: 22px 22px 18px;
+      display: grid;
+      gap: 12px;
+      border: 1px solid rgba(225, 193, 128, .48);
+      background:
+        radial-gradient(circle at 50% 0, rgba(255, 224, 157, .12), transparent 48%),
+        linear-gradient(180deg, rgba(56, 39, 55, .98), rgba(15, 12, 22, .99)),
+        var(--asset-wood) center / cover;
+      color: #ead9bc;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, .58), inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    .feature-notice[hidden] {
+      display: none;
+    }
+
+    .feature-notice-title {
+      padding-right: 38px;
+      color: #fff1c7;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 3px #000;
+    }
+
+    .feature-notice-copy {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .feature-notice-actions {
+      display: flex;
+      justify-content: center;
+      padding-top: 2px;
+    }
+
+    .feature-notice .feature-example-button {
+      width: 154px;
+    }
+
+    .feature-notice .result-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 2;
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(231, 190, 116, .32);
+      border-radius: 50%;
+      background: rgba(10, 8, 14, .72);
+      color: #f2d89d;
+      cursor: pointer;
+      font: 700 24px/1 var(--font-display);
     }
 
     .reroll-button:hover,
@@ -1419,19 +1519,28 @@
       text-decoration-color: rgba(255, 255, 255, .86);
     }
 
-    .language-option,
-    .language-toggle,
-    .about-toggle,
-    .help-toggle {
-      font-family: "Reaver", "Candyworks YaHei", "Candyworks Russian", Arial, sans-serif;
-    }
+.language-option,
+.language-toggle,
+.about-toggle,
+.help-toggle {
+  font-family: "Reaver", "Candyworks YaHei", "Candyworks Russian", Arial, sans-serif;
+}
 
-    html[lang="zh-CN"] .metal-button,
-    html[lang="zh-CN"] .reroll-button,
-    html[lang="zh-CN"] .widget-search-button,
-    html[lang="zh-CN"] .picker-clear,
-    html[lang="zh-CN"] .tour-next {
-      font-size: 20px;
+html[lang="zh-CN"] button,
+html[lang="zh-CN"] button *,
+html[lang="zh-CN"] [role="dialog"],
+html[lang="zh-CN"] [role="dialog"] *,
+html[lang="zh-CN"] .language-menu,
+html[lang="zh-CN"] .language-menu * {
+  font-family: "Microsoft YaHei", "Microsoft YaHei UI", "微软雅黑", sans-serif;
+}
+
+html[lang="zh-CN"] .metal-button,
+html[lang="zh-CN"] .reroll-button,
+html[lang="zh-CN"] .widget-search-button,
+html[lang="zh-CN"] .picker-clear,
+html[lang="zh-CN"] .tour-next {
+      font-size: 18px;
       letter-spacing: 0;
     }
 
@@ -1526,6 +1635,20 @@
         top: 50px;
         right: 10px;
         width: 156px;
+      }
+
+      .feature-notice {
+        top: 62px;
+        right: auto;
+        bottom: auto;
+        left: 50%;
+        width: min(420px, calc(100vw - 20px));
+        padding: 18px 18px 14px;
+        transform: translateX(-50%);
+      }
+
+      .feature-notice-title {
+        font-size: 18px;
       }
 
       .top-actions > .help-toggle {
@@ -1927,6 +2050,15 @@
     </section>
   </main>
 
+  <aside class="feature-notice" id="featureNotice" role="dialog" aria-labelledby="featureNoticeTitle" aria-describedby="featureNoticeCopy" aria-hidden="true" hidden>
+    <button class="result-close feature-notice-close" id="featureNoticeClose" type="button">×</button>
+    <div class="feature-notice-title" id="featureNoticeTitle" data-i18n="featureNoticeTitle">New Feature</div>
+    <p class="feature-notice-copy" id="featureNoticeCopy" data-i18n="featureNoticeCopy">Nothing you want to trade for right now? Leave Target Candy empty and enter only your current candy and recipes to get a reorganization plan that keeps more candies and balances their distribution.</p>
+    <div class="feature-notice-actions">
+      <button class="metal-button feature-example-button" id="featureExampleButton" type="button" data-i18n="rerollItems">Load Example</button>
+    </div>
+  </aside>
+
   <div class="result-backdrop" id="resultBackdrop" aria-hidden="true"></div>
 
   <div class="picker-backdrop" id="pickerBackdrop" aria-hidden="true">
@@ -1970,6 +2102,7 @@
     const RECIPE_SIDE_SLOTS = 4;
     const DIRECT_TRADE_COST = 3;
     const BALANCED_TOTAL_TOLERANCE = DIRECT_TRADE_COST - 1;
+    const FEATURE_NOTICE_STORAGE_KEY = "candyworks-inventory-optimizer-notice-dismissed";
     const SHOW_SLOT_CAPACITY_TOUR_STEP = false;
     const ASSET = "candywork-assets/";
     const I18N = {
@@ -2002,13 +2135,15 @@
         searchIdle: "Calculate Trade Path",
         searching: "Searching",
         searchComplete: "Search Complete",
-        statusIntro: "Enter target candy, current candy, and recipes, then search.",
+        statusIntro: "Enter your current candy and recipes. Add target candy if needed, then search.",
         statusSearching: "Searching trade path...",
-        statusNoRequirement: "The target item has no candy requirement.",
         statusTooMany: "The target item requires more candy than your available slots.",
         statusInvalidRecipe: "Recipe {recipes} is missing input or output candy.",
         statusCannotTrade: "This item cannot be traded with the current candy and recipes.",
         statusLoadedExample: "Loaded the example.",
+        featureNoticeTitle: "New Feature",
+        featureNoticeCopy: "Nothing you want to trade for right now? Leave Target Candy empty and enter only your current candy and recipes to get a reorganization plan that keeps more candies and balances their distribution.",
+        closeFeatureNotice: "Close new feature notice",
         slotCapacity: "Available candy slots",
         slotCapacityAllUnlock: "All slots are unlocked in Dark Carnival",
         slotCapacityLabel: "Max Slots",
@@ -2024,15 +2159,16 @@
         netGain: "Net candy gain: {count}",
         netLoss: "Net candy loss: {count}",
         netEven: "Net candy change: 0",
+        remainingCandy: "Remaining Candy",
         candyGreenName: "Pinelyn Pistachio Nuts",
         candyMintName: "Smoke Harbor Sweetmeats",
         candyPurpleName: "Joerlak Jawbreakers",
         candyBlueName: "Blueheat Breathbolts",
         candyBlackName: "Keen Confectionary Coils",
         tourStepCount: "Step {current} / {total}",
-        tourStep1: "Step 1: Enter the target candy counts.",
+        tourStep1: "Step 1: Enter the target candy counts, or leave them empty to maximize and balance your current candy.",
         tourStep2: "Step 2: Enter your current candy counts.",
-        tourStep1Desktop: "Step 1: Click the target slots or enter the target candy counts.",
+        tourStep1Desktop: "Step 1: Click the target slots or enter the target candy counts. Leave them empty to maximize and balance your current candy.",
         tourStep2Desktop: "Step 2: Click your candy slots or enter your current candy counts.",
         tourStep3: "Step 3: Enter the current exchange recipes.",
         tourStep4: "Step 4: Click the button to calculate the trade path.",
@@ -2073,13 +2209,15 @@
         searchIdle: "计算交换方案",
         searching: "搜索中",
         searchComplete: "搜索完成",
-        statusIntro: "输入目标糖果、已有糖果和配方后开始搜索。",
+        statusIntro: "输入已有糖果和配方；如有目标物品再填写目标糖果，然后开始搜索。",
         statusSearching: "正在搜索交换方案...",
-        statusNoRequirement: "目标物品还没有糖果需求。",
         statusTooMany: "目标物品需求超过当前可用糖果槽位。",
         statusInvalidRecipe: "配方 {recipes} 缺少输入或输出糖果。",
         statusCannotTrade: "当前糖果和配方无法交换该物品。",
         statusLoadedExample: "已载入示例。",
+        featureNoticeTitle: "新功能",
+        featureNoticeCopy: "现在没有想换的物品吗？没关系。将目标糖果留空，仅填入已有糖果和配方，即可重新整理已有糖果，并获得数量较多且分布均衡的整理方案。",
+        closeFeatureNotice: "关闭新功能提示",
         slotCapacity: "可用糖果槽位",
         slotCapacityAllUnlock: "暗黑狂欢活动所有槽位都是解锁的",
         slotCapacityLabel: "最大槽位数",
@@ -2095,15 +2233,16 @@
         netGain: "此方案净赚 {count} 颗糖",
         netLoss: "此方案净亏 {count} 颗糖",
         netEven: "此方案不亏不赚",
+        remainingCandy: "剩余糖果",
         candyGreenName: "松林开心果螺母糖",
         candyMintName: "迷雾港甜肉干",
         candyPurpleName: "杰尔拉克碎牙糖",
         candyBlueName: "蓝心螺栓糖",
         candyBlackName: "基恩线圈糖",
         tourStepCount: "第 {current} / {total} 步",
-        tourStep1: "第一步：填入目标物品所需的各类糖果数量。",
+        tourStep1: "第一步：填入目标物品所需的各类糖果数量；也可留空，仅整理您已有的糖果。",
         tourStep2: "第二步：填入目前已有的各类糖果数量。",
-        tourStep1Desktop: "第一步：点击目标糖果槽位，或填入目标物品所需的各类糖果数量。",
+        tourStep1Desktop: "第一步：点击目标糖果槽位，或填入目标物品所需的各类糖果数量；也可留空，仅整理您已有的糖果。",
         tourStep2Desktop: "第二步：点击已有糖果槽位，或填入目前已有的各类糖果数量。",
         tourStep3: "第三步：填入目前的交换配方。",
         tourStep4: "第四步：点击按钮计算交换方案。",
@@ -2144,13 +2283,15 @@
         searchIdle: "Рассчитать путь обмена",
         searching: "Поиск",
         searchComplete: "Поиск завершён",
-        statusIntro: "Введите нужные и имеющиеся конфеты, а также рецепты, затем запустите поиск.",
+        statusIntro: "Введите имеющиеся конфеты и рецепты. При необходимости добавьте нужные конфеты, затем запустите поиск.",
         statusSearching: "Поиск пути обмена...",
-        statusNoRequirement: "Для целевого предмета не указаны нужные конфеты.",
         statusTooMany: "Для целевого предмета требуется больше конфет, чем доступно ячеек.",
         statusInvalidRecipe: "В рецепте {recipes} не указаны входные или выходные конфеты.",
         statusCannotTrade: "С текущими конфетами и рецептами получить этот предмет невозможно.",
         statusLoadedExample: "Пример загружен.",
+        featureNoticeTitle: "Новая возможность",
+        featureNoticeCopy: "Сейчас нет предмета для обмена? Оставьте нужные конфеты пустыми и укажите только имеющиеся конфеты и рецепты. Калькулятор предложит план, который сохранит больше конфет и равномернее распределит их по видам.",
+        closeFeatureNotice: "Закрыть сообщение о новой возможности",
         slotCapacity: "Доступные ячейки для конфет",
         slotCapacityAllUnlock: "В «Тёмном карнавале» открыты все ячейки",
         slotCapacityLabel: "Макс. ячеек",
@@ -2166,15 +2307,16 @@
         netGain: "Чистый прирост конфет: {count}",
         netLoss: "Чистая потеря конфет: {count}",
         netEven: "Изменение количества конфет: 0",
+        remainingCandy: "Оставшиеся конфеты",
         candyGreenName: "Пинелинские шурупчики",
         candyMintName: "Сласти Дымной гавани",
         candyPurpleName: "Йорлакские зуболомы",
         candyBlueName: "Свежедувы Голубого сердца",
         candyBlackName: "Кондитерские катушки смышлёнцев",
         tourStepCount: "Шаг {current} из {total}",
-        tourStep1: "Шаг 1: Укажите количество нужных конфет.",
+        tourStep1: "Шаг 1: Укажите нужные конфеты или оставьте поле пустым, чтобы увеличить и сбалансировать имеющиеся конфеты.",
         tourStep2: "Шаг 2: Укажите количество имеющихся конфет.",
-        tourStep1Desktop: "Шаг 1: Нажмите ячейки нужных конфет или укажите их количество.",
+        tourStep1Desktop: "Шаг 1: Нажмите ячейки нужных конфет или укажите их количество. Оставьте поле пустым, чтобы увеличить и сбалансировать имеющиеся конфеты.",
         tourStep2Desktop: "Шаг 2: Нажмите ячейки имеющихся конфет или укажите их количество.",
         tourStep3: "Шаг 3: Введите текущие рецепты обмена.",
         tourStep4: "Шаг 4: Нажмите кнопку, чтобы рассчитать путь обмена.",
@@ -2204,6 +2346,21 @@
     function storeLanguage(language) {
       try {
         window.localStorage.setItem("candyworks-language", language);
+      } catch {
+      }
+    }
+
+    function isFeatureNoticeDismissed() {
+      try {
+        return window.localStorage.getItem(FEATURE_NOTICE_STORAGE_KEY) === "true";
+      } catch {
+        return false;
+      }
+    }
+
+    function storeFeatureNoticeDismissed() {
+      try {
+        window.localStorage.setItem(FEATURE_NOTICE_STORAGE_KEY, "true");
       } catch {
       }
     }
@@ -2253,6 +2410,9 @@
       searchBtnSmall: document.querySelector("#searchBtnSmall"),
       clearSlots: document.querySelector("#clearSlots"),
       rerollBtn: document.querySelector("#rerollBtn"),
+      featureNotice: document.querySelector("#featureNotice"),
+      featureNoticeClose: document.querySelector("#featureNoticeClose"),
+      featureExampleButton: document.querySelector("#featureExampleButton"),
       tradePathCard: document.querySelector("#tradePathCard"),
       resultBackdrop: document.querySelector("#resultBackdrop"),
       resultClose: document.querySelector("#resultClose"),
@@ -2441,6 +2601,8 @@
       els.slotTotal.setAttribute("aria-label", t("slotCapacityAllUnlock"));
       els.resultClose.setAttribute("aria-label", t("closeResults"));
       els.resultClose.title = t("closeResults");
+      els.featureNoticeClose.setAttribute("aria-label", t("closeFeatureNotice"));
+      els.featureNoticeClose.title = t("closeFeatureNotice");
       renderUndoButtons();
     }
 
@@ -2862,6 +3024,17 @@
       }
     }
 
+    function showFeatureNotice() {
+      els.featureNotice.hidden = false;
+      els.featureNotice.setAttribute("aria-hidden", "false");
+    }
+
+    function dismissFeatureNotice() {
+      els.featureNotice.hidden = true;
+      els.featureNotice.setAttribute("aria-hidden", "true");
+      storeFeatureNoticeDismissed();
+    }
+
     function openAbout() {
       if (els.pickerBackdrop.classList.contains("open")) closePicker();
       if (tourIndex >= 0) endTour();
@@ -3157,7 +3330,7 @@
       return transitions;
     }
 
-    function getBalancedMetrics(state, demand, baselineReserve) {
+    function getBalancedMetrics(state, demand) {
       const remainingState = state.map((count, index) => count - demand[index]);
       const reserveTotal = sum(remainingState);
       const flexibility = remainingState.reduce((total, count) => {
@@ -3166,29 +3339,24 @@
         return total + scarceCount * DIRECT_TRADE_COST + surplusCount;
       }, 0);
       const scarcityValue = remainingState.reduce((total, count) => total + Math.log1p(count), 0);
-      const depletedTypes = remainingState.reduce((total, count, index) => (
-        total + (baselineReserve[index] > 0 && count === 0 ? 1 : 0)
-      ), 0);
 
-      return { reserveTotal, flexibility, scarcityValue, depletedTypes };
+      return { reserveTotal, flexibility, scarcityValue };
     }
 
     function isBetterBalancedCandidate(candidate, bestCandidate) {
       if (!bestCandidate) return true;
-      if (candidate.depletedTypes !== bestCandidate.depletedTypes) {
-        return candidate.depletedTypes < bestCandidate.depletedTypes;
-      }
       if (candidate.flexibility !== bestCandidate.flexibility) {
         return candidate.flexibility > bestCandidate.flexibility;
+      }
+      // Keep an unspent 3-for-1 option instead of committing it to one specific candy.
+      if (candidate.reserveTotal !== bestCandidate.reserveTotal) {
+        return candidate.reserveTotal > bestCandidate.reserveTotal;
       }
       if (candidate.scarcityValue !== bestCandidate.scarcityValue) {
         return candidate.scarcityValue > bestCandidate.scarcityValue;
       }
       if (candidate.steps !== bestCandidate.steps) {
         return candidate.steps < bestCandidate.steps;
-      }
-      if (candidate.reserveTotal !== bestCandidate.reserveTotal) {
-        return candidate.reserveTotal > bestCandidate.reserveTotal;
       }
       return candidate.key < bestCandidate.key;
     }
@@ -3199,7 +3367,6 @@
       let head = 0;
       const distance = new Map([[startKey, 0]]);
       const parent = new Map();
-      const baselineReserve = start.map((count, index) => Math.max(0, count - demand[index]));
       const candidates = [];
 
       while (head < queue.length) {
@@ -3212,7 +3379,7 @@
             key: stateKey,
             state,
             steps,
-            ...getBalancedMetrics(state, demand, baselineReserve)
+            ...getBalancedMetrics(state, demand)
           });
         }
 
@@ -3254,7 +3421,8 @@
       return {
         found: true,
         path,
-        loss: sum(start) - sum(bestCandidate.state)
+        loss: sum(start) - sum(bestCandidate.state),
+        remaining: bestCandidate.state.map((count, index) => count - demand[index])
       };
     }
 
@@ -3347,13 +3515,28 @@
       return t("netEven");
     }
 
-    function appendTradeSummaryRow(value) {
+    function appendTradeSummaryRow(value, counts) {
       const row = document.createElement("article");
       row.className = "path-recipe trade-item";
-      const text = document.createElement("span");
-      text.className = "path-label";
-      text.textContent = value;
-      row.append(text);
+
+      const titleText = document.createElement("span");
+      titleText.className = "path-label";
+      titleText.textContent = t("remainingCandy");
+
+      const candies = document.createElement("div");
+      candies.className = "remaining-candies";
+      if (!appendCandyIcons(candies, counts)) {
+        const empty = document.createElement("span");
+        empty.className = "path-label";
+        empty.textContent = t("none");
+        candies.append(empty);
+      }
+
+      const summaryText = document.createElement("span");
+      summaryText.className = "path-label";
+      summaryText.textContent = value;
+
+      row.append(titleText, candies, summaryText);
       els.steps.append(row);
     }
 
@@ -3373,7 +3556,7 @@
         appendRecipeRow(entry.recipe.consume, entry.recipe.produce);
       });
 
-      appendTradeSummaryRow(lossText(result.loss || 0));
+      appendTradeSummaryRow(lossText(result.loss || 0), result.remaining);
     }
 
     function runSearch() {
@@ -3390,11 +3573,6 @@
       setSearchMeta("searching");
       setStatusKey("statusSearching");
 
-      if (totalNeed === 0) {
-        setStatusKey("statusNoRequirement", "bad");
-        setSearchMeta("searchIdle");
-        return;
-      }
       if (totalNeed > availableSlotCount) {
         setStatusKey("statusTooMany", "bad");
         setSearchMeta("searchIdle");
@@ -3443,8 +3621,25 @@
       setStatusKey("statusLoadedExample");
     }
 
+    function loadInventoryOptimizationExample() {
+      setAvailableSlotCount(MAX_SLOTS);
+      setDemand([0, 0, 0, 0, 0]);
+      setSlotsFromCounts([14, 0, 8, 4, 0]);
+      setRecipe(0, [0, 1, 0, 0, 1], [3, 0, 0, 0, 0]);
+      setRecipe(1, [0, 2, 0, 0, 0], [1, 0, 1, 0, 1]);
+      setRecipe(2, [0, 0, 1, 2, 0], [0, 3, 0, 0, 0]);
+      setRecipe(3, [0, 2, 1, 0, 0], [0, 0, 0, 0, 3]);
+      renderRecipes();
+      updateSummary();
+      els.steps.innerHTML = "";
+      lastSearchResult = null;
+      setSearchMeta("searchIdle");
+      setStatusKey("statusLoadedExample");
+    }
+
     renderRerolls();
     applyLanguage();
+    if (!isFeatureNoticeDismissed()) showFeatureNotice();
 
     els.searchBtnSmall.addEventListener("click", () => {
       if (tourIndex >= 0) endTour();
@@ -3477,6 +3672,12 @@
     els.rerollBtn.addEventListener("click", () => {
       if (tourIndex >= 0) endTour();
       runUndoableAction("example", loadExample);
+    });
+    els.featureNoticeClose.addEventListener("click", dismissFeatureNotice);
+    els.featureExampleButton.addEventListener("click", () => {
+      if (tourIndex >= 0) endTour();
+      cancelUndo();
+      loadInventoryOptimizationExample();
     });
     els.tourNext.addEventListener("click", advanceTour);
     els.tourBackdrop.addEventListener("click", event => {

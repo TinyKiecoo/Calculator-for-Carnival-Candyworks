@@ -1968,7 +1968,8 @@
     const MAX_SLOTS = 30;
     const DEMAND_SLOTS = 16;
     const RECIPE_SIDE_SLOTS = 4;
-    const BALANCED_TOTAL_TOLERANCE = 2;
+    const DIRECT_TRADE_COST = 3;
+    const BALANCED_TOTAL_TOLERANCE = DIRECT_TRADE_COST - 1;
     const SHOW_SLOT_CAPACITY_TOUR_STEP = false;
     const ASSET = "candywork-assets/";
     const I18N = {
@@ -3142,12 +3143,12 @@
         }
       });
       for (let from = 0; from < CANDIES.length; from++) {
-        if (state[from] < 3) continue;
+        if (state[from] < DIRECT_TRADE_COST) continue;
         for (let to = 0; to < CANDIES.length; to++) {
           if (to === from) continue;
           const consume = Array(CANDIES.length).fill(0);
           const produce = Array(CANDIES.length).fill(0);
-          consume[from] = 3;
+          consume[from] = DIRECT_TRADE_COST;
           produce[to] = 1;
           const recipe = { consume, produce };
           transitions.push({ next: applyRecipe(state, recipe), recipe });
@@ -3159,12 +3160,17 @@
     function getBalancedMetrics(state, demand, baselineReserve) {
       const remainingState = state.map((count, index) => count - demand[index]);
       const reserveTotal = sum(remainingState);
-      const flexibility = remainingState.reduce((total, count) => total + Math.min(count, 3), 0);
+      const flexibility = remainingState.reduce((total, count) => {
+        const scarceCount = Math.min(count, DIRECT_TRADE_COST);
+        const surplusCount = count - scarceCount;
+        return total + scarceCount * DIRECT_TRADE_COST + surplusCount;
+      }, 0);
+      const scarcityValue = remainingState.reduce((total, count) => total + Math.log1p(count), 0);
       const depletedTypes = remainingState.reduce((total, count, index) => (
         total + (baselineReserve[index] > 0 && count === 0 ? 1 : 0)
       ), 0);
 
-      return { reserveTotal, flexibility, depletedTypes };
+      return { reserveTotal, flexibility, scarcityValue, depletedTypes };
     }
 
     function isBetterBalancedCandidate(candidate, bestCandidate) {
@@ -3174,6 +3180,9 @@
       }
       if (candidate.flexibility !== bestCandidate.flexibility) {
         return candidate.flexibility > bestCandidate.flexibility;
+      }
+      if (candidate.scarcityValue !== bestCandidate.scarcityValue) {
+        return candidate.scarcityValue > bestCandidate.scarcityValue;
       }
       if (candidate.steps !== bestCandidate.steps) {
         return candidate.steps < bestCandidate.steps;

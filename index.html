@@ -2052,11 +2052,8 @@ html[lang="zh-CN"] .tour-next {
 
   <aside class="feature-notice" id="featureNotice" role="dialog" aria-labelledby="featureNoticeTitle" aria-describedby="featureNoticeCopy" aria-hidden="true" hidden>
     <button class="result-close feature-notice-close" id="featureNoticeClose" type="button">×</button>
-    <div class="feature-notice-title" id="featureNoticeTitle" data-i18n="featureNoticeTitle">New Feature</div>
-    <p class="feature-notice-copy" id="featureNoticeCopy" data-i18n="featureNoticeCopy">Nothing you want to trade for right now? Leave Target Candy empty and enter only your current candy and recipes to get a reorganization plan that keeps more candies and balances their distribution.</p>
-    <div class="feature-notice-actions">
-      <button class="metal-button feature-example-button" id="featureExampleButton" type="button" data-i18n="rerollItems">Load Example</button>
-    </div>
+    <div class="feature-notice-title" id="featureNoticeTitle" data-i18n="featureNoticeTitle">New Tool</div>
+    <p class="feature-notice-copy" id="featureNoticeCopy"><span data-i18n="featureNoticeCopy">Fantasy prediction for the International has started. A new open-source Fantasy Score calculator is now available at </span><a href="https://www.ti-fantasy.site" target="_blank" rel="noopener noreferrer">www.ti-fantasy.site</a><span data-i18n="featureNoticeAfter">.</span></p>
   </aside>
 
   <div class="result-backdrop" id="resultBackdrop" aria-hidden="true"></div>
@@ -2102,7 +2099,7 @@ html[lang="zh-CN"] .tour-next {
     const RECIPE_SIDE_SLOTS = 4;
     const DIRECT_TRADE_COST = 3;
     const BALANCED_TOTAL_TOLERANCE = DIRECT_TRADE_COST - 1;
-    const FEATURE_NOTICE_STORAGE_KEY = "candyworks-inventory-optimizer-notice-dismissed";
+    const FEATURE_NOTICE_STORAGE_KEY = "fantasy-tool-notice-dismissed";
     const SHOW_SLOT_CAPACITY_TOUR_STEP = false;
     const ASSET = "candywork-assets/";
     const I18N = {
@@ -2141,9 +2138,9 @@ html[lang="zh-CN"] .tour-next {
         statusInvalidRecipe: "Recipe {recipes} is missing input or output candy.",
         statusCannotTrade: "This item cannot be traded with the current candy and recipes.",
         statusLoadedExample: "Loaded the example.",
-        featureNoticeTitle: "New Feature",
-        featureNoticeCopy: "Nothing you want to trade for right now? Leave Target Candy empty and enter only your current candy and recipes to get a reorganization plan that keeps more candies and balances their distribution.",
-        closeFeatureNotice: "Close new feature notice",
+        featureNoticeTitle: "New Tool",
+        featureNoticeCopy: "Fantasy prediction for the International has started. A new open-source Fantasy Score calculator is now available at ",
+        featureNoticeAfter: ".",
         slotCapacity: "Available candy slots",
         slotCapacityAllUnlock: "All slots are unlocked in Dark Carnival",
         slotCapacityLabel: "Max Slots",
@@ -2215,9 +2212,9 @@ html[lang="zh-CN"] .tour-next {
         statusInvalidRecipe: "配方 {recipes} 缺少输入或输出糖果。",
         statusCannotTrade: "当前糖果和配方无法交换该物品。",
         statusLoadedExample: "已载入示例。",
-        featureNoticeTitle: "新功能",
-        featureNoticeCopy: "现在没有想换的物品吗？没关系。将目标糖果留空，仅填入已有糖果和配方，即可重新整理已有糖果，并获得数量较多且分布均衡的整理方案。",
-        closeFeatureNotice: "关闭新功能提示",
+        featureNoticeTitle: "新工具",
+        featureNoticeCopy: "国际邀请赛梦幻挑战现已开始。一个开源的梦幻积分计算器 ",
+        featureNoticeAfter: " 已上线。",
         slotCapacity: "可用糖果槽位",
         slotCapacityAllUnlock: "暗黑狂欢活动所有槽位都是解锁的",
         slotCapacityLabel: "最大槽位数",
@@ -2290,8 +2287,8 @@ html[lang="zh-CN"] .tour-next {
         statusCannotTrade: "С текущими конфетами и рецептами получить этот предмет невозможно.",
         statusLoadedExample: "Пример загружен.",
         featureNoticeTitle: "Новая возможность",
-        featureNoticeCopy: "Сейчас нет предмета для обмена? Оставьте нужные конфеты пустыми и укажите только имеющиеся конфеты и рецепты. Калькулятор предложит план, который сохранит больше конфет и равномернее распределит их по видам.",
-        closeFeatureNotice: "Закрыть сообщение о новой возможности",
+        featureNoticeCopy: "Прогнозы по Fantasy для The International начались. Новый калькулятор очков Fantasy с открытым исходным кодом теперь доступен на ",
+        featureNoticeAfter: ".",
         slotCapacity: "Доступные ячейки для конфет",
         slotCapacityAllUnlock: "В «Тёмном карнавале» открыты все ячейки",
         slotCapacityLabel: "Макс. ячеек",
@@ -2601,8 +2598,6 @@ html[lang="zh-CN"] .tour-next {
       els.slotTotal.setAttribute("aria-label", t("slotCapacityAllUnlock"));
       els.resultClose.setAttribute("aria-label", t("closeResults"));
       els.resultClose.title = t("closeResults");
-      els.featureNoticeClose.setAttribute("aria-label", t("closeFeatureNotice"));
-      els.featureNoticeClose.title = t("closeFeatureNotice");
       renderUndoButtons();
     }
 

@@ -106,6 +106,7 @@
 
     .github-link,
     .info-toggle,
+    .fantasy-link,
     .language-toggle,
     .about-toggle,
     .help-toggle {
@@ -155,6 +156,21 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .fantasy-link {
+      left: 120px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-color: rgba(255, 220, 112, .86);
+      background: linear-gradient(180deg, rgba(157, 107, 43, .92), rgba(92, 56, 23, .96));
+      color: #f6e8c9;
+      line-height: 1.1;
+      text-align: center;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .4), inset 0 0 0 1px rgba(255, 248, 190, .34);
     }
 
     .github-link svg, .info-icon {
@@ -241,6 +257,7 @@
 
     .github-link:hover,
     .info-toggle:hover,
+    .fantasy-link:hover,
     .language-toggle:hover,
     .about-toggle:hover,
     .help-toggle:hover {
@@ -649,72 +666,6 @@
     .result-close,
     .result-backdrop {
       display: none;
-    }
-
-    .feature-notice {
-      position: fixed;
-      left: 18px;
-      bottom: 18px;
-      z-index: 35;
-      width: min(370px, calc(100vw - 36px));
-      padding: 22px 22px 18px;
-      display: grid;
-      gap: 12px;
-      border: 1px solid rgba(225, 193, 128, .48);
-      background:
-        radial-gradient(circle at 50% 0, rgba(255, 224, 157, .12), transparent 48%),
-        linear-gradient(180deg, rgba(56, 39, 55, .98), rgba(15, 12, 22, .99)),
-        var(--asset-wood) center / cover;
-      color: #ead9bc;
-      box-shadow: 0 18px 42px rgba(0, 0, 0, .58), inset 0 0 0 1px rgba(255,255,255,.05);
-    }
-
-    .feature-notice[hidden] {
-      display: none;
-    }
-
-    .feature-notice-title {
-      padding-right: 38px;
-      color: #fff1c7;
-      font-family: var(--font-display);
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      text-shadow: 0 2px 3px #000;
-    }
-
-    .feature-notice-copy {
-      margin: 0;
-      font-size: 14px;
-      line-height: 1.65;
-    }
-
-    .feature-notice-actions {
-      display: flex;
-      justify-content: center;
-      padding-top: 2px;
-    }
-
-    .feature-notice .feature-example-button {
-      width: 154px;
-    }
-
-    .feature-notice .result-close {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      z-index: 2;
-      width: 40px;
-      height: 40px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(231, 190, 116, .32);
-      border-radius: 50%;
-      background: rgba(10, 8, 14, .72);
-      color: #f2d89d;
-      cursor: pointer;
-      font: 700 24px/1 var(--font-display);
     }
 
     .reroll-button:hover,
@@ -1521,6 +1472,7 @@
 
 .language-option,
 .language-toggle,
+.fantasy-link,
 .about-toggle,
 .help-toggle {
   font-family: "Reaver", "Candyworks YaHei", "Candyworks Russian", Arial, sans-serif;
@@ -1531,7 +1483,8 @@ html[lang="zh-CN"] button *,
 html[lang="zh-CN"] [role="dialog"],
 html[lang="zh-CN"] [role="dialog"] *,
 html[lang="zh-CN"] .language-menu,
-html[lang="zh-CN"] .language-menu * {
+html[lang="zh-CN"] .language-menu *,
+html[lang="zh-CN"] .fantasy-link {
   font-family: "Microsoft YaHei", "Microsoft YaHei UI", "微软雅黑", sans-serif;
 }
 
@@ -1577,7 +1530,7 @@ html[lang="zh-CN"] .tour-next {
         inset: 0 0 auto;
         z-index: 29;
         width: 100%;
-        height: 54px;
+        height: 94px;
         pointer-events: none;
         background: linear-gradient(180deg, rgba(4, 8, 20, .88), rgba(4, 8, 20, .58) 72%, transparent);
         backdrop-filter: blur(5px);
@@ -1593,6 +1546,7 @@ html[lang="zh-CN"] .tour-next {
 
       .top-actions > .github-link,
       .top-actions > .info-toggle,
+      .top-actions > .fantasy-link,
       .top-actions > .language-toggle,
       .top-actions > .help-toggle,
       .top-actions > .about-toggle {
@@ -1607,6 +1561,7 @@ html[lang="zh-CN"] .tour-next {
 
       .top-actions > .github-link:hover,
       .top-actions > .info-toggle:hover,
+      .top-actions > .fantasy-link:hover,
       .top-actions > .language-toggle:hover,
       .top-actions > .help-toggle:hover,
       .top-actions > .about-toggle:hover {
@@ -1625,6 +1580,13 @@ html[lang="zh-CN"] .tour-next {
         padding: 0;
       }
 
+      .top-actions > .fantasy-link {
+        left: 105px;
+        font-size: 10px;
+        letter-spacing: .02em;
+        white-space: nowrap;
+      }
+
       .top-actions > .language-toggle {
         right: 10px;
         width: 46px;
@@ -1635,20 +1597,6 @@ html[lang="zh-CN"] .tour-next {
         top: 50px;
         right: 10px;
         width: 156px;
-      }
-
-      .feature-notice {
-        top: 62px;
-        right: auto;
-        bottom: auto;
-        left: 50%;
-        width: min(420px, calc(100vw - 20px));
-        padding: 18px 18px 14px;
-        transform: translateX(-50%);
-      }
-
-      .feature-notice-title {
-        font-size: 18px;
       }
 
       .top-actions > .help-toggle {
@@ -1667,7 +1615,7 @@ html[lang="zh-CN"] .tour-next {
 
       .page {
         min-height: 0;
-        padding: 70px 12px 28px;
+        padding: 110px 12px 28px;
         gap: 22px;
       }
 
@@ -1945,6 +1893,7 @@ html[lang="zh-CN"] .tour-next {
         padding: 14px;
       }
     }
+
   </style>
 </head>
 <body>
@@ -1955,6 +1904,7 @@ html[lang="zh-CN"] .tour-next {
     <button class="info-toggle" id="disclaimerBtn" type="button" aria-label="Disclaimer" title="Disclaimer">
       <img class="info-icon" src="candywork-assets/icon_info_f2d89d.png">
     </button>
+    <a class="fantasy-link" href="https://www.ti-fantasy.site/" target="_blank" rel="noopener noreferrer" data-i18n="fantasyCalculator">Fantasy Calculator</a>
     <button class="language-toggle" id="languageToggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="languageMenu" aria-label="Choose language">EN</button>
     <div class="language-menu" id="languageMenu" role="listbox" aria-label="Choose language" aria-hidden="true">
       <button class="language-option" type="button" role="option" data-language="en" lang="en" aria-selected="true">English</button>
@@ -2050,12 +2000,6 @@ html[lang="zh-CN"] .tour-next {
     </section>
   </main>
 
-  <aside class="feature-notice" id="featureNotice" role="dialog" aria-labelledby="featureNoticeTitle" aria-describedby="featureNoticeCopy" aria-hidden="true" hidden>
-    <button class="result-close feature-notice-close" id="featureNoticeClose" type="button">×</button>
-    <div class="feature-notice-title" id="featureNoticeTitle" data-i18n="featureNoticeTitle">New Tool</div>
-    <p class="feature-notice-copy" id="featureNoticeCopy"><span data-i18n="featureNoticeCopy">Fantasy prediction for the International has started. A new open-source Fantasy Score calculator is now available at </span><a href="https://www.ti-fantasy.site" target="_blank" rel="noopener noreferrer">www.ti-fantasy.site</a><span data-i18n="featureNoticeAfter">.</span></p>
-  </aside>
-
   <div class="result-backdrop" id="resultBackdrop" aria-hidden="true"></div>
 
   <div class="picker-backdrop" id="pickerBackdrop" aria-hidden="true">
@@ -2099,7 +2043,6 @@ html[lang="zh-CN"] .tour-next {
     const RECIPE_SIDE_SLOTS = 4;
     const DIRECT_TRADE_COST = 3;
     const BALANCED_TOTAL_TOLERANCE = DIRECT_TRADE_COST - 1;
-    const FEATURE_NOTICE_STORAGE_KEY = "fantasy-tool-notice-dismissed";
     const SHOW_SLOT_CAPACITY_TOUR_STEP = false;
     const ASSET = "candywork-assets/";
     const I18N = {
@@ -2108,6 +2051,7 @@ html[lang="zh-CN"] .tour-next {
         title: "CARNIVAL CANDYWORKS",
         subtitle: "An open-source calculator for Dota 2 Candyworks.",
         disclaimerButton: "Disclaimer",
+        fantasyCalculator: "Fantasy Calculator",
         disclaimerLine1: "This is a free, open-source, non-commercial fan project and is not affiliated with Valve, Steam, or Dota 2.",
         disclaimerLine2: "It uses Dota 2 / Valve-derived images, fonts, names, and UI materials. Those materials remain the property of Valve and their respective rights holders; this project's open-source license does not grant rights to them.",
         disclaimerLine3Before: "This site uses third-party visit counters. The public counter value can be viewed",
@@ -2138,9 +2082,6 @@ html[lang="zh-CN"] .tour-next {
         statusInvalidRecipe: "Recipe {recipes} is missing input or output candy.",
         statusCannotTrade: "This item cannot be traded with the current candy and recipes.",
         statusLoadedExample: "Loaded the example.",
-        featureNoticeTitle: "New Tool",
-        featureNoticeCopy: "Fantasy prediction for the International has started. A new open-source Fantasy Score calculator is now available at ",
-        featureNoticeAfter: ".",
         slotCapacity: "Available candy slots",
         slotCapacityAllUnlock: "All slots are unlocked in Dark Carnival",
         slotCapacityLabel: "Max Slots",
@@ -2182,6 +2123,7 @@ html[lang="zh-CN"] .tour-next {
         title: "狂欢糖果车",
         subtitle: "开源的 Dota 2 糖果车计算器",
         disclaimerButton: "免责声明",
+        fantasyCalculator: "梦幻挑战计算器",
         disclaimerLine1: "这是一个免费、开源、非商业的玩家项目，与 Valve、Steam 或 Dota 2 官方无关联。",
         disclaimerLine2: "本项目使用了 Dota 2 / Valve 相关图片、字体、名称和界面素材。这些素材仍归 Valve 及相应权利方所有；本项目的开源许可证不授予这些素材的使用权。",
         disclaimerLine3Before: "本站使用第三方访问计数服务。公开的计数值可在",
@@ -2212,9 +2154,6 @@ html[lang="zh-CN"] .tour-next {
         statusInvalidRecipe: "配方 {recipes} 缺少输入或输出糖果。",
         statusCannotTrade: "当前糖果和配方无法交换该物品。",
         statusLoadedExample: "已载入示例。",
-        featureNoticeTitle: "新工具",
-        featureNoticeCopy: "国际邀请赛梦幻挑战现已开始。一个开源的梦幻积分计算器 ",
-        featureNoticeAfter: " 已上线。",
         slotCapacity: "可用糖果槽位",
         slotCapacityAllUnlock: "暗黑狂欢活动所有槽位都是解锁的",
         slotCapacityLabel: "最大槽位数",
@@ -2256,6 +2195,7 @@ html[lang="zh-CN"] .tour-next {
         title: "КАРНАВАЛЬНАЯ ЛАВКА КОНФЕТ",
         subtitle: "Калькулятор лавки конфет Dota 2 с открытым исходным кодом.",
         disclaimerButton: "Отказ от ответственности",
+        fantasyCalculator: "Fantasy Calculator",
         disclaimerLine1: "Это бесплатный некоммерческий фанатский проект с открытым исходным кодом, не связанный с Valve, Steam или Dota 2.",
         disclaimerLine2: "В проекте используются изображения, шрифты, названия и элементы интерфейса из Dota 2 / Valve. Права на эти материалы принадлежат Valve и другим правообладателям; лицензия проекта с открытым исходным кодом не предоставляет прав на них.",
         disclaimerLine3Before: "Сайт использует сторонние счётчики посещений. Публичные данные счётчика доступны",
@@ -2286,9 +2226,6 @@ html[lang="zh-CN"] .tour-next {
         statusInvalidRecipe: "В рецепте {recipes} не указаны входные или выходные конфеты.",
         statusCannotTrade: "С текущими конфетами и рецептами получить этот предмет невозможно.",
         statusLoadedExample: "Пример загружен.",
-        featureNoticeTitle: "Новая возможность",
-        featureNoticeCopy: "Прогнозы по Fantasy для The International начались. Новый калькулятор очков Fantasy с открытым исходным кодом теперь доступен на ",
-        featureNoticeAfter: ".",
         slotCapacity: "Доступные ячейки для конфет",
         slotCapacityAllUnlock: "В «Тёмном карнавале» открыты все ячейки",
         slotCapacityLabel: "Макс. ячеек",
@@ -2347,21 +2284,6 @@ html[lang="zh-CN"] .tour-next {
       }
     }
 
-    function isFeatureNoticeDismissed() {
-      try {
-        return window.localStorage.getItem(FEATURE_NOTICE_STORAGE_KEY) === "true";
-      } catch {
-        return false;
-      }
-    }
-
-    function storeFeatureNoticeDismissed() {
-      try {
-        window.localStorage.setItem(FEATURE_NOTICE_STORAGE_KEY, "true");
-      } catch {
-      }
-    }
-
     function getPreferredLanguage() {
       const browserLanguages = Array.isArray(navigator.languages) && navigator.languages.length
         ? navigator.languages
@@ -2407,9 +2329,6 @@ html[lang="zh-CN"] .tour-next {
       searchBtnSmall: document.querySelector("#searchBtnSmall"),
       clearSlots: document.querySelector("#clearSlots"),
       rerollBtn: document.querySelector("#rerollBtn"),
-      featureNotice: document.querySelector("#featureNotice"),
-      featureNoticeClose: document.querySelector("#featureNoticeClose"),
-      featureExampleButton: document.querySelector("#featureExampleButton"),
       tradePathCard: document.querySelector("#tradePathCard"),
       resultBackdrop: document.querySelector("#resultBackdrop"),
       resultClose: document.querySelector("#resultClose"),
@@ -3019,17 +2938,6 @@ html[lang="zh-CN"] .tour-next {
       }
     }
 
-    function showFeatureNotice() {
-      els.featureNotice.hidden = false;
-      els.featureNotice.setAttribute("aria-hidden", "false");
-    }
-
-    function dismissFeatureNotice() {
-      els.featureNotice.hidden = true;
-      els.featureNotice.setAttribute("aria-hidden", "true");
-      storeFeatureNoticeDismissed();
-    }
-
     function openAbout() {
       if (els.pickerBackdrop.classList.contains("open")) closePicker();
       if (tourIndex >= 0) endTour();
@@ -3616,25 +3524,8 @@ html[lang="zh-CN"] .tour-next {
       setStatusKey("statusLoadedExample");
     }
 
-    function loadInventoryOptimizationExample() {
-      setAvailableSlotCount(MAX_SLOTS);
-      setDemand([0, 0, 0, 0, 0]);
-      setSlotsFromCounts([14, 0, 8, 4, 0]);
-      setRecipe(0, [0, 1, 0, 0, 1], [3, 0, 0, 0, 0]);
-      setRecipe(1, [0, 2, 0, 0, 0], [1, 0, 1, 0, 1]);
-      setRecipe(2, [0, 0, 1, 2, 0], [0, 3, 0, 0, 0]);
-      setRecipe(3, [0, 2, 1, 0, 0], [0, 0, 0, 0, 3]);
-      renderRecipes();
-      updateSummary();
-      els.steps.innerHTML = "";
-      lastSearchResult = null;
-      setSearchMeta("searchIdle");
-      setStatusKey("statusLoadedExample");
-    }
-
     renderRerolls();
     applyLanguage();
-    if (!isFeatureNoticeDismissed()) showFeatureNotice();
 
     els.searchBtnSmall.addEventListener("click", () => {
       if (tourIndex >= 0) endTour();
@@ -3667,12 +3558,6 @@ html[lang="zh-CN"] .tour-next {
     els.rerollBtn.addEventListener("click", () => {
       if (tourIndex >= 0) endTour();
       runUndoableAction("example", loadExample);
-    });
-    els.featureNoticeClose.addEventListener("click", dismissFeatureNotice);
-    els.featureExampleButton.addEventListener("click", () => {
-      if (tourIndex >= 0) endTour();
-      cancelUndo();
-      loadInventoryOptimizationExample();
     });
     els.tourNext.addEventListener("click", advanceTour);
     els.tourBackdrop.addEventListener("click", event => {

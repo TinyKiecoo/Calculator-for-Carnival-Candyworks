@@ -527,6 +527,8 @@
       overflow-x: hidden;
       overflow-y: auto;
       display: grid;
+      grid-auto-rows: max-content;
+      align-content: start;
       gap: 7px;
       padding-right: 4px;
     }
@@ -605,7 +607,7 @@
       min-height: 32px;
       padding: 7px;
       place-items: center;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .path-recipe.trade-item .path-label {
@@ -2043,6 +2045,7 @@ html[lang="zh-CN"] .tour-next {
     const RECIPE_SIDE_SLOTS = 4;
     const DIRECT_TRADE_COST = 3;
     const BALANCED_TOTAL_TOLERANCE = DIRECT_TRADE_COST - 1;
+    const STATE_KEY_BASE = MAX_SLOTS + 1;
     const SHOW_SLOT_CAPACITY_TOUR_STEP = false;
     const ASSET = "candywork-assets/";
     const I18N = {
@@ -2308,6 +2311,17 @@ html[lang="zh-CN"] .tour-next {
       { nameKey: "candyBlueName", img: ASSET + "candy_image_4_psd.webp" },
       { nameKey: "candyBlackName", img: ASSET + "candy_image_5_psd.webp" }
     ];
+    const DIRECT_TRADE_RECIPES = [];
+    for (let from = 0; from < CANDIES.length; from++) {
+      for (let to = 0; to < CANDIES.length; to++) {
+        if (to === from) continue;
+        const consume = Array(CANDIES.length).fill(0);
+        const produce = Array(CANDIES.length).fill(0);
+        consume[from] = DIRECT_TRADE_COST;
+        produce[to] = 1;
+        DIRECT_TRADE_RECIPES.push({ from, to, consume, produce });
+      }
+    }
 
     const els = {
       disclaimerBtn: document.querySelector("#disclaimerBtn"),
@@ -2701,6 +2715,16 @@ html[lang="zh-CN"] .tour-next {
 
     function keyOf(state) {
       return state.join(",");
+    }
+
+    function encodedKeyOf(state) {
+      let key = 0;
+      let place = 1;
+      for (const count of state) {
+        key += count * place;
+        place *= STATE_KEY_BASE;
+      }
+      return key;
     }
 
     function countKinds(slots) {
@@ -3167,7 +3191,7 @@ html[lang="zh-CN"] .tour-next {
         const bad = !empty && (inTotal === 0 || outTotal === 0);
         if (bad) invalid.push(r + 1);
         if (!empty && !bad) {
-          recipes.push({ consume, produce });
+          recipes.push({ consume, produce, consumeTotal: inTotal, produceTotal: outTotal });
         }
       }
       return { recipes, invalid };
@@ -3198,11 +3222,13 @@ html[lang="zh-CN"] .tour-next {
       return demand.every((need, i) => state[i] >= need);
     }
 
-    function canApply(state, recipe, capacity) {
+    function canApply(state, recipe, capacity, stateTotal = sum(state)) {
       for (let i = 0; i < CANDIES.length; i++) {
         if (state[i] < recipe.consume[i]) return false;
       }
-      const nextTotal = sum(state) - sum(recipe.consume) + sum(recipe.produce);
+      const consumeTotal = recipe.consumeTotal ?? sum(recipe.consume);
+      const produceTotal = recipe.produceTotal ?? sum(recipe.produce);
+      const nextTotal = stateTotal - consumeTotal + produceTotal;
       return nextTotal <= capacity;
     }
 
@@ -3212,23 +3238,19 @@ html[lang="zh-CN"] .tour-next {
 
     function buildTransitions(state, randomRecipes, capacity) {
       const transitions = [];
+      const stateTotal = sum(state);
       randomRecipes.forEach(recipe => {
-        if (canApply(state, recipe, capacity)) {
+        if (canApply(state, recipe, capacity, stateTotal)) {
           const next = applyRecipe(state, recipe);
-          if (keyOf(next) !== keyOf(state)) transitions.push({ next, recipe });
+          if (next.some((count, index) => count !== state[index])) transitions.push({ next, recipe });
         }
       });
-      for (let from = 0; from < CANDIES.length; from++) {
-        if (state[from] < DIRECT_TRADE_COST) continue;
-        for (let to = 0; to < CANDIES.length; to++) {
-          if (to === from) continue;
-          const consume = Array(CANDIES.length).fill(0);
-          const produce = Array(CANDIES.length).fill(0);
-          consume[from] = DIRECT_TRADE_COST;
-          produce[to] = 1;
-          const recipe = { consume, produce };
-          transitions.push({ next: applyRecipe(state, recipe), recipe });
-        }
+      for (const recipe of DIRECT_TRADE_RECIPES) {
+        if (state[recipe.from] < DIRECT_TRADE_COST) continue;
+        const next = state.slice();
+        next[recipe.from] -= DIRECT_TRADE_COST;
+        next[recipe.to] += 1;
+        transitions.push({ next, recipe });
       }
       return transitions;
     }
@@ -3265,56 +3287,65 @@ html[lang="zh-CN"] .tour-next {
     }
 
     function searchPath(start, demand, randomRecipes, capacity) {
-      const startKey = keyOf(start);
-      const queue = [start];
+      const startVisitKey = encodedKeyOf(start);
+      const queueStates = [start];
+      const queueKeys = [startVisitKey];
+      const queueSteps = [0];
       let head = 0;
-      const distance = new Map([[startKey, 0]]);
+      const visited = new Set([startVisitKey]);
       const parent = new Map();
-      const candidates = [];
+      const bestCandidateByReserveTotal = new Map();
+      let maxReserveTotal = -Infinity;
 
-      while (head < queue.length) {
-        const state = queue[head++];
-        const stateKey = keyOf(state);
-        const steps = distance.get(stateKey);
+      while (head < queueStates.length) {
+        const state = queueStates[head];
+        const visitKey = queueKeys[head];
+        const steps = queueSteps[head];
+        head += 1;
 
         if (hasDemand(state, demand)) {
-          candidates.push({
-            key: stateKey,
+          const candidate = {
+            key: keyOf(state),
+            visitKey,
             state,
             steps,
             ...getBalancedMetrics(state, demand)
-          });
+          };
+          maxReserveTotal = Math.max(maxReserveTotal, candidate.reserveTotal);
+          const currentBest = bestCandidateByReserveTotal.get(candidate.reserveTotal);
+          if (isBetterBalancedCandidate(candidate, currentBest)) {
+            bestCandidateByReserveTotal.set(candidate.reserveTotal, candidate);
+          }
         }
 
         const moves = buildTransitions(state, randomRecipes, capacity);
         for (const move of moves) {
-          const nextKey = keyOf(move.next);
-          if (distance.has(nextKey)) continue;
-          distance.set(nextKey, steps + 1);
-          parent.set(nextKey, {
-            prev: stateKey,
+          const nextVisitKey = encodedKeyOf(move.next);
+          if (visited.has(nextVisitKey)) continue;
+          visited.add(nextVisitKey);
+          parent.set(nextVisitKey, {
+            prev: visitKey,
             recipe: move.recipe
           });
-          queue.push(move.next);
+          queueStates.push(move.next);
+          queueKeys.push(nextVisitKey);
+          queueSteps.push(steps + 1);
         }
       }
 
-      if (!candidates.length) {
+      if (!bestCandidateByReserveTotal.size) {
         return { found: false, path: [] };
       }
 
-      const maxReserveTotal = candidates.reduce((maximum, candidate) => (
-        Math.max(maximum, candidate.reserveTotal)
-      ), -Infinity);
       let bestCandidate = null;
-      candidates.forEach(candidate => {
-        if (maxReserveTotal - candidate.reserveTotal > BALANCED_TOTAL_TOLERANCE) return;
+      bestCandidateByReserveTotal.forEach(candidate => {
+        if (candidate.reserveTotal < maxReserveTotal - BALANCED_TOTAL_TOLERANCE) return;
         if (isBetterBalancedCandidate(candidate, bestCandidate)) bestCandidate = candidate;
       });
 
       const path = [];
-      let cursor = bestCandidate.key;
-      while (cursor !== startKey) {
+      let cursor = bestCandidate.visitKey;
+      while (cursor !== startVisitKey) {
         const entry = parent.get(cursor);
         path.push(entry);
         cursor = entry.prev;

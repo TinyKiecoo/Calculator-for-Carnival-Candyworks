@@ -106,7 +106,6 @@
 
     .github-link,
     .info-toggle,
-    .fantasy-link,
     .language-toggle,
     .about-toggle,
     .help-toggle {
@@ -156,21 +155,6 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .fantasy-link {
-      left: 120px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-color: rgba(255, 220, 112, .86);
-      background: linear-gradient(180deg, rgba(157, 107, 43, .92), rgba(92, 56, 23, .96));
-      color: #f6e8c9;
-      line-height: 1.1;
-      text-align: center;
-      text-decoration: none;
-      white-space: nowrap;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, .4), inset 0 0 0 1px rgba(255, 248, 190, .34);
     }
 
     .github-link svg, .info-icon {
@@ -257,7 +241,6 @@
 
     .github-link:hover,
     .info-toggle:hover,
-    .fantasy-link:hover,
     .language-toggle:hover,
     .about-toggle:hover,
     .help-toggle:hover {
@@ -1474,7 +1457,6 @@
 
 .language-option,
 .language-toggle,
-.fantasy-link,
 .about-toggle,
 .help-toggle {
   font-family: "Reaver", "Candyworks YaHei", "Candyworks Russian", Arial, sans-serif;
@@ -1485,8 +1467,7 @@ html[lang="zh-CN"] button *,
 html[lang="zh-CN"] [role="dialog"],
 html[lang="zh-CN"] [role="dialog"] *,
 html[lang="zh-CN"] .language-menu,
-html[lang="zh-CN"] .language-menu *,
-html[lang="zh-CN"] .fantasy-link {
+html[lang="zh-CN"] .language-menu * {
   font-family: "Microsoft YaHei", "Microsoft YaHei UI", "微软雅黑", sans-serif;
 }
 
@@ -1548,7 +1529,6 @@ html[lang="zh-CN"] .tour-next {
 
       .top-actions > .github-link,
       .top-actions > .info-toggle,
-      .top-actions > .fantasy-link,
       .top-actions > .language-toggle,
       .top-actions > .help-toggle,
       .top-actions > .about-toggle {
@@ -1563,7 +1543,6 @@ html[lang="zh-CN"] .tour-next {
 
       .top-actions > .github-link:hover,
       .top-actions > .info-toggle:hover,
-      .top-actions > .fantasy-link:hover,
       .top-actions > .language-toggle:hover,
       .top-actions > .help-toggle:hover,
       .top-actions > .about-toggle:hover {
@@ -1580,13 +1559,6 @@ html[lang="zh-CN"] .tour-next {
         left: 58px;
         width: 42px;
         padding: 0;
-      }
-
-      .top-actions > .fantasy-link {
-        left: 105px;
-        font-size: 10px;
-        letter-spacing: .02em;
-        white-space: nowrap;
       }
 
       .top-actions > .language-toggle {
@@ -1906,7 +1878,6 @@ html[lang="zh-CN"] .tour-next {
     <button class="info-toggle" id="disclaimerBtn" type="button" aria-label="Disclaimer" title="Disclaimer">
       <img class="info-icon" src="candywork-assets/icon_info_f2d89d.png">
     </button>
-    <a class="fantasy-link" href="https://www.ti-fantasy.site/" target="_blank" rel="noopener noreferrer" data-i18n="fantasyCalculator">Fantasy Calculator</a>
     <button class="language-toggle" id="languageToggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="languageMenu" aria-label="Choose language">EN</button>
     <div class="language-menu" id="languageMenu" role="listbox" aria-label="Choose language" aria-hidden="true">
       <button class="language-option" type="button" role="option" data-language="en" lang="en" aria-selected="true">English</button>
@@ -2054,7 +2025,6 @@ html[lang="zh-CN"] .tour-next {
         title: "CARNIVAL CANDYWORKS",
         subtitle: "An open-source calculator for Dota 2 Candyworks.",
         disclaimerButton: "Disclaimer",
-        fantasyCalculator: "Fantasy Calculator",
         disclaimerLine1: "This is a free, open-source, non-commercial fan project and is not affiliated with Valve, Steam, or Dota 2.",
         disclaimerLine2: "It uses Dota 2 / Valve-derived images, fonts, names, and UI materials. Those materials remain the property of Valve and their respective rights holders; this project's open-source license does not grant rights to them.",
         disclaimerLine3Before: "This site uses third-party visit counters. The public counter value can be viewed",
@@ -2126,7 +2096,6 @@ html[lang="zh-CN"] .tour-next {
         title: "狂欢糖果车",
         subtitle: "开源的 Dota 2 糖果车计算器",
         disclaimerButton: "免责声明",
-        fantasyCalculator: "梦幻挑战计算器",
         disclaimerLine1: "这是一个免费、开源、非商业的玩家项目，与 Valve、Steam 或 Dota 2 官方无关联。",
         disclaimerLine2: "本项目使用了 Dota 2 / Valve 相关图片、字体、名称和界面素材。这些素材仍归 Valve 及相应权利方所有；本项目的开源许可证不授予这些素材的使用权。",
         disclaimerLine3Before: "本站使用第三方访问计数服务。公开的计数值可在",
@@ -2198,7 +2167,6 @@ html[lang="zh-CN"] .tour-next {
         title: "КАРНАВАЛЬНАЯ ЛАВКА КОНФЕТ",
         subtitle: "Калькулятор лавки конфет Dota 2 с открытым исходным кодом.",
         disclaimerButton: "Отказ от ответственности",
-        fantasyCalculator: "Fantasy Calculator",
         disclaimerLine1: "Это бесплатный некоммерческий фанатский проект с открытым исходным кодом, не связанный с Valve, Steam или Dota 2.",
         disclaimerLine2: "В проекте используются изображения, шрифты, названия и элементы интерфейса из Dota 2 / Valve. Права на эти материалы принадлежат Valve и другим правообладателям; лицензия проекта с открытым исходным кодом не предоставляет прав на них.",
         disclaimerLine3Before: "Сайт использует сторонние счётчики посещений. Публичные данные счётчика доступны",
